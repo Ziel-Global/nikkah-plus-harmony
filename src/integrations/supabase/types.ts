@@ -936,6 +936,17 @@ export type Database = {
           their_phone: string
         }[]
       }
+      get_match_feedback_state: {
+        Args: { p_request_id: string }
+        Returns: {
+          both_submitted: boolean
+          my_notes: string
+          my_outcome: Database["public"]["Enums"]["feedback_outcome_enum"]
+          my_submitted: boolean
+          request_status: Database["public"]["Enums"]["request_status_enum"]
+          their_submitted: boolean
+        }[]
+      }
       has_active_match: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
       list_my_interest_requests: {
