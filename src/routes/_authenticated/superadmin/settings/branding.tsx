@@ -26,7 +26,7 @@ import { PLATFORM_SETTINGS_KEY, useBranding } from "@/components/branding/Brandi
 export const Route = createFileRoute("/_authenticated/superadmin/settings/branding")({
   head: () =>
     SUPER_META("Branding & theme", "Logo, colour palette and dark mode for the whole platform."),
-  component: BrandingSettingsPage;
+  component: BrandingSettingsPage,
 });
 
 function BrandingSettingsPage() {
