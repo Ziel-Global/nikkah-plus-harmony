@@ -58,9 +58,16 @@ function DashboardPage() {
             <Link to="/profile">Open my profile</Link>
           </Button>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Introductions will appear here once your profile has been approved.
-        </p>
+        <div className="rounded-lg border border-border bg-muted p-4">
+          <h2 className="text-h3 text-foreground">Meet other members</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Browse mosque-verified members and send an interest request when someone feels right.
+          </p>
+          <Button asChild variant="outline" className="mt-4 min-h-11">
+            <Link to="/browse">Browse members</Link>
+          </Button>
+        </div>
+
       </div>
     </AuthShell>
   );
