@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { ADMIN_META, formatDateTime } from "@/lib/admin";
+import { ADMIN_META, formatDateTime type AdminMosque } from "@/lib/admin";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -40,7 +40,7 @@ type AffiliationRow = {
 };
 
 function AffiliationsPage() {
-  const { mosques } = useRouteContext({ from: "/_authenticated/admin" });
+  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as { mosques: AdminMosque[] };
   const mosqueIds = mosques.map((m) => m.id);
   const queryClient = useQueryClient();
   const [rejecting, setRejecting] = useState<AffiliationRow | null>(null);

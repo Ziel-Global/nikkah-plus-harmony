@@ -4,7 +4,7 @@ import { ClipboardCheck, Flag, LifeBuoy, ShieldCheck, Users } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ADMIN_META, OVERSIGHT_NOTE } from "@/lib/admin";
+import { ADMIN_META, OVERSIGHT_NOTE type AdminMosque } from "@/lib/admin";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () =>
@@ -42,7 +42,7 @@ async function fetchCounts(mosqueIds: string[]) {
 }
 
 function AdminOverview() {
-  const { mosques } = useRouteContext({ from: "/_authenticated/admin" });
+  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as { mosques: AdminMosque[] };
   const mosqueIds = mosques.map((m) => m.id);
 
   const { data, isLoading } = useQuery({

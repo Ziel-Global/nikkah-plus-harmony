@@ -3,7 +3,7 @@ import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { ADMIN_META, formatDay, PROFILE_STATUS_LABEL } from "@/lib/admin";
+import { ADMIN_META, formatDay, PROFILE_STATUS_LABEL type AdminMosque } from "@/lib/admin";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,7 +49,7 @@ type MarriageProfile = {
 };
 
 function MembersPage() {
-  const { mosques } = useRouteContext({ from: "/_authenticated/admin" });
+  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as { mosques: AdminMosque[] };
   const mosqueIds = mosques.map((m) => m.id);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<MemberRow | null>(null);
@@ -178,7 +178,7 @@ function MembersPage() {
   );
 }
 
-function Row({ label, value }: { label: string; value?: string | null }) {
+function Row({ label, value }: { label: string; value?: string | null | undefined }) {
   return (
     <div className="flex justify-between gap-4 border-b border-border pb-2">
       <dt className="text-muted-foreground">{label}</dt>
