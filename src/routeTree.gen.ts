@@ -44,7 +44,12 @@ import { Route as AuthenticatedSuperadminMosqueAdminsRouteImport } from './route
 import { Route as AuthenticatedSuperadminMosquesRouteImport } from './routes/_authenticated/superadmin/mosques'
 import { Route as AuthenticatedSuperadminProfilesRouteImport } from './routes/_authenticated/superadmin/profiles'
 import { Route as AuthenticatedSuperadminRequestsRouteImport } from './routes/_authenticated/superadmin/requests'
+import { Route as AuthenticatedSuperadminSettingsRouteRouteImport } from './routes/_authenticated/superadmin/settings/route'
 import { Route as AuthenticatedSuperadminUsersRouteImport } from './routes/_authenticated/superadmin/users'
+import { Route as AuthenticatedSuperadminSettingsIndexRouteImport } from './routes/_authenticated/superadmin/settings/index'
+import { Route as AuthenticatedSuperadminSettingsBrandingRouteImport } from './routes/_authenticated/superadmin/settings/branding'
+import { Route as AuthenticatedSuperadminSettingsRolesRouteImport } from './routes/_authenticated/superadmin/settings/roles'
+import { Route as AuthenticatedSuperadminSettingsWorkflowRouteImport } from './routes/_authenticated/superadmin/settings/workflow'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -238,11 +243,41 @@ const AuthenticatedSuperadminRequestsRoute =
     path: '/requests',
     getParentRoute: () => AuthenticatedSuperadminRouteRoute,
   } as any)
+const AuthenticatedSuperadminSettingsRouteRoute =
+  AuthenticatedSuperadminSettingsRouteRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedSuperadminRouteRoute,
+  } as any)
 const AuthenticatedSuperadminUsersRoute =
   AuthenticatedSuperadminUsersRouteImport.update({
     id: '/users',
     path: '/users',
     getParentRoute: () => AuthenticatedSuperadminRouteRoute,
+  } as any)
+const AuthenticatedSuperadminSettingsIndexRoute =
+  AuthenticatedSuperadminSettingsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedSuperadminSettingsRouteRoute,
+  } as any)
+const AuthenticatedSuperadminSettingsBrandingRoute =
+  AuthenticatedSuperadminSettingsBrandingRouteImport.update({
+    id: '/branding',
+    path: '/branding',
+    getParentRoute: () => AuthenticatedSuperadminSettingsRouteRoute,
+  } as any)
+const AuthenticatedSuperadminSettingsRolesRoute =
+  AuthenticatedSuperadminSettingsRolesRouteImport.update({
+    id: '/roles',
+    path: '/roles',
+    getParentRoute: () => AuthenticatedSuperadminSettingsRouteRoute,
+  } as any)
+const AuthenticatedSuperadminSettingsWorkflowRoute =
+  AuthenticatedSuperadminSettingsWorkflowRouteImport.update({
+    id: '/workflow',
+    path: '/workflow',
+    getParentRoute: () => AuthenticatedSuperadminSettingsRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -262,6 +297,7 @@ export interface FileRoutesByFullPath {
   '/pending': typeof AuthenticatedPendingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/requests': typeof AuthenticatedRequestsRoute
+  '/superadmin/settings': typeof AuthenticatedSuperadminSettingsRouteRouteWithChildren
   '/admin/affiliations': typeof AuthenticatedAdminAffiliationsRoute
   '/admin/conduct': typeof AuthenticatedAdminConductRoute
   '/admin/escalations': typeof AuthenticatedAdminEscalationsRoute
@@ -281,6 +317,10 @@ export interface FileRoutesByFullPath {
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/superadmin/': typeof AuthenticatedSuperadminIndexRoute
+  '/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
+  '/superadmin/settings/roles': typeof AuthenticatedSuperadminSettingsRolesRoute
+  '/superadmin/settings/workflow': typeof AuthenticatedSuperadminSettingsWorkflowRoute
+  '/superadmin/settings/': typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -316,6 +356,10 @@ export interface FileRoutesByTo {
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/superadmin': typeof AuthenticatedSuperadminIndexRoute
+  '/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
+  '/superadmin/settings/roles': typeof AuthenticatedSuperadminSettingsRolesRoute
+  '/superadmin/settings/workflow': typeof AuthenticatedSuperadminSettingsWorkflowRoute
+  '/superadmin/settings': typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -336,6 +380,7 @@ export interface FileRoutesById {
   '/_authenticated/pending': typeof AuthenticatedPendingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
+  '/_authenticated/superadmin/settings': typeof AuthenticatedSuperadminSettingsRouteRouteWithChildren
   '/_authenticated/admin/affiliations': typeof AuthenticatedAdminAffiliationsRoute
   '/_authenticated/admin/conduct': typeof AuthenticatedAdminConductRoute
   '/_authenticated/admin/escalations': typeof AuthenticatedAdminEscalationsRoute
@@ -355,6 +400,10 @@ export interface FileRoutesById {
   '/_authenticated/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/superadmin/': typeof AuthenticatedSuperadminIndexRoute
+  '/_authenticated/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
+  '/_authenticated/superadmin/settings/roles': typeof AuthenticatedSuperadminSettingsRolesRoute
+  '/_authenticated/superadmin/settings/workflow': typeof AuthenticatedSuperadminSettingsWorkflowRoute
+  '/_authenticated/superadmin/settings/': typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -375,6 +424,7 @@ export interface FileRouteTypes {
     | '/pending'
     | '/profile'
     | '/requests'
+    | '/superadmin/settings'
     | '/admin/affiliations'
     | '/admin/conduct'
     | '/admin/escalations'
@@ -394,6 +444,10 @@ export interface FileRouteTypes {
     | '/superadmin/users'
     | '/admin/'
     | '/superadmin/'
+    | '/superadmin/settings/branding'
+    | '/superadmin/settings/roles'
+    | '/superadmin/settings/workflow'
+    | '/superadmin/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -429,6 +483,10 @@ export interface FileRouteTypes {
     | '/superadmin/users'
     | '/admin'
     | '/superadmin'
+    | '/superadmin/settings/branding'
+    | '/superadmin/settings/roles'
+    | '/superadmin/settings/workflow'
+    | '/superadmin/settings'
   id:
     | '__root__'
     | '/'
@@ -448,6 +506,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pending'
     | '/_authenticated/profile'
     | '/_authenticated/requests'
+    | '/_authenticated/superadmin/settings'
     | '/_authenticated/admin/affiliations'
     | '/_authenticated/admin/conduct'
     | '/_authenticated/admin/escalations'
@@ -467,6 +526,10 @@ export interface FileRouteTypes {
     | '/_authenticated/superadmin/users'
     | '/_authenticated/admin/'
     | '/_authenticated/superadmin/'
+    | '/_authenticated/superadmin/settings/branding'
+    | '/_authenticated/superadmin/settings/roles'
+    | '/_authenticated/superadmin/settings/workflow'
+    | '/_authenticated/superadmin/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -727,12 +790,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperadminRequestsRouteImport
       parentRoute: typeof AuthenticatedSuperadminRouteRoute
     }
+    '/_authenticated/superadmin/settings': {
+      id: '/_authenticated/superadmin/settings'
+      path: '/settings'
+      fullPath: '/superadmin/settings'
+      preLoaderRoute: typeof AuthenticatedSuperadminSettingsRouteRouteImport
+      parentRoute: typeof AuthenticatedSuperadminRouteRoute
+    }
     '/_authenticated/superadmin/users': {
       id: '/_authenticated/superadmin/users'
       path: '/users'
       fullPath: '/superadmin/users'
       preLoaderRoute: typeof AuthenticatedSuperadminUsersRouteImport
       parentRoute: typeof AuthenticatedSuperadminRouteRoute
+    }
+    '/_authenticated/superadmin/settings/': {
+      id: '/_authenticated/superadmin/settings/'
+      path: '/'
+      fullPath: '/superadmin/settings/'
+      preLoaderRoute: typeof AuthenticatedSuperadminSettingsIndexRouteImport
+      parentRoute: typeof AuthenticatedSuperadminSettingsRouteRoute
+    }
+    '/_authenticated/superadmin/settings/branding': {
+      id: '/_authenticated/superadmin/settings/branding'
+      path: '/branding'
+      fullPath: '/superadmin/settings/branding'
+      preLoaderRoute: typeof AuthenticatedSuperadminSettingsBrandingRouteImport
+      parentRoute: typeof AuthenticatedSuperadminSettingsRouteRoute
+    }
+    '/_authenticated/superadmin/settings/roles': {
+      id: '/_authenticated/superadmin/settings/roles'
+      path: '/roles'
+      fullPath: '/superadmin/settings/roles'
+      preLoaderRoute: typeof AuthenticatedSuperadminSettingsRolesRouteImport
+      parentRoute: typeof AuthenticatedSuperadminSettingsRouteRoute
+    }
+    '/_authenticated/superadmin/settings/workflow': {
+      id: '/_authenticated/superadmin/settings/workflow'
+      path: '/workflow'
+      fullPath: '/superadmin/settings/workflow'
+      preLoaderRoute: typeof AuthenticatedSuperadminSettingsWorkflowRouteImport
+      parentRoute: typeof AuthenticatedSuperadminSettingsRouteRoute
     }
   }
 }
@@ -765,7 +863,32 @@ const AuthenticatedAdminRouteRouteWithChildren =
     AuthenticatedAdminRouteRouteChildren,
   )
 
+interface AuthenticatedSuperadminSettingsRouteRouteChildren {
+  AuthenticatedSuperadminSettingsBrandingRoute: typeof AuthenticatedSuperadminSettingsBrandingRoute
+  AuthenticatedSuperadminSettingsRolesRoute: typeof AuthenticatedSuperadminSettingsRolesRoute
+  AuthenticatedSuperadminSettingsWorkflowRoute: typeof AuthenticatedSuperadminSettingsWorkflowRoute
+  AuthenticatedSuperadminSettingsIndexRoute: typeof AuthenticatedSuperadminSettingsIndexRoute
+}
+
+const AuthenticatedSuperadminSettingsRouteRouteChildren: AuthenticatedSuperadminSettingsRouteRouteChildren =
+  {
+    AuthenticatedSuperadminSettingsBrandingRoute:
+      AuthenticatedSuperadminSettingsBrandingRoute,
+    AuthenticatedSuperadminSettingsRolesRoute:
+      AuthenticatedSuperadminSettingsRolesRoute,
+    AuthenticatedSuperadminSettingsWorkflowRoute:
+      AuthenticatedSuperadminSettingsWorkflowRoute,
+    AuthenticatedSuperadminSettingsIndexRoute:
+      AuthenticatedSuperadminSettingsIndexRoute,
+  }
+
+const AuthenticatedSuperadminSettingsRouteRouteWithChildren =
+  AuthenticatedSuperadminSettingsRouteRoute._addFileChildren(
+    AuthenticatedSuperadminSettingsRouteRouteChildren,
+  )
+
 interface AuthenticatedSuperadminRouteRouteChildren {
+  AuthenticatedSuperadminSettingsRouteRoute: typeof AuthenticatedSuperadminSettingsRouteRouteWithChildren
   AuthenticatedSuperadminAnalyticsRoute: typeof AuthenticatedSuperadminAnalyticsRoute
   AuthenticatedSuperadminAuditRoute: typeof AuthenticatedSuperadminAuditRoute
   AuthenticatedSuperadminFlagsRoute: typeof AuthenticatedSuperadminFlagsRoute
@@ -780,6 +903,8 @@ interface AuthenticatedSuperadminRouteRouteChildren {
 
 const AuthenticatedSuperadminRouteRouteChildren: AuthenticatedSuperadminRouteRouteChildren =
   {
+    AuthenticatedSuperadminSettingsRouteRoute:
+      AuthenticatedSuperadminSettingsRouteRouteWithChildren,
     AuthenticatedSuperadminAnalyticsRoute:
       AuthenticatedSuperadminAnalyticsRoute,
     AuthenticatedSuperadminAuditRoute: AuthenticatedSuperadminAuditRoute,
