@@ -1,24 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Nikkah+ — Faith. Family. Future." },
+      {
+        name: "description",
+        content:
+          "Nikkah+ is a community-based Muslim marriage platform connecting families through their local mosque with respect, privacy and care.",
+      },
+      { property: "og:title", content: "Nikkah+ — Faith. Family. Future." },
+      {
+        property: "og:description",
+        content:
+          "A community-based Muslim marriage platform connecting families through their local mosque.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="flex min-h-screen flex-col bg-background">
+      <SiteHeader />
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-16 sm:px-6">
+        <h1 className="text-display text-foreground">Faith. Family. Future.</h1>
+        <p className="mt-4 max-w-xl text-body text-muted-foreground">
+          The Nikkah+ design system and application shell are in place. Pages will be built on top
+          of this foundation.
+        </p>
+      </main>
+      <SiteFooter />
     </div>
   );
 }
