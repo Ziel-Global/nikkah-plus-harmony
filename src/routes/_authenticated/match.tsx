@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { ContactConsent } from "@/components/match/ContactConsent";
 import {
   Dialog,
   DialogContent,
@@ -327,11 +328,12 @@ function MatchPage() {
         <Panel
           icon={<ShieldCheck className="h-4 w-4" aria-hidden="true" />}
           title="Sharing contact details"
-          description="Contact details are exchanged only when both of you, with your walis, agree to it. This consent step is being prepared and will appear here."
+          description="Contact details are exchanged only when both of you, with your walis, explicitly agree to it. Nothing is shared until both confirmations are recorded."
         >
-          <Button className="min-h-11" disabled>
-            Contact consent — coming soon
-          </Button>
+          <ContactConsent
+            requestId={match.id}
+            counterpartName={match.counterpart_name ?? "this member"}
+          />
         </Panel>
 
         <Panel

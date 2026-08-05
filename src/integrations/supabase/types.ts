@@ -922,6 +922,20 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      get_match_contact_state: {
+        Args: { p_request_id: string }
+        Returns: {
+          both_consented: boolean
+          my_consent: boolean
+          my_email: string
+          my_name: string
+          my_phone: string
+          their_consent: boolean
+          their_email: string
+          their_name: string
+          their_phone: string
+        }[]
+      }
       has_active_match: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
       list_my_interest_requests: {
