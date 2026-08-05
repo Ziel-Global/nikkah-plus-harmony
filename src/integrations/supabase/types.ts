@@ -922,6 +922,10 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      escalation_in_my_mosque: {
+        Args: { p_request_id: string }
+        Returns: boolean
+      }
       get_match_contact_state: {
         Args: { p_request_id: string }
         Returns: {

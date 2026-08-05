@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/auth/AuthShell";
@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button";
 import { signOutAndRedirect } from "@/hooks/useSession";
 
 export const Route = createFileRoute("/_authenticated/pending")({
+  beforeLoad: async () => {
+    const { data: adminOf } = await supabase
+      .from("mosque_admin_mosques")
+      .select("mosque_id")
+      .limit(1)
+      .maybeSingle();
+    if (adminOf) throw redirect({ to: "/admin" });
+  },
   head: () => ({
     meta: [
       { title: "Awaiting mosque verification — Nikkah+" },

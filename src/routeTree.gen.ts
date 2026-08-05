@@ -17,6 +17,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedBrowseRouteImport } from './routes/_authenticated/browse'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedMatchRouteImport } from './routes/_authenticated/match'
@@ -24,6 +25,14 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPendingRouteImport } from './routes/_authenticated/pending'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminAffiliationsRouteImport } from './routes/_authenticated/admin/affiliations'
+import { Route as AuthenticatedAdminConductRouteImport } from './routes/_authenticated/admin/conduct'
+import { Route as AuthenticatedAdminEscalationsRouteImport } from './routes/_authenticated/admin/escalations'
+import { Route as AuthenticatedAdminMatchesRouteImport } from './routes/_authenticated/admin/matches'
+import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authenticated/admin/members'
+import { Route as AuthenticatedAdminMosqueRouteImport } from './routes/_authenticated/admin/mosque'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedMemberProfileIdRouteImport } from './routes/_authenticated/member.$profileId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -65,6 +74,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedBrowseRoute = AuthenticatedBrowseRouteImport.update({
   id: '/browse',
   path: '/browse',
@@ -100,6 +114,53 @@ const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
   path: '/requests',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminAffiliationsRoute =
+  AuthenticatedAdminAffiliationsRouteImport.update({
+    id: '/affiliations',
+    path: '/affiliations',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminConductRoute =
+  AuthenticatedAdminConductRouteImport.update({
+    id: '/conduct',
+    path: '/conduct',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminEscalationsRoute =
+  AuthenticatedAdminEscalationsRouteImport.update({
+    id: '/escalations',
+    path: '/escalations',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminMatchesRoute =
+  AuthenticatedAdminMatchesRouteImport.update({
+    id: '/matches',
+    path: '/matches',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminMembersRoute =
+  AuthenticatedAdminMembersRouteImport.update({
+    id: '/members',
+    path: '/members',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminMosqueRoute =
+  AuthenticatedAdminMosqueRouteImport.update({
+    id: '/mosque',
+    path: '/mosque',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedMemberProfileIdRoute =
   AuthenticatedMemberProfileIdRouteImport.update({
     id: '/member/$profileId',
@@ -115,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/browse': typeof AuthenticatedBrowseRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/match': typeof AuthenticatedMatchRoute
@@ -122,7 +184,15 @@ export interface FileRoutesByFullPath {
   '/pending': typeof AuthenticatedPendingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/requests': typeof AuthenticatedRequestsRoute
+  '/admin/affiliations': typeof AuthenticatedAdminAffiliationsRoute
+  '/admin/conduct': typeof AuthenticatedAdminConductRoute
+  '/admin/escalations': typeof AuthenticatedAdminEscalationsRoute
+  '/admin/matches': typeof AuthenticatedAdminMatchesRoute
+  '/admin/members': typeof AuthenticatedAdminMembersRoute
+  '/admin/mosque': typeof AuthenticatedAdminMosqueRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -139,7 +209,15 @@ export interface FileRoutesByTo {
   '/pending': typeof AuthenticatedPendingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/requests': typeof AuthenticatedRequestsRoute
+  '/admin/affiliations': typeof AuthenticatedAdminAffiliationsRoute
+  '/admin/conduct': typeof AuthenticatedAdminConductRoute
+  '/admin/escalations': typeof AuthenticatedAdminEscalationsRoute
+  '/admin/matches': typeof AuthenticatedAdminMatchesRoute
+  '/admin/members': typeof AuthenticatedAdminMembersRoute
+  '/admin/mosque': typeof AuthenticatedAdminMosqueRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -151,6 +229,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/browse': typeof AuthenticatedBrowseRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/match': typeof AuthenticatedMatchRoute
@@ -158,7 +237,15 @@ export interface FileRoutesById {
   '/_authenticated/pending': typeof AuthenticatedPendingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
+  '/_authenticated/admin/affiliations': typeof AuthenticatedAdminAffiliationsRoute
+  '/_authenticated/admin/conduct': typeof AuthenticatedAdminConductRoute
+  '/_authenticated/admin/escalations': typeof AuthenticatedAdminEscalationsRoute
+  '/_authenticated/admin/matches': typeof AuthenticatedAdminMatchesRoute
+  '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
+  '/_authenticated/admin/mosque': typeof AuthenticatedAdminMosqueRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -170,6 +257,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/admin'
     | '/browse'
     | '/dashboard'
     | '/match'
@@ -177,7 +265,15 @@ export interface FileRouteTypes {
     | '/pending'
     | '/profile'
     | '/requests'
+    | '/admin/affiliations'
+    | '/admin/conduct'
+    | '/admin/escalations'
+    | '/admin/matches'
+    | '/admin/members'
+    | '/admin/mosque'
+    | '/admin/settings'
     | '/member/$profileId'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -194,7 +290,15 @@ export interface FileRouteTypes {
     | '/pending'
     | '/profile'
     | '/requests'
+    | '/admin/affiliations'
+    | '/admin/conduct'
+    | '/admin/escalations'
+    | '/admin/matches'
+    | '/admin/members'
+    | '/admin/mosque'
+    | '/admin/settings'
     | '/member/$profileId'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -205,6 +309,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/_authenticated/admin'
     | '/_authenticated/browse'
     | '/_authenticated/dashboard'
     | '/_authenticated/match'
@@ -212,7 +317,15 @@ export interface FileRouteTypes {
     | '/_authenticated/pending'
     | '/_authenticated/profile'
     | '/_authenticated/requests'
+    | '/_authenticated/admin/affiliations'
+    | '/_authenticated/admin/conduct'
+    | '/_authenticated/admin/escalations'
+    | '/_authenticated/admin/matches'
+    | '/_authenticated/admin/members'
+    | '/_authenticated/admin/mosque'
+    | '/_authenticated/admin/settings'
     | '/_authenticated/member/$profileId'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -284,6 +397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/browse': {
       id: '/_authenticated/browse'
       path: '/browse'
@@ -333,6 +453,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRequestsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/affiliations': {
+      id: '/_authenticated/admin/affiliations'
+      path: '/affiliations'
+      fullPath: '/admin/affiliations'
+      preLoaderRoute: typeof AuthenticatedAdminAffiliationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/conduct': {
+      id: '/_authenticated/admin/conduct'
+      path: '/conduct'
+      fullPath: '/admin/conduct'
+      preLoaderRoute: typeof AuthenticatedAdminConductRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/escalations': {
+      id: '/_authenticated/admin/escalations'
+      path: '/escalations'
+      fullPath: '/admin/escalations'
+      preLoaderRoute: typeof AuthenticatedAdminEscalationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/matches': {
+      id: '/_authenticated/admin/matches'
+      path: '/matches'
+      fullPath: '/admin/matches'
+      preLoaderRoute: typeof AuthenticatedAdminMatchesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/members': {
+      id: '/_authenticated/admin/members'
+      path: '/members'
+      fullPath: '/admin/members'
+      preLoaderRoute: typeof AuthenticatedAdminMembersRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/mosque': {
+      id: '/_authenticated/admin/mosque'
+      path: '/mosque'
+      fullPath: '/admin/mosque'
+      preLoaderRoute: typeof AuthenticatedAdminMosqueRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/member/$profileId': {
       id: '/_authenticated/member/$profileId'
       path: '/member/$profileId'
@@ -343,7 +519,36 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminAffiliationsRoute: typeof AuthenticatedAdminAffiliationsRoute
+  AuthenticatedAdminConductRoute: typeof AuthenticatedAdminConductRoute
+  AuthenticatedAdminEscalationsRoute: typeof AuthenticatedAdminEscalationsRoute
+  AuthenticatedAdminMatchesRoute: typeof AuthenticatedAdminMatchesRoute
+  AuthenticatedAdminMembersRoute: typeof AuthenticatedAdminMembersRoute
+  AuthenticatedAdminMosqueRoute: typeof AuthenticatedAdminMosqueRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminAffiliationsRoute: AuthenticatedAdminAffiliationsRoute,
+    AuthenticatedAdminConductRoute: AuthenticatedAdminConductRoute,
+    AuthenticatedAdminEscalationsRoute: AuthenticatedAdminEscalationsRoute,
+    AuthenticatedAdminMatchesRoute: AuthenticatedAdminMatchesRoute,
+    AuthenticatedAdminMembersRoute: AuthenticatedAdminMembersRoute,
+    AuthenticatedAdminMosqueRoute: AuthenticatedAdminMosqueRoute,
+    AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+    AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  }
+
+const AuthenticatedAdminRouteRouteWithChildren =
+  AuthenticatedAdminRouteRoute._addFileChildren(
+    AuthenticatedAdminRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
   AuthenticatedBrowseRoute: typeof AuthenticatedBrowseRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedMatchRoute: typeof AuthenticatedMatchRoute
@@ -355,6 +560,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
   AuthenticatedBrowseRoute: AuthenticatedBrowseRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedMatchRoute: AuthenticatedMatchRoute,
