@@ -14,7 +14,7 @@ import { Logo } from "@/components/brand/Logo";
 import { signOutAndRedirect } from "@/hooks/useSession";
 import { OVERSIGHT_NOTE } from "@/lib/admin";
 
-const NAV = [
+const NAV: { to: string; label: string; icon: typeof Gauge; exact?: boolean }[] = [
   { to: "/admin", label: "Overview", icon: Gauge, exact: true },
   { to: "/admin/affiliations", label: "Affiliation requests", icon: ClipboardCheck },
   { to: "/admin/members", label: "Linked members", icon: Users },
@@ -23,7 +23,7 @@ const NAV = [
   { to: "/admin/conduct", label: "Conduct reports", icon: Flag },
   { to: "/admin/mosque", label: "Mosque profile", icon: Building2 },
   { to: "/admin/settings", label: "Account settings", icon: Settings },
-] as const;
+];
 
 export function AdminShell({
   title,
