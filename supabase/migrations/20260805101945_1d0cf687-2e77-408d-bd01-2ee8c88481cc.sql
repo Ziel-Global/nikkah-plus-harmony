@@ -1,0 +1,11 @@
+REVOKE EXECUTE ON FUNCTION public.close_match_on_dual_feedback() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.enforce_affiliation_before_submit() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.enforce_match_exclusivity() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.handle_new_auth_user() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.notify_on_interest_request_change() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.set_updated_at() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."current_role"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.is_super_admin() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.my_mosque_ids() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_super_admin() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.my_mosque_ids() TO authenticated;
