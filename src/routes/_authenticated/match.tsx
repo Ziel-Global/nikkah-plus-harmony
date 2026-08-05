@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { ContactConsent } from "@/components/match/ContactConsent";
+import { MatchClosure } from "@/components/match/MatchClosure";
+
 import {
   Dialog,
   DialogContent,
