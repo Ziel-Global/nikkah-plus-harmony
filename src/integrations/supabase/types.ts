@@ -926,6 +926,10 @@ export type Database = {
       is_super_admin: { Args: never; Returns: boolean }
       my_mosque_ids: { Args: never; Returns: string[] }
       privacy_visible: { Args: { k: string; ps: Json }; Returns: boolean }
+      send_interest_request: {
+        Args: { p_message?: string; p_profile_id: string }
+        Returns: string
+      }
     }
     Enums: {
       account_status_enum: "active" | "suspended" | "deactivated" | "flagged"

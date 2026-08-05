@@ -43,30 +43,44 @@ const clean = (value: string) => {
   return trimmed.length > 0 ? trimmed : null;
 };
 
-export function toRpcArgs(filters: BrowseFilters) {
+type RpcArgs = Record<string, string | number | boolean | string[]>;
+
+export function toRpcArgs(filters: BrowseFilters): RpcArgs {
   const languages = filters.languages
     .split(",")
     .map((l) => l.trim())
     .filter(Boolean);
 
-  return {
+  const args: RpcArgs = {
     p_min_age: filters.minAge,
     p_max_age: filters.maxAge,
-    p_country: clean(filters.country) ?? undefined,
-    p_city: clean(filters.city) ?? undefined,
-    p_nationality: clean(filters.nationality) ?? undefined,
-    p_education: clean(filters.education) ?? undefined,
-    p_marital: clean(filters.marital) ?? undefined,
-    p_practice: clean(filters.practice) ?? undefined,
-    p_languages: languages.length > 0 ? languages : undefined,
-    p_relocate: filters.relocate === "yes" ? true : filters.relocate === "no" ? false : undefined,
-    p_mosque: clean(filters.mosque) ?? undefined,
-    p_profession: clean(filters.profession) ?? undefined,
-    p_family_keyword: clean(filters.family) ?? undefined,
     p_limit: PAGE_SIZE,
     p_offset: (Math.max(1, filters.page) - 1) * PAGE_SIZE,
   };
+
+  const text: [string, string][] = [
+    ["p_country", filters.country],
+    ["p_city", filters.city],
+    ["p_nationality", filters.nationality],
+    ["p_education", filters.education],
+    ["p_marital", filters.marital],
+    ["p_practice", filters.practice],
+    ["p_mosque", filters.mosque],
+    ["p_profession", filters.profession],
+    ["p_family_keyword", filters.family],
+  ];
+  for (const [key, value] of text) {
+    const v = clean(value);
+    if (v) args[key] = v;
+  }
+
+  if (languages.length > 0) args['p_languages'] = languages;
+  if (filters.relocate === "yes") args['p_relocate'] = true;
+  if (filters.relocate === "no") args['p_relocate'] = false;
+
+  return args;
 }
+
 
 export function activeFilterCount(filters: BrowseFilters) {
   let count = 0;

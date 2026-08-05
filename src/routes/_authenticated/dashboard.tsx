@@ -2,6 +2,7 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
+import { DEFAULT_FILTERS } from "@/lib/browse";
 import { signOutAndRedirect } from "@/hooks/useSession";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -58,9 +59,16 @@ function DashboardPage() {
             <Link to="/profile">Open my profile</Link>
           </Button>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Introductions will appear here once your profile has been approved.
-        </p>
+        <div className="rounded-lg border border-border bg-muted p-4">
+          <h2 className="text-h3 text-foreground">Meet other members</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Browse mosque-verified members and send an interest request when someone feels right.
+          </p>
+          <Button asChild variant="outline" className="mt-4 min-h-11">
+            <Link to="/browse" search={DEFAULT_FILTERS}>Browse members</Link>
+          </Button>
+        </div>
+
       </div>
     </AuthShell>
   );
