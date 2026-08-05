@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Inbox, Send } from "lucide-react";
+import { Archive, ArrowLeft, Inbox, Send } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -165,9 +165,14 @@ function RequestsPage() {
     onError: (error: Error) => toast.error(friendlyRequestError(error.message)),
   });
 
+  const CLOSED = ["closed_mutual", "closed_declined", "cancelled"] as const;
+  const isClosed = (r: InterestRequestRow) =>
+    (CLOSED as readonly string[]).includes(r.status);
   const all = requestsQuery.data ?? [];
-  const received = all.filter((r) => r.direction === "received");
-  const sent = all.filter((r) => r.direction === "sent");
+  const received = all.filter((r) => r.direction === "received" && !isClosed(r));
+  const sent = all.filter((r) => r.direction === "sent" && !isClosed(r));
+  const history = all.filter(isClosed);
+
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 lg:py-12">
@@ -199,7 +204,11 @@ function RequestsPage() {
             <TabsTrigger value="sent" className="flex-1">
               Sent ({sent.length})
             </TabsTrigger>
+            <TabsTrigger value="history" className="flex-1">
+              History ({history.length})
+            </TabsTrigger>
           </TabsList>
+
 
           <TabsContent value="received" className="mt-5 space-y-4">
             {received.length === 0 ? (
@@ -295,6 +304,32 @@ function RequestsPage() {
               ))
             )}
           </TabsContent>
+
+          <TabsContent value="history" className="mt-5 space-y-4">
+            {history.length === 0 ? (
+              <EmptyState
+                icon={<Archive className="h-5 w-5" aria-hidden="true" />}
+                title="No closed introductions yet"
+                body="Once an introduction is concluded by both members, it will be kept here for your records."
+              />
+            ) : (
+              history.map((request) => (
+                <RequestCard key={request.id} request={request}>
+                  {request.counterpart_profile_id && (
+                    <Button asChild variant="ghost" className="min-h-11">
+                      <Link
+                        to="/member/$profileId"
+                        params={{ profileId: request.counterpart_profile_id }}
+                      >
+                        View profile
+                      </Link>
+                    </Button>
+                  )}
+                </RequestCard>
+              ))
+            )}
+          </TabsContent>
+
         </Tabs>
       )}
     </main>
