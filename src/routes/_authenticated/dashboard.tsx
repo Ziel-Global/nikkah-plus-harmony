@@ -68,7 +68,21 @@ function DashboardPage() {
             <Link to="/browse" search={DEFAULT_FILTERS}>Browse members</Link>
           </Button>
         </div>
-
+        <div className="rounded-lg border border-border bg-muted p-4">
+          <h2 className="text-h3 text-foreground">Interest requests</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Review introductions you have sent and received, and open your active match when one
+            has been agreed.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Button asChild variant="outline" className="min-h-11">
+              <Link to="/requests">My requests</Link>
+            </Button>
+            <Button asChild variant="ghost" className="min-h-11">
+              <Link to="/match">Active match</Link>
+            </Button>
+          </div>
+        </div>
       </div>
     </AuthShell>
   );
