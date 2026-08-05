@@ -7,12 +7,16 @@ import { signOutAndRedirect } from "@/hooks/useSession";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   beforeLoad: async () => {
+    const { data: isSuper } = await supabase.rpc("is_super_admin");
+    if (isSuper) throw redirect({ to: "/superadmin" });
+
     const { data: adminOf } = await supabase
       .from("mosque_admin_mosques")
       .select("mosque_id")
       .limit(1)
       .maybeSingle();
     if (adminOf) throw redirect({ to: "/admin" });
+
 
     const { data } = await supabase
       .from("mosque_affiliation_requests")
