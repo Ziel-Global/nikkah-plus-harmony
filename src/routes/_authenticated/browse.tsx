@@ -118,7 +118,7 @@ function BrowsePage() {
   const resultsQuery = useQuery({
     queryKey: ["browse", filters],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("browse_profiles", toRpcArgs(filters));
+      const { data, error } = await supabase.rpc("browse_profiles", toRpcArgs(filters) as never);
       if (error) throw error;
       return data ?? [];
     },
