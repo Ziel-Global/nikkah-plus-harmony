@@ -867,12 +867,65 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      browse_profiles: {
+        Args: {
+          p_city?: string
+          p_country?: string
+          p_education?: string
+          p_family_keyword?: string
+          p_languages?: string[]
+          p_limit?: number
+          p_marital?: string
+          p_max_age?: number
+          p_min_age?: number
+          p_mosque?: string
+          p_nationality?: string
+          p_offset?: number
+          p_practice?: string
+          p_profession?: string
+          p_profile_id?: string
+          p_relocate?: boolean
+        }
+        Returns: {
+          age: number
+          appearance_description: string
+          area: string
+          city: string
+          country: string
+          display_name: string
+          education_level: string
+          employment_status: string
+          ethnicity: string
+          expected_marriage_timeline: string
+          family_origin: string
+          family_values: string
+          has_hidden_photo: boolean
+          height_cm: number
+          household_background: string
+          id: string
+          languages_spoken: string[]
+          marital_status: string
+          mosque_id: string
+          mosque_name: string
+          nationality: string
+          personal_bio: string
+          photo_url: string
+          preferred_spouse_criteria: string
+          profession: string
+          religious_practice_level: string
+          sect_or_school_of_thought: string
+          total_count: number
+          willingness_to_relocate: boolean
+        }[]
+      }
       current_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      has_active_match: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
       my_mosque_ids: { Args: never; Returns: string[] }
+      privacy_visible: { Args: { k: string; ps: Json }; Returns: boolean }
     }
     Enums: {
       account_status_enum: "active" | "suspended" | "deactivated" | "flagged"
