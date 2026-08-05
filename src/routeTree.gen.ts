@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CommunityGuidelinesRouteImport } from './routes/community-guidelines'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -17,6 +18,11 @@ import { Route as TermsRouteImport } from './routes/terms'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityGuidelinesRoute = CommunityGuidelinesRouteImport.update({
+  id: '/community-guidelines',
+  path: '/community-guidelines',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -37,12 +43,14 @@ const TermsRoute = TermsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/community-guidelines': typeof CommunityGuidelinesRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/community-guidelines': typeof CommunityGuidelinesRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
@@ -50,20 +58,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/community-guidelines': typeof CommunityGuidelinesRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/privacy' | '/register' | '/terms'
+  fullPaths: '/' | '/community-guidelines' | '/privacy' | '/register' | '/terms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/privacy' | '/register' | '/terms'
-  id: '__root__' | '/' | '/privacy' | '/register' | '/terms'
+  to: '/' | '/community-guidelines' | '/privacy' | '/register' | '/terms'
+  id:
+    | '__root__'
+    | '/'
+    | '/community-guidelines'
+    | '/privacy'
+    | '/register'
+    | '/terms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CommunityGuidelinesRoute: typeof CommunityGuidelinesRoute
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
   TermsRoute: typeof TermsRoute
@@ -76,6 +92,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community-guidelines': {
+      id: '/community-guidelines'
+      path: '/community-guidelines'
+      fullPath: '/community-guidelines'
+      preLoaderRoute: typeof CommunityGuidelinesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -104,6 +127,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CommunityGuidelinesRoute: CommunityGuidelinesRoute,
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
   TermsRoute: TermsRoute,
@@ -111,3 +135,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
