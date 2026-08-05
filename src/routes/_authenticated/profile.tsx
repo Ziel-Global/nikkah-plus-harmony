@@ -27,6 +27,9 @@ import {
   type PrivacySettings,
 } from "@/lib/profile-options";
 import { cn } from "@/lib/utils";
+import type { Database } from "@/integrations/supabase/types";
+
+type ProfileStatus = Database["public"]["Enums"]["profile_status_enum"];
 
 export const Route = createFileRoute("/_authenticated/profile")({
   beforeLoad: async () => {
@@ -258,8 +261,10 @@ function ProfilePage() {
   }, [load]);
 
   /** Editing an approved (or mosque-verified) profile sends it back for review. */
-  function nextStatusOnEdit(current: string) {
-    return current === "approved" || current === "mosque_verified" ? "submitted" : current;
+  function nextStatusOnEdit(current: string): ProfileStatus {
+    return current === "approved" || current === "mosque_verified"
+      ? "submitted"
+      : (current as ProfileStatus);
   }
 
   async function ensureProfile(patch: Record<string, unknown>) {
