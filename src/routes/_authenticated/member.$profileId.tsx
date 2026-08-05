@@ -6,7 +6,7 @@ import { ArrowLeft, ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { signPublicPhotos } from "@/lib/browse.functions";
-import { ageBand, type BrowseProfile } from "@/lib/browse";
+import { ageBand, DEFAULT_FILTERS, type BrowseProfile } from "@/lib/browse";
 import { ActiveMatchBanner } from "@/components/browse/ActiveMatchBanner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -162,7 +162,7 @@ function MemberDetailPage() {
         <p className="mt-3 text-body text-muted-foreground">
           This member’s profile is no longer being shown. There are others waiting to be met.
         </p>
-        <Button className="mt-6 min-h-11" onClick={() => void navigate({ to: "/browse" })}>
+        <Button className="mt-6 min-h-11" onClick={() => void navigate({ to: "/browse", search: DEFAULT_FILTERS })}>
           Back to members
         </Button>
       </main>
@@ -176,6 +176,7 @@ function MemberDetailPage() {
     <main className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:py-12">
       <Link
         to="/browse"
+        search={DEFAULT_FILTERS}
         className="inline-flex items-center gap-2 text-sm font-semibold text-primary underline-offset-4 hover:underline"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
