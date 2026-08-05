@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/hooks/useSession";
 
 const NAV_LINKS = [
   { label: "Home", href: "#top" },
@@ -15,6 +16,9 @@ const NAV_LINKS = [
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { session } = useSession();
+  const signedIn = Boolean(session);
+
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
@@ -56,9 +60,21 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Button asChild className="hidden min-h-11 md:inline-flex">
-            <Link to="/register">Get started</Link>
-          </Button>
+          {signedIn ? (
+            <Button asChild className="hidden min-h-11 md:inline-flex">
+              <Link to="/onboarding">My account</Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild variant="ghost" className="hidden min-h-11 md:inline-flex">
+                <Link to="/auth">Sign in</Link>
+              </Button>
+              <Button asChild className="hidden min-h-11 md:inline-flex">
+                <Link to="/register">Get started</Link>
+              </Button>
+            </>
+          )}
+
           <button
             type="button"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
