@@ -13,8 +13,8 @@ export function Field({
   children,
 }: {
   label: string;
-  hint?: string;
-  htmlFor?: string;
+  hint?: string | undefined;
+  htmlFor?: string | undefined;
   children: ReactNode;
 }) {
   return (
