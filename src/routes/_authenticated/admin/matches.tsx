@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { ADMIN_META, formatDateTime type AdminMosque } from "@/lib/admin";
+import { ADMIN_META, formatDateTime, type AdminMosque } from "@/lib/admin";
 import { STATUS_LABEL, type RequestStatus } from "@/lib/requests";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";

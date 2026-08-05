@@ -4,7 +4,7 @@ import { ClipboardCheck, Flag, LifeBuoy, ShieldCheck, Users } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ADMIN_META, OVERSIGHT_NOTE type AdminMosque } from "@/lib/admin";
+import { ADMIN_META, OVERSIGHT_NOTE, type AdminMosque } from "@/lib/admin";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () =>

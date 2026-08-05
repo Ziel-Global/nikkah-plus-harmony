@@ -3,7 +3,7 @@ import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { ADMIN_META, formatDay, PROFILE_STATUS_LABEL type AdminMosque } from "@/lib/admin";
+import { ADMIN_META, formatDay, PROFILE_STATUS_LABEL, type AdminMosque } from "@/lib/admin";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
