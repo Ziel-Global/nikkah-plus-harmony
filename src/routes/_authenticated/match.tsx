@@ -339,12 +339,14 @@ function MatchPage() {
         <Panel
           icon={<ShieldCheck className="h-4 w-4" aria-hidden="true" />}
           title="Concluding this introduction"
-          description="When you have reached a decision together, you will each submit confidential feedback and the match will close. This step is being prepared."
+          description="When you have reached a decision, submit confidential feedback. The match closes once both of you have responded, and you are both free to receive new introductions again."
         >
-          <Button variant="outline" className="min-h-11" disabled>
-            Submit feedback and close — coming soon
-          </Button>
+          <MatchClosure
+            requestId={match.id}
+            counterpartName={match.counterpart_name ?? "this member"}
+          />
         </Panel>
+
       </div>
     </main>
   );
