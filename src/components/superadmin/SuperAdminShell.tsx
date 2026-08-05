@@ -8,6 +8,7 @@ import {
   Gauge,
   IdCard,
   ShieldAlert,
+  Settings,
   ShieldCheck,
   UserCog,
   Users,
@@ -27,6 +28,7 @@ const NAV: { to: string; label: string; icon: typeof Gauge; exact?: boolean }[] 
   { to: "/superadmin/flags", label: "Inactive flags", icon: ShieldAlert },
   { to: "/superadmin/analytics", label: "Reports", icon: BarChart3 },
   { to: "/superadmin/audit", label: "Audit log", icon: Activity },
+  { to: "/superadmin/settings", label: "Settings", icon: Settings },
 ];
 
 export function SuperAdminShell({
