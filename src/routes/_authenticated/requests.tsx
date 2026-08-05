@@ -304,6 +304,32 @@ function RequestsPage() {
               ))
             )}
           </TabsContent>
+
+          <TabsContent value="history" className="mt-5 space-y-4">
+            {history.length === 0 ? (
+              <EmptyState
+                icon={<Archive className="h-5 w-5" aria-hidden="true" />}
+                title="No closed introductions yet"
+                body="Once an introduction is concluded by both members, it will be kept here for your records."
+              />
+            ) : (
+              history.map((request) => (
+                <RequestCard key={request.id} request={request}>
+                  {request.counterpart_profile_id && (
+                    <Button asChild variant="ghost" className="min-h-11">
+                      <Link
+                        to="/member/$profileId"
+                        params={{ profileId: request.counterpart_profile_id }}
+                      >
+                        View profile
+                      </Link>
+                    </Button>
+                  )}
+                </RequestCard>
+              ))
+            )}
+          </TabsContent>
+
         </Tabs>
       )}
     </main>
