@@ -47,6 +47,7 @@ import { Route as AuthenticatedSuperadminRequestsRouteImport } from './routes/_a
 import { Route as AuthenticatedSuperadminSettingsRouteRouteImport } from './routes/_authenticated/superadmin/settings/route'
 import { Route as AuthenticatedSuperadminUsersRouteImport } from './routes/_authenticated/superadmin/users'
 import { Route as AuthenticatedSuperadminSettingsIndexRouteImport } from './routes/_authenticated/superadmin/settings/index'
+import { Route as AuthenticatedSuperadminSettingsBrandingRouteImport } from './routes/_authenticated/superadmin/settings/branding'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -258,6 +259,12 @@ const AuthenticatedSuperadminSettingsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedSuperadminSettingsRouteRoute,
   } as any)
+const AuthenticatedSuperadminSettingsBrandingRoute =
+  AuthenticatedSuperadminSettingsBrandingRouteImport.update({
+    id: '/branding',
+    path: '/branding',
+    getParentRoute: () => AuthenticatedSuperadminSettingsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -296,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/superadmin/': typeof AuthenticatedSuperadminIndexRoute
+  '/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
   '/superadmin/settings/': typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -332,6 +340,7 @@ export interface FileRoutesByTo {
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/superadmin': typeof AuthenticatedSuperadminIndexRoute
+  '/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
   '/superadmin/settings': typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 export interface FileRoutesById {
@@ -373,6 +382,7 @@ export interface FileRoutesById {
   '/_authenticated/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/superadmin/': typeof AuthenticatedSuperadminIndexRoute
+  '/_authenticated/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
   '/_authenticated/superadmin/settings/': typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -414,6 +424,7 @@ export interface FileRouteTypes {
     | '/superadmin/users'
     | '/admin/'
     | '/superadmin/'
+    | '/superadmin/settings/branding'
     | '/superadmin/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -450,6 +461,7 @@ export interface FileRouteTypes {
     | '/superadmin/users'
     | '/admin'
     | '/superadmin'
+    | '/superadmin/settings/branding'
     | '/superadmin/settings'
   id:
     | '__root__'
@@ -490,6 +502,7 @@ export interface FileRouteTypes {
     | '/_authenticated/superadmin/users'
     | '/_authenticated/admin/'
     | '/_authenticated/superadmin/'
+    | '/_authenticated/superadmin/settings/branding'
     | '/_authenticated/superadmin/settings/'
   fileRoutesById: FileRoutesById
 }
@@ -772,6 +785,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperadminSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedSuperadminSettingsRouteRoute
     }
+    '/_authenticated/superadmin/settings/branding': {
+      id: '/_authenticated/superadmin/settings/branding'
+      path: '/branding'
+      fullPath: '/superadmin/settings/branding'
+      preLoaderRoute: typeof AuthenticatedSuperadminSettingsBrandingRouteImport
+      parentRoute: typeof AuthenticatedSuperadminSettingsRouteRoute
+    }
   }
 }
 
@@ -804,11 +824,14 @@ const AuthenticatedAdminRouteRouteWithChildren =
   )
 
 interface AuthenticatedSuperadminSettingsRouteRouteChildren {
+  AuthenticatedSuperadminSettingsBrandingRoute: typeof AuthenticatedSuperadminSettingsBrandingRoute
   AuthenticatedSuperadminSettingsIndexRoute: typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 
 const AuthenticatedSuperadminSettingsRouteRouteChildren: AuthenticatedSuperadminSettingsRouteRouteChildren =
   {
+    AuthenticatedSuperadminSettingsBrandingRoute:
+      AuthenticatedSuperadminSettingsBrandingRoute,
     AuthenticatedSuperadminSettingsIndexRoute:
       AuthenticatedSuperadminSettingsIndexRoute,
   }
