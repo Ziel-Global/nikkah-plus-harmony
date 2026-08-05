@@ -43,6 +43,8 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-hover: var(--primary-hover);
+  --color-button-bg: var(--button-bg);
+  --color-button-fg: var(--button-fg);
   --color-primary-active: var(--primary-active);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -102,6 +104,8 @@
   --primary: var(--brand-maroon);
   --primary-foreground: var(--brand-ivory);
   --primary-hover: var(--brand-maroon-dark);
+  --button-bg: var(--primary);
+  --button-fg: var(--primary-foreground);
   --primary-active: oklch(0.2685 0.0827 14.2);
 
   --secondary: var(--brand-rose-gold);
@@ -147,6 +151,8 @@
   --primary: oklch(0.552 0.1268 16);
   --primary-foreground: oklch(0.9753 0.0096 72.66);
   --primary-hover: oklch(0.61 0.132 17);
+  --button-bg: var(--primary);
+  --button-fg: var(--primary-foreground);
   --primary-active: oklch(0.5 0.12 15);
 
   --secondary: oklch(0.7148 0.0731 49.93);
