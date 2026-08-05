@@ -1,6 +1,7 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/auth/AuthShell";
+import { Button } from "@/components/ui/button";
 import { signOutAndRedirect } from "@/hooks/useSession";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -46,9 +47,21 @@ function DashboardPage() {
         </button>
       }
     >
-      <p className="text-sm text-muted-foreground">
-        [Placeholder — the member dashboard will be built here.]
-      </p>
+      <div className="space-y-5">
+        <div className="rounded-lg border border-border bg-muted p-4">
+          <h2 className="text-h3 text-foreground">Your marriage profile</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Write about yourself section by section, choose who sees each detail, and send it to
+            your mosque when you feel it is ready.
+          </p>
+          <Button asChild className="mt-4 min-h-11">
+            <Link to="/profile">Open my profile</Link>
+          </Button>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Introductions will appear here once your profile has been approved.
+        </p>
+      </div>
     </AuthShell>
   );
 }
