@@ -36,6 +36,7 @@ import { Route as AuthenticatedAdminMosqueRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedMemberProfileIdRouteImport } from './routes/_authenticated/member.$profileId'
 import { Route as AuthenticatedSuperadminIndexRouteImport } from './routes/_authenticated/superadmin/index'
+import { Route as AuthenticatedSuperadminProfilesRouteImport } from './routes/_authenticated/superadmin/profiles'
 import { Route as AuthenticatedSuperadminUsersRouteImport } from './routes/_authenticated/superadmin/users'
 
 const IndexRoute = IndexRouteImport.update({
@@ -182,6 +183,12 @@ const AuthenticatedSuperadminIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedSuperadminRouteRoute,
   } as any)
+const AuthenticatedSuperadminProfilesRoute =
+  AuthenticatedSuperadminProfilesRouteImport.update({
+    id: '/profiles',
+    path: '/profiles',
+    getParentRoute: () => AuthenticatedSuperadminRouteRoute,
+  } as any)
 const AuthenticatedSuperadminUsersRoute =
   AuthenticatedSuperadminUsersRouteImport.update({
     id: '/users',
@@ -214,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/admin/mosque': typeof AuthenticatedAdminMosqueRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
+  '/superadmin/profiles': typeof AuthenticatedSuperadminProfilesRoute
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/superadmin/': typeof AuthenticatedSuperadminIndexRoute
@@ -241,6 +249,7 @@ export interface FileRoutesByTo {
   '/admin/mosque': typeof AuthenticatedAdminMosqueRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
+  '/superadmin/profiles': typeof AuthenticatedSuperadminProfilesRoute
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/superadmin': typeof AuthenticatedSuperadminIndexRoute
@@ -272,6 +281,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/mosque': typeof AuthenticatedAdminMosqueRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
+  '/_authenticated/superadmin/profiles': typeof AuthenticatedSuperadminProfilesRoute
   '/_authenticated/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/superadmin/': typeof AuthenticatedSuperadminIndexRoute
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/admin/mosque'
     | '/admin/settings'
     | '/member/$profileId'
+    | '/superadmin/profiles'
     | '/superadmin/users'
     | '/admin/'
     | '/superadmin/'
@@ -330,6 +341,7 @@ export interface FileRouteTypes {
     | '/admin/mosque'
     | '/admin/settings'
     | '/member/$profileId'
+    | '/superadmin/profiles'
     | '/superadmin/users'
     | '/admin'
     | '/superadmin'
@@ -360,6 +372,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/mosque'
     | '/_authenticated/admin/settings'
     | '/_authenticated/member/$profileId'
+    | '/_authenticated/superadmin/profiles'
     | '/_authenticated/superadmin/users'
     | '/_authenticated/admin/'
     | '/_authenticated/superadmin/'
@@ -567,6 +580,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperadminIndexRouteImport
       parentRoute: typeof AuthenticatedSuperadminRouteRoute
     }
+    '/_authenticated/superadmin/profiles': {
+      id: '/_authenticated/superadmin/profiles'
+      path: '/profiles'
+      fullPath: '/superadmin/profiles'
+      preLoaderRoute: typeof AuthenticatedSuperadminProfilesRouteImport
+      parentRoute: typeof AuthenticatedSuperadminRouteRoute
+    }
     '/_authenticated/superadmin/users': {
       id: '/_authenticated/superadmin/users'
       path: '/users'
@@ -606,12 +626,14 @@ const AuthenticatedAdminRouteRouteWithChildren =
   )
 
 interface AuthenticatedSuperadminRouteRouteChildren {
+  AuthenticatedSuperadminProfilesRoute: typeof AuthenticatedSuperadminProfilesRoute
   AuthenticatedSuperadminUsersRoute: typeof AuthenticatedSuperadminUsersRoute
   AuthenticatedSuperadminIndexRoute: typeof AuthenticatedSuperadminIndexRoute
 }
 
 const AuthenticatedSuperadminRouteRouteChildren: AuthenticatedSuperadminRouteRouteChildren =
   {
+    AuthenticatedSuperadminProfilesRoute: AuthenticatedSuperadminProfilesRoute,
     AuthenticatedSuperadminUsersRoute: AuthenticatedSuperadminUsersRoute,
     AuthenticatedSuperadminIndexRoute: AuthenticatedSuperadminIndexRoute,
   }
