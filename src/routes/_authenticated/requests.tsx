@@ -165,9 +165,14 @@ function RequestsPage() {
     onError: (error: Error) => toast.error(friendlyRequestError(error.message)),
   });
 
+  const CLOSED = ["closed_mutual", "closed_declined", "cancelled"] as const;
+  const isClosed = (r: InterestRequestRow) =>
+    (CLOSED as readonly string[]).includes(r.status);
   const all = requestsQuery.data ?? [];
-  const received = all.filter((r) => r.direction === "received");
-  const sent = all.filter((r) => r.direction === "sent");
+  const received = all.filter((r) => r.direction === "received" && !isClosed(r));
+  const sent = all.filter((r) => r.direction === "sent" && !isClosed(r));
+  const history = all.filter(isClosed);
+
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 lg:py-12">
