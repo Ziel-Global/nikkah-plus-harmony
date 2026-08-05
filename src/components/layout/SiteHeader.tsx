@@ -103,11 +103,27 @@ export function SiteHeader() {
                 {link.label}
               </a>
             ))}
-            <Button asChild className="mt-2 min-h-11 w-full">
-              <Link to="/register" onClick={() => setMenuOpen(false)}>
-                Get started
-              </Link>
-            </Button>
+            {signedIn ? (
+              <Button asChild className="mt-2 min-h-11 w-full">
+                <Link to="/onboarding" onClick={() => setMenuOpen(false)}>
+                  My account
+                </Link>
+              </Button>
+            ) : (
+              <>
+                <Button asChild variant="secondary" className="mt-2 min-h-11 w-full">
+                  <Link to="/auth" onClick={() => setMenuOpen(false)}>
+                    Sign in
+                  </Link>
+                </Button>
+                <Button asChild className="mt-2 min-h-11 w-full">
+                  <Link to="/register" onClick={() => setMenuOpen(false)}>
+                    Get started
+                  </Link>
+                </Button>
+              </>
+            )}
+
           </nav>
         </div>
       )}
