@@ -39,6 +39,7 @@ import { Route as AuthenticatedSuperadminIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedSuperadminMosqueAdminsRouteImport } from './routes/_authenticated/superadmin/mosque-admins'
 import { Route as AuthenticatedSuperadminMosquesRouteImport } from './routes/_authenticated/superadmin/mosques'
 import { Route as AuthenticatedSuperadminProfilesRouteImport } from './routes/_authenticated/superadmin/profiles'
+import { Route as AuthenticatedSuperadminRequestsRouteImport } from './routes/_authenticated/superadmin/requests'
 import { Route as AuthenticatedSuperadminUsersRouteImport } from './routes/_authenticated/superadmin/users'
 
 const IndexRoute = IndexRouteImport.update({
@@ -203,6 +204,12 @@ const AuthenticatedSuperadminProfilesRoute =
     path: '/profiles',
     getParentRoute: () => AuthenticatedSuperadminRouteRoute,
   } as any)
+const AuthenticatedSuperadminRequestsRoute =
+  AuthenticatedSuperadminRequestsRouteImport.update({
+    id: '/requests',
+    path: '/requests',
+    getParentRoute: () => AuthenticatedSuperadminRouteRoute,
+  } as any)
 const AuthenticatedSuperadminUsersRoute =
   AuthenticatedSuperadminUsersRouteImport.update({
     id: '/users',
@@ -238,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/superadmin/mosque-admins': typeof AuthenticatedSuperadminMosqueAdminsRoute
   '/superadmin/mosques': typeof AuthenticatedSuperadminMosquesRoute
   '/superadmin/profiles': typeof AuthenticatedSuperadminProfilesRoute
+  '/superadmin/requests': typeof AuthenticatedSuperadminRequestsRoute
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/superadmin/': typeof AuthenticatedSuperadminIndexRoute
@@ -268,6 +276,7 @@ export interface FileRoutesByTo {
   '/superadmin/mosque-admins': typeof AuthenticatedSuperadminMosqueAdminsRoute
   '/superadmin/mosques': typeof AuthenticatedSuperadminMosquesRoute
   '/superadmin/profiles': typeof AuthenticatedSuperadminProfilesRoute
+  '/superadmin/requests': typeof AuthenticatedSuperadminRequestsRoute
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/superadmin': typeof AuthenticatedSuperadminIndexRoute
@@ -302,6 +311,7 @@ export interface FileRoutesById {
   '/_authenticated/superadmin/mosque-admins': typeof AuthenticatedSuperadminMosqueAdminsRoute
   '/_authenticated/superadmin/mosques': typeof AuthenticatedSuperadminMosquesRoute
   '/_authenticated/superadmin/profiles': typeof AuthenticatedSuperadminProfilesRoute
+  '/_authenticated/superadmin/requests': typeof AuthenticatedSuperadminRequestsRoute
   '/_authenticated/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/superadmin/': typeof AuthenticatedSuperadminIndexRoute
@@ -336,6 +346,7 @@ export interface FileRouteTypes {
     | '/superadmin/mosque-admins'
     | '/superadmin/mosques'
     | '/superadmin/profiles'
+    | '/superadmin/requests'
     | '/superadmin/users'
     | '/admin/'
     | '/superadmin/'
@@ -366,6 +377,7 @@ export interface FileRouteTypes {
     | '/superadmin/mosque-admins'
     | '/superadmin/mosques'
     | '/superadmin/profiles'
+    | '/superadmin/requests'
     | '/superadmin/users'
     | '/admin'
     | '/superadmin'
@@ -399,6 +411,7 @@ export interface FileRouteTypes {
     | '/_authenticated/superadmin/mosque-admins'
     | '/_authenticated/superadmin/mosques'
     | '/_authenticated/superadmin/profiles'
+    | '/_authenticated/superadmin/requests'
     | '/_authenticated/superadmin/users'
     | '/_authenticated/admin/'
     | '/_authenticated/superadmin/'
@@ -627,6 +640,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperadminProfilesRouteImport
       parentRoute: typeof AuthenticatedSuperadminRouteRoute
     }
+    '/_authenticated/superadmin/requests': {
+      id: '/_authenticated/superadmin/requests'
+      path: '/requests'
+      fullPath: '/superadmin/requests'
+      preLoaderRoute: typeof AuthenticatedSuperadminRequestsRouteImport
+      parentRoute: typeof AuthenticatedSuperadminRouteRoute
+    }
     '/_authenticated/superadmin/users': {
       id: '/_authenticated/superadmin/users'
       path: '/users'
@@ -669,6 +689,7 @@ interface AuthenticatedSuperadminRouteRouteChildren {
   AuthenticatedSuperadminMosqueAdminsRoute: typeof AuthenticatedSuperadminMosqueAdminsRoute
   AuthenticatedSuperadminMosquesRoute: typeof AuthenticatedSuperadminMosquesRoute
   AuthenticatedSuperadminProfilesRoute: typeof AuthenticatedSuperadminProfilesRoute
+  AuthenticatedSuperadminRequestsRoute: typeof AuthenticatedSuperadminRequestsRoute
   AuthenticatedSuperadminUsersRoute: typeof AuthenticatedSuperadminUsersRoute
   AuthenticatedSuperadminIndexRoute: typeof AuthenticatedSuperadminIndexRoute
 }
@@ -679,6 +700,7 @@ const AuthenticatedSuperadminRouteRouteChildren: AuthenticatedSuperadminRouteRou
       AuthenticatedSuperadminMosqueAdminsRoute,
     AuthenticatedSuperadminMosquesRoute: AuthenticatedSuperadminMosquesRoute,
     AuthenticatedSuperadminProfilesRoute: AuthenticatedSuperadminProfilesRoute,
+    AuthenticatedSuperadminRequestsRoute: AuthenticatedSuperadminRequestsRoute,
     AuthenticatedSuperadminUsersRoute: AuthenticatedSuperadminUsersRoute,
     AuthenticatedSuperadminIndexRoute: AuthenticatedSuperadminIndexRoute,
   }
