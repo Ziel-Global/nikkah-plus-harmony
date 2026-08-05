@@ -7,6 +7,9 @@ import { signOutAndRedirect } from "@/hooks/useSession";
 
 export const Route = createFileRoute("/_authenticated/pending")({
   beforeLoad: async () => {
+    const { data: isSuper } = await supabase.rpc("is_super_admin");
+    if (isSuper) throw redirect({ to: "/superadmin" });
+
     const { data: adminOf } = await supabase
       .from("mosque_admin_mosques")
       .select("mosque_id")
@@ -14,6 +17,7 @@ export const Route = createFileRoute("/_authenticated/pending")({
       .maybeSingle();
     if (adminOf) throw redirect({ to: "/admin" });
   },
+
   head: () => ({
     meta: [
       { title: "Awaiting mosque verification — Nikkah+" },
