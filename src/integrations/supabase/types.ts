@@ -924,8 +924,29 @@ export type Database = {
       }
       has_active_match: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
+      list_my_interest_requests: {
+        Args: never
+        Returns: {
+          counterpart_age: number
+          counterpart_city: string
+          counterpart_country: string
+          counterpart_mosque_name: string
+          counterpart_name: string
+          counterpart_profile_id: string
+          created_at: string
+          direction: string
+          id: string
+          message: string
+          responded_at: string
+          status: Database["public"]["Enums"]["request_status_enum"]
+        }[]
+      }
       my_mosque_ids: { Args: never; Returns: string[] }
       privacy_visible: { Args: { k: string; ps: Json }; Returns: boolean }
+      respond_to_interest_request: {
+        Args: { p_accept: boolean; p_request_id: string }
+        Returns: Database["public"]["Enums"]["request_status_enum"]
+      }
       send_interest_request: {
         Args: { p_message?: string; p_profile_id: string }
         Returns: string
