@@ -204,7 +204,11 @@ function RequestsPage() {
             <TabsTrigger value="sent" className="flex-1">
               Sent ({sent.length})
             </TabsTrigger>
+            <TabsTrigger value="history" className="flex-1">
+              History ({history.length})
+            </TabsTrigger>
           </TabsList>
+
 
           <TabsContent value="received" className="mt-5 space-y-4">
             {received.length === 0 ? (
