@@ -138,7 +138,7 @@ function SuperDashboard() {
           ))}
           <StatCard
             label="Successful matches"
-            value={data.byStatus.closed_mutual ?? 0}
+            value={data.byStatus['closed_mutual'] ?? 0}
             hint="Closed with mutual agreement"
           />
         </div>

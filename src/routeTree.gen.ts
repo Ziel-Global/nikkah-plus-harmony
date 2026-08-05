@@ -35,6 +35,7 @@ import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminMosqueRouteImport } from './routes/_authenticated/admin/mosque'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedMemberProfileIdRouteImport } from './routes/_authenticated/member.$profileId'
+import { Route as AuthenticatedSuperadminIndexRouteImport } from './routes/_authenticated/superadmin/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -174,6 +175,12 @@ const AuthenticatedMemberProfileIdRoute =
     path: '/member/$profileId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSuperadminIndexRoute =
+  AuthenticatedSuperadminIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedSuperadminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -184,7 +191,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
-  '/superadmin': typeof AuthenticatedSuperadminRouteRoute
+  '/superadmin': typeof AuthenticatedSuperadminRouteRouteWithChildren
   '/browse': typeof AuthenticatedBrowseRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/match': typeof AuthenticatedMatchRoute
@@ -201,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/superadmin/': typeof AuthenticatedSuperadminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -210,7 +218,6 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
-  '/superadmin': typeof AuthenticatedSuperadminRouteRoute
   '/browse': typeof AuthenticatedBrowseRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/match': typeof AuthenticatedMatchRoute
@@ -227,6 +234,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/superadmin': typeof AuthenticatedSuperadminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -239,7 +247,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
-  '/_authenticated/superadmin': typeof AuthenticatedSuperadminRouteRoute
+  '/_authenticated/superadmin': typeof AuthenticatedSuperadminRouteRouteWithChildren
   '/_authenticated/browse': typeof AuthenticatedBrowseRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/match': typeof AuthenticatedMatchRoute
@@ -256,6 +264,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/superadmin/': typeof AuthenticatedSuperadminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/member/$profileId'
     | '/admin/'
+    | '/superadmin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -294,7 +304,6 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
-    | '/superadmin'
     | '/browse'
     | '/dashboard'
     | '/match'
@@ -311,6 +320,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/member/$profileId'
     | '/admin'
+    | '/superadmin'
   id:
     | '__root__'
     | '/'
@@ -339,6 +349,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/settings'
     | '/_authenticated/member/$profileId'
     | '/_authenticated/admin/'
+    | '/_authenticated/superadmin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -536,6 +547,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMemberProfileIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/superadmin/': {
+      id: '/_authenticated/superadmin/'
+      path: '/'
+      fullPath: '/superadmin/'
+      preLoaderRoute: typeof AuthenticatedSuperadminIndexRouteImport
+      parentRoute: typeof AuthenticatedSuperadminRouteRoute
+    }
   }
 }
 
@@ -567,9 +585,23 @@ const AuthenticatedAdminRouteRouteWithChildren =
     AuthenticatedAdminRouteRouteChildren,
   )
 
+interface AuthenticatedSuperadminRouteRouteChildren {
+  AuthenticatedSuperadminIndexRoute: typeof AuthenticatedSuperadminIndexRoute
+}
+
+const AuthenticatedSuperadminRouteRouteChildren: AuthenticatedSuperadminRouteRouteChildren =
+  {
+    AuthenticatedSuperadminIndexRoute: AuthenticatedSuperadminIndexRoute,
+  }
+
+const AuthenticatedSuperadminRouteRouteWithChildren =
+  AuthenticatedSuperadminRouteRoute._addFileChildren(
+    AuthenticatedSuperadminRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
-  AuthenticatedSuperadminRouteRoute: typeof AuthenticatedSuperadminRouteRoute
+  AuthenticatedSuperadminRouteRoute: typeof AuthenticatedSuperadminRouteRouteWithChildren
   AuthenticatedBrowseRoute: typeof AuthenticatedBrowseRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedMatchRoute: typeof AuthenticatedMatchRoute
@@ -582,7 +614,8 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
-  AuthenticatedSuperadminRouteRoute: AuthenticatedSuperadminRouteRoute,
+  AuthenticatedSuperadminRouteRoute:
+    AuthenticatedSuperadminRouteRouteWithChildren,
   AuthenticatedBrowseRoute: AuthenticatedBrowseRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedMatchRoute: AuthenticatedMatchRoute,
