@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { signPublicPhotos } from "@/lib/browse.functions";
 import { ageBand, DEFAULT_FILTERS, type BrowseProfile } from "@/lib/browse";
+import { friendlyRequestError } from "@/lib/requests";
 import { ActiveMatchBanner } from "@/components/browse/ActiveMatchBanner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -139,7 +140,7 @@ function MemberDetailPage() {
     setSending(false);
 
     if (error) {
-      toast.error(error.message);
+      toast.error(friendlyRequestError(error.message));
       return;
     }
     setDialogOpen(false);

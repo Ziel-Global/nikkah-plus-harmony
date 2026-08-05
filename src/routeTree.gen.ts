@@ -19,9 +19,11 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedBrowseRouteImport } from './routes/_authenticated/browse'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedMatchRouteImport } from './routes/_authenticated/match'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedPendingRouteImport } from './routes/_authenticated/pending'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedMemberProfileIdRouteImport } from './routes/_authenticated/member.$profileId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -73,6 +75,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMatchRoute = AuthenticatedMatchRouteImport.update({
+  id: '/match',
+  path: '/match',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -86,6 +93,11 @@ const AuthenticatedPendingRoute = AuthenticatedPendingRouteImport.update({
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMemberProfileIdRoute =
@@ -105,9 +117,11 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/browse': typeof AuthenticatedBrowseRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/match': typeof AuthenticatedMatchRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/pending': typeof AuthenticatedPendingRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
 }
 export interface FileRoutesByTo {
@@ -120,9 +134,11 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/browse': typeof AuthenticatedBrowseRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/match': typeof AuthenticatedMatchRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/pending': typeof AuthenticatedPendingRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
 }
 export interface FileRoutesById {
@@ -137,9 +153,11 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/browse': typeof AuthenticatedBrowseRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/match': typeof AuthenticatedMatchRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/pending': typeof AuthenticatedPendingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
 }
 export interface FileRouteTypes {
@@ -154,9 +172,11 @@ export interface FileRouteTypes {
     | '/terms'
     | '/browse'
     | '/dashboard'
+    | '/match'
     | '/onboarding'
     | '/pending'
     | '/profile'
+    | '/requests'
     | '/member/$profileId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -169,9 +189,11 @@ export interface FileRouteTypes {
     | '/terms'
     | '/browse'
     | '/dashboard'
+    | '/match'
     | '/onboarding'
     | '/pending'
     | '/profile'
+    | '/requests'
     | '/member/$profileId'
   id:
     | '__root__'
@@ -185,9 +207,11 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/browse'
     | '/_authenticated/dashboard'
+    | '/_authenticated/match'
     | '/_authenticated/onboarding'
     | '/_authenticated/pending'
     | '/_authenticated/profile'
+    | '/_authenticated/requests'
     | '/_authenticated/member/$profileId'
   fileRoutesById: FileRoutesById
 }
@@ -274,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/match': {
+      id: '/_authenticated/match'
+      path: '/match'
+      fullPath: '/match'
+      preLoaderRoute: typeof AuthenticatedMatchRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
       path: '/onboarding'
@@ -295,6 +326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/requests': {
+      id: '/_authenticated/requests'
+      path: '/requests'
+      fullPath: '/requests'
+      preLoaderRoute: typeof AuthenticatedRequestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/member/$profileId': {
       id: '/_authenticated/member/$profileId'
       path: '/member/$profileId'
@@ -308,18 +346,22 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedBrowseRoute: typeof AuthenticatedBrowseRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedMatchRoute: typeof AuthenticatedMatchRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPendingRoute: typeof AuthenticatedPendingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedMemberProfileIdRoute: typeof AuthenticatedMemberProfileIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBrowseRoute: AuthenticatedBrowseRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedMatchRoute: AuthenticatedMatchRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPendingRoute: AuthenticatedPendingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedMemberProfileIdRoute: AuthenticatedMemberProfileIdRoute,
 }
 
