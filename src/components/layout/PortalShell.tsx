@@ -107,10 +107,10 @@ export function PortalShell({
   homeTo: string;
   roleLabel?: string | undefined;
   title: string;
-  description?: ReactNode;
-  actions?: ReactNode;
-  footerNote?: ReactNode;
-  wide?: boolean;
+  description?: ReactNode | undefined;
+  actions?: ReactNode | undefined;
+  footerNote?: ReactNode | undefined;
+  wide?: boolean | undefined;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
