@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, LifeBuoy, ShieldCheck, Users } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { MemberShell } from "@/components/layout/MemberShell";
 import { useSession } from "@/hooks/useSession";
 import { formatDate, type InterestRequestRow } from "@/lib/requests";
 import { Badge } from "@/components/ui/badge";
@@ -190,7 +191,7 @@ function MatchPage() {
   const escalations = escalationsQuery.data ?? [];
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 lg:py-12">
+    <MemberShell title="Active match">
       <Link
         to="/requests"
         className="inline-flex items-center gap-2 text-sm font-semibold text-primary underline-offset-4 hover:underline"
@@ -350,6 +351,6 @@ function MatchPage() {
         </Panel>
 
       </div>
-    </main>
+    </MemberShell>
   );
 }

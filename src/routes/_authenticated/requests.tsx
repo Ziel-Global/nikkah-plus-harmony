@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MemberShell } from "@/components/layout/MemberShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AlertDialog,
@@ -175,20 +176,10 @@ function RequestsPage() {
 
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 lg:py-12">
-      <Link
-        to="/dashboard"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-primary underline-offset-4 hover:underline"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Back to dashboard
-      </Link>
-
-      <h1 className="mt-5 text-display text-foreground">Interest requests</h1>
-      <p className="mt-2 text-body text-muted-foreground">
-        Every introduction here is known to your mosque. Take your time — there is no obligation to
-        answer immediately, and declining is always an honourable choice.
-      </p>
+    <MemberShell
+      title="Interest requests"
+      description="Every introduction here is known to your mosque. Take your time — there is no obligation to answer immediately, and declining is always an honourable choice."
+    >
 
       {requestsQuery.isPending ? (
         <div className="mt-8 space-y-4">
@@ -332,6 +323,6 @@ function RequestsPage() {
 
         </Tabs>
       )}
-    </main>
+    </MemberShell>
   );
 }

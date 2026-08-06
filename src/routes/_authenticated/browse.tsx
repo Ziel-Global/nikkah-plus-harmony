@@ -18,6 +18,7 @@ import { ActiveMatchBanner } from "@/components/browse/ActiveMatchBanner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { MemberShell } from "@/components/layout/MemberShell";
 
 function num(value: unknown, fallback: number) {
   const parsed = Number(value);
@@ -161,15 +162,11 @@ function BrowsePage() {
   const count = activeFilterCount(filters);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:py-12">
-      <header className="mb-6">
-        <h1 className="text-display text-foreground">Members</h1>
-        <p className="mt-2 max-w-2xl text-body text-muted-foreground">
-          Each person here has been verified by their mosque. You will only see the details they
-          have chosen to share openly — everything else stays with their mosque until an
-          introduction is agreed.
-        </p>
-      </header>
+    <MemberShell
+      wide
+      title="Members"
+      description="Each person here has been verified by their mosque. You will only see the details they have chosen to share openly — everything else stays with their mosque until an introduction is agreed."
+    >
 
       {matchQuery.data ? (
         <div className="mb-6">
@@ -253,6 +250,6 @@ function BrowsePage() {
           )}
         </section>
       </div>
-    </main>
+    </MemberShell>
   );
 }

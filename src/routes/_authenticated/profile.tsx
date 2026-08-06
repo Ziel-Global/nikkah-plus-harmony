@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/auth/AuthShell";
+import { MemberShell } from "@/components/layout/MemberShell";
 import { Button } from "@/components/ui/button";
 import { ProfileSection } from "@/components/profile/ProfileSection";
 import { PrivacyPanel } from "@/components/profile/PrivacyPanel";
@@ -441,16 +442,10 @@ function ProfilePage() {
           : "border-border bg-muted";
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10 sm:px-6">
-        <header className="mb-6">
-          <h1 className="text-display text-foreground">Your marriage profile</h1>
-          <p className="text-body mt-3 text-muted-foreground">
-            This is how your mosque, and one day a prospective spouse and their family, will come
-            to know you. Write it as you would speak about yourself to an elder — honestly, warmly,
-            and without exaggeration. Each section saves on its own, so there is no rush.
-          </p>
-        </header>
+    <MemberShell
+      title="Your marriage profile"
+      description="This is how your mosque, and one day a prospective spouse and their family, will come to know you. Write it as you would speak about yourself to an elder — honestly, warmly, and without exaggeration. Each section saves on its own, so there is no rush."
+    >
 
         <div className={cn("rounded-lg border p-4", toneClass)}>
           <p className="text-caption">Profile status</p>
@@ -891,7 +886,6 @@ function ProfilePage() {
             </div>
           </section>
         </div>
-      </main>
-    </div>
+    </MemberShell>
   );
 }

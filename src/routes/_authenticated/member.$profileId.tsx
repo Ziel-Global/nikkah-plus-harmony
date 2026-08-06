@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { MemberShell } from "@/components/layout/MemberShell";
 import { signPublicPhotos } from "@/lib/browse.functions";
 import { ageBand, DEFAULT_FILTERS, type BrowseProfile } from "@/lib/browse";
 import { friendlyRequestError } from "@/lib/requests";
@@ -174,7 +175,7 @@ function MemberDetailPage() {
   const hasMatch = Boolean(matchQuery.data);
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:py-12">
+    <MemberShell wide title="Member profile">
       <Link
         to="/browse"
         search={DEFAULT_FILTERS}
@@ -324,6 +325,6 @@ function MemberDetailPage() {
         Some details are shared only with this member’s mosque. Contact details are never shown on
         Nikkah+ profiles — they are exchanged through your mosques once an introduction is agreed.
       </p>
-    </main>
+    </MemberShell>
   );
 }
