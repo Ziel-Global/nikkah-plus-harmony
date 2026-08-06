@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Gauge, Heart, Inbox, Search, UserRound } from "lucide-react";
+import { Gauge, Handshake, Inbox, Search, UserRound } from "lucide-react";
 import { PortalShell, type PortalNavItem } from "@/components/layout/PortalShell";
 import { DEFAULT_FILTERS } from "@/lib/browse";
 
@@ -8,7 +8,7 @@ const NAV: PortalNavItem[] = [
   { to: "/profile", label: "My profile", icon: UserRound },
   { to: "/browse", label: "Browse members", icon: Search, search: DEFAULT_FILTERS },
   { to: "/requests", label: "Interest requests", icon: Inbox },
-  { to: "/match", label: "Active match", icon: Heart },
+  { to: "/match", label: "Active match", icon: Handshake },
 ];
 
 export function MemberShell({
