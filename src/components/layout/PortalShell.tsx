@@ -19,7 +19,7 @@ function NavList({
   onNavigate,
 }: {
   items: PortalNavItem[];
-  onNavigate?: () => void;
+  onNavigate?: (() => void) | undefined;
 }) {
   return (
     <nav aria-label="Portal" className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
@@ -48,10 +48,10 @@ function SidebarBody({
   onNavigate,
 }: {
   items: PortalNavItem[];
-  badge?: string;
+  badge?: string | undefined;
   homeTo: string;
-  roleLabel?: string;
-  onNavigate?: () => void;
+  roleLabel?: string | undefined;
+  onNavigate?: (() => void) | undefined;
 }) {
   const { user } = useSession();
 
@@ -103,9 +103,9 @@ export function PortalShell({
   children,
 }: {
   items: PortalNavItem[];
-  badge?: string;
+  badge?: string | undefined;
   homeTo: string;
-  roleLabel?: string;
+  roleLabel?: string | undefined;
   title: string;
   description?: ReactNode;
   actions?: ReactNode;
