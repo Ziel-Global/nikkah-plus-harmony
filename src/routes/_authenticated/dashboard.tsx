@@ -1,9 +1,8 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthShell } from "@/components/auth/AuthShell";
+import { MemberShell } from "@/components/layout/MemberShell";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_FILTERS } from "@/lib/browse";
-import { signOutAndRedirect } from "@/hooks/useSession";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   beforeLoad: async () => {
@@ -45,21 +44,12 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function DashboardPage() {
   return (
-    <AuthShell
-      wide
+    <MemberShell
       title="As-salamu alaykum"
-      intro="Your mosque has verified your affiliation. Your dashboard is being prepared — profile creation and introductions will appear here."
-      footer={
-        <button
-          type="button"
-          onClick={() => void signOutAndRedirect()}
-          className="font-semibold text-primary underline-offset-4 hover:underline"
-        >
-          Sign out
-        </button>
-      }
+      description="Your mosque has verified your affiliation. Manage your profile, introductions and active match from here."
     >
       <div className="space-y-5">
+
         <div className="rounded-lg border border-border bg-muted p-4">
           <h2 className="text-h3 text-foreground">Your marriage profile</h2>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -95,6 +85,6 @@ function DashboardPage() {
           </div>
         </div>
       </div>
-    </AuthShell>
+    </MemberShell>
   );
 }
