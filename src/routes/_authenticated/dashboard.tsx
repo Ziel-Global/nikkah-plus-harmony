@@ -1,9 +1,8 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthShell } from "@/components/auth/AuthShell";
+import { MemberShell } from "@/components/layout/MemberShell";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_FILTERS } from "@/lib/browse";
-import { signOutAndRedirect } from "@/hooks/useSession";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   beforeLoad: async () => {
@@ -86,6 +85,6 @@ function DashboardPage() {
           </div>
         </div>
       </div>
-    </AuthShell>
+    </MemberShell>
   );
 }
