@@ -3,7 +3,6 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthShell } from "@/components/auth/AuthShell";
 import { MemberShell } from "@/components/layout/MemberShell";
 import { Button } from "@/components/ui/button";
 import { ProfileSection } from "@/components/profile/ProfileSection";
@@ -424,11 +423,11 @@ function ProfilePage() {
 
   if (loading) {
     return (
-      <AuthShell wide title="Your marriage profile">
+      <MemberShell title="Your marriage profile">
         <p className="inline-flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" /> Gathering your details…
         </p>
-      </AuthShell>
+      </MemberShell>
     );
   }
 
