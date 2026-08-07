@@ -23,6 +23,8 @@ import {
 } from "@/lib/branding";
 import { PLATFORM_SETTINGS_KEY, useBranding } from "@/components/branding/BrandingProvider";
 
+import { validateHexColor } from "@/lib/validation";
+
 export const Route = createFileRoute("/_authenticated/superadmin/settings/branding")({
   head: () =>
     SUPER_META("Branding & theme", "Logo, colour palette and dark mode for the whole platform."),
@@ -220,11 +222,18 @@ function BrandingSettingsPage() {
                       value={colors[field.key]}
                       onChange={(event) => update(field.key, event.target.value)}
                       aria-label={`${field.label} hex value`}
+                      aria-invalid={validateHexColor(colors[field.key]) ? true : undefined}
                       className="font-mono uppercase"
                       maxLength={9}
                     />
                   </div>
-                  <p className="text-xs text-muted-foreground">{field.hint}</p>
+                  {validateHexColor(colors[field.key]) ? (
+                    <p className="text-sm font-medium text-destructive">
+                      {validateHexColor(colors[field.key])}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">{field.hint}</p>
+                  )}
                 </div>
               ))}
             </div>
