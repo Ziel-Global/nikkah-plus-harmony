@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { friendlyError } from "@/lib/validation";
 import { SuperAdminShell } from "@/components/superadmin/SuperAdminShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -117,7 +118,7 @@ function ProfilesPage() {
       setReason("");
       void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(friendlyError(error)),
   });
 
   const saveEdit = useMutation({
@@ -134,7 +135,7 @@ function ProfilesPage() {
       setEditing(null);
       void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(friendlyError(error)),
   });
 
   function openEdit(row: ProfileRow) {
@@ -227,13 +228,28 @@ function ProfilesPage() {
               Explain kindly what needs changing. The member will see this note.
             </DialogDescription>
           </DialogHeader>
-          <Textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={4} />
+          <Textarea
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            rows={4}
+            maxLength={1000}
+            aria-invalid={reason.trim().length > 0 && reason.trim().length < 5 ? true : undefined}
+            placeholder="Explain what needs changing so the member knows what to do next."
+          />
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm font-medium text-destructive">
+              {reason.trim().length > 0 && reason.trim().length < 5
+                ? "Please give a little more detail."
+                : ""}
+            </p>
+            <p className="shrink-0 text-xs text-muted-foreground">{reason.length} / 1000</p>
+          </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setRejecting(null)}>
               Cancel
             </Button>
             <Button
-              disabled={!reason.trim() || review.isPending}
+              disabled={reason.trim().length < 5 || review.isPending}
               onClick={() =>
                 rejecting && review.mutate({ row: rejecting, approve: false, rejectionReason: reason })
               }

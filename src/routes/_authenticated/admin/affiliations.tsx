@@ -3,6 +3,7 @@ import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { friendlyError } from "@/lib/validation";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ADMIN_META, formatDateTime, type AdminMosque } from "@/lib/admin";
 import { Badge } from "@/components/ui/badge";
@@ -87,7 +88,8 @@ function AffiliationsPage() {
       setReason("");
       void queryClient.invalidateQueries({ queryKey: ["admin"] });
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) =>
+      toast.error(friendlyError(error, "We couldn't update that request just now.")),
   });
 
   const rows = data ?? [];
@@ -183,8 +185,18 @@ function AffiliationsPage() {
             value={reason}
             onChange={(event) => setReason(event.target.value)}
             rows={4}
+            maxLength={1000}
+            aria-invalid={reason.trim().length > 0 && reason.trim().length < 5 ? true : undefined}
             placeholder="For example: we could not find a record of this member attending the mosque. Please speak to the office."
           />
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm font-medium text-destructive">
+              {reason.trim().length > 0 && reason.trim().length < 5
+                ? "Please give a little more detail."
+                : ""}
+            </p>
+            <p className="shrink-0 text-xs text-muted-foreground">{reason.length} / 1000</p>
+          </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setRejecting(null)}>
               Cancel

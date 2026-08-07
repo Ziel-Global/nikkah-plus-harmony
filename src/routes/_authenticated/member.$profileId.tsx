@@ -245,6 +245,9 @@ function MemberDetailPage() {
                     placeholder="Optional — a few sincere words for their consideration."
                     onChange={(e) => setMessage(e.target.value)}
                   />
+                  <p className="text-right text-xs text-muted-foreground">
+                    {message.length} / 500
+                  </p>
                   <DialogFooter>
                     <Button
                       variant="outline"
