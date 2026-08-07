@@ -117,18 +117,30 @@ function ConductPage() {
               id="reason"
               rows={5}
               value={reason}
+              maxLength={REASON_LIMIT}
+              aria-invalid={reasonError ? true : undefined}
+              onBlur={() => setTouched(true)}
               onChange={(event) => setReason(event.target.value)}
               placeholder="Describe the concern factually, including dates where you can."
             />
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-sm font-medium text-destructive">
+                {touched && reasonError ? reasonError : ""}
+              </p>
+              <p className="shrink-0 text-xs text-muted-foreground">
+                {reason.length} / {REASON_LIMIT}
+              </p>
+            </div>
           </div>
 
           <Button
             type="submit"
             className="min-h-11"
-            disabled={!profileId || reason.trim().length < 10 || submit.isPending}
+            disabled={!profileId || Boolean(reasonError) || submit.isPending}
           >
-            File report
+            {submit.isPending ? "Filing…" : "File report"}
           </Button>
+
         </form>
 
         <div>

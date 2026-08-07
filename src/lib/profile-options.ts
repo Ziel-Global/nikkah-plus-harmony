@@ -74,7 +74,7 @@ export const PRIVACY_FIELDS = [
 export type PrivacyValue = "public" | "mosque_admin_only";
 export type PrivacySettings = Record<string, PrivacyValue>;
 
-export const BIO_LIMIT = 800;
+export const BIO_LIMIT = 1000;
 
 export const STATUS_COPY: Record<
   string,
