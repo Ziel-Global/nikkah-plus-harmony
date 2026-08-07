@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { friendlyError } from "@/lib/validation";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ADMIN_META, formatDateTime } from "@/lib/admin";
 import { Badge } from "@/components/ui/badge";
@@ -85,9 +86,10 @@ function ConductPage() {
       toast.success("Report filed. The platform team will review it.");
       setProfileId("");
       setReason("");
+      setTouched(false);
       void queryClient.invalidateQueries({ queryKey: ["admin", "conduct"] });
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(friendlyError(error, "We couldn't file that report.")),
   });
 
   const nameFor = (id: string) =>
@@ -103,6 +105,8 @@ function ConductPage() {
           className="surface-card space-y-4 rounded-xl border border-border p-5"
           onSubmit={(event) => {
             event.preventDefault();
+            setTouched(true);
+            if (!profileId || reasonError) return;
             submit.mutate();
           }}
         >
