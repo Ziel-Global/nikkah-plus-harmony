@@ -223,6 +223,11 @@ function MosqueAdminsPage() {
             <Button variant="ghost" onClick={() => setOpen(false)}>
               Cancel
             </Button>
+            {alreadyAssigned ? (
+              <p className="mr-auto text-sm font-medium text-destructive">
+                This admin is already linked to that mosque.
+              </p>
+            ) : null}
             <Button
               disabled={!adminId || !mosqueId || alreadyAssigned || assign.isPending}
               onClick={() => assign.mutate()}

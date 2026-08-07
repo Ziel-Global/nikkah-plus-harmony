@@ -253,7 +253,14 @@ function BrandingSettingsPage() {
           </section>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={() => save.mutate()} disabled={save.isPending || !dirty}>
+            <Button
+              onClick={() => save.mutate()}
+              disabled={
+                save.isPending ||
+                !dirty ||
+                COLOR_FIELDS.some((f) => validateHexColor(colors[f.key]))
+              }
+            >
               {save.isPending ? "Saving…" : "Save branding"}
             </Button>
             {dirty ? (
