@@ -38,39 +38,39 @@ export const Route = createFileRoute("/register")({
   component: RegisterPage,
 });
 
+const DUPLICATE_MESSAGE =
+  "An account with this email may already exist. Try logging in, or use 'Forgot password' if you don't remember your credentials.";
+
 function RegisterPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
+  const errors = {
+    email: validateEmail(email),
+    phone: validatePhone(phone),
+    password: validatePassword(password),
+    confirm: confirm !== password ? "The two passwords don't match." : null,
+  };
+  const formValid = Object.values(errors).every((v) => v === null);
+  const show = (key: keyof typeof errors) => (touched[key] ? errors[key] : null);
+  const blur = (key: string) => () => setTouched((t) => ({ ...t, [key]: true }));
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setTouched({ email: true, phone: true, password: true, confirm: true });
+
+    if (!formValid) return;
 
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
-
-    if (!/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    if (!/^\+?[0-9\s()-]{7,20}$/.test(trimmedPhone)) {
-      setError("Please enter a valid phone number, including your country code.");
-      return;
-    }
-    if (password.length < 8) {
-      setError("Please choose a password of at least 8 characters.");
-      return;
-    }
-    if (password !== confirm) {
-      setError("The two passwords don't match.");
-      return;
-    }
 
     setBusy(true);
     const { data, error: signUpError } = await supabase.auth.signUp({
@@ -84,7 +84,19 @@ function RegisterPage() {
     setBusy(false);
 
     if (signUpError) {
-      setError(signUpError.message);
+      const m = signUpError.message.toLowerCase();
+      setError(
+        m.includes("already") || m.includes("registered") || m.includes("duplicate")
+          ? DUPLICATE_MESSAGE
+          : friendlyError(signUpError, "We couldn't create your account just now. Please try again."),
+      );
+      return;
+    }
+
+    // Supabase never errors on a duplicate signup (anti-enumeration): it returns
+    // a success-shaped response with an empty `identities` array instead.
+    if (data.user && (data.user.identities?.length ?? 0) === 0) {
+      setError(DUPLICATE_MESSAGE);
       return;
     }
 
@@ -95,6 +107,7 @@ function RegisterPage() {
 
     setEmailSent(true);
   }
+
 
   if (emailSent) {
     return (
