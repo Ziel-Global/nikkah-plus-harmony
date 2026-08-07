@@ -155,9 +155,17 @@ function RegisterPage() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={blur("email")}
+            aria-invalid={show("email") ? true : undefined}
+            className={cn(show("email") && "border-destructive")}
             required
             maxLength={255}
           />
+          {show("email") ? (
+            <p role="alert" className="text-sm font-medium text-destructive">
+              {show("email")}
+            </p>
+          ) : null}
         </div>
 
         <div className="space-y-2">
@@ -169,13 +177,22 @@ function RegisterPage() {
             placeholder="+44 7700 900000"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+            onBlur={blur("phone")}
+            aria-invalid={show("phone") ? true : undefined}
+            className={cn(show("phone") && "border-destructive")}
             required
             maxLength={20}
           />
-          <p className="text-caption">
-            Required for your record. It is never shown to other members and is only used for
-            verification or by your mosque if needed.
-          </p>
+          {show("phone") ? (
+            <p role="alert" className="text-sm font-medium text-destructive">
+              {show("phone")}
+            </p>
+          ) : (
+            <p className="text-caption">
+              Required for your record. It is never shown to other members and is only used for
+              verification or by your mosque if needed.
+            </p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -186,8 +203,32 @@ function RegisterPage() {
             autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={blur("password")}
+            aria-invalid={show("password") ? true : undefined}
+            className={cn(show("password") && "border-destructive")}
             required
           />
+          <ul className="space-y-1 pt-1">
+            {PASSWORD_RULES.map((rule) => {
+              const met = rule.test(password);
+              return (
+                <li
+                  key={rule.label}
+                  className={cn(
+                    "flex items-center gap-2 text-xs",
+                    met ? "text-success" : "text-muted-foreground",
+                  )}
+                >
+                  {met ? (
+                    <Check className="size-3.5 shrink-0" aria-hidden />
+                  ) : (
+                    <XIcon className="size-3.5 shrink-0" aria-hidden />
+                  )}
+                  {rule.label}
+                </li>
+              );
+            })}
+          </ul>
         </div>
 
         <div className="space-y-2">
@@ -198,8 +239,16 @@ function RegisterPage() {
             autoComplete="new-password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
+            onBlur={blur("confirm")}
+            aria-invalid={show("confirm") ? true : undefined}
+            className={cn(show("confirm") && "border-destructive")}
             required
           />
+          {show("confirm") ? (
+            <p role="alert" className="text-sm font-medium text-destructive">
+              {show("confirm")}
+            </p>
+          ) : null}
         </div>
 
         {error ? (
@@ -211,6 +260,8 @@ function RegisterPage() {
         <Button type="submit" className="min-h-11 w-full" disabled={busy}>
           {busy ? "Creating your account…" : "Create account"}
         </Button>
+      </form>
+
       </form>
     </AuthShell>
   );
