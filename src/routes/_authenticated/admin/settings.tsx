@@ -7,6 +7,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { ADMIN_META, OVERSIGHT_NOTE } from "@/lib/admin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -115,10 +116,9 @@ function SettingsPage() {
             <h2 className="text-h3 text-foreground">Change password</h2>
             <div className="space-y-2">
               <Label htmlFor="password">New password</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
-                className="min-h-11"
+                                className="min-h-11"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 autoComplete="new-password"
@@ -126,10 +126,9 @@ function SettingsPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm">Confirm new password</Label>
-              <Input
+              <PasswordInput
                 id="confirm"
-                type="password"
-                className="min-h-11"
+                                className="min-h-11"
                 value={confirm}
                 onChange={(event) => setConfirm(event.target.value)}
                 autoComplete="new-password"

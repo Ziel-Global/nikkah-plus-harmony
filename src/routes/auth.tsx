@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -143,10 +144,9 @@ function AuthPage() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="signin-password">Password</Label>
-          <Input
+          <PasswordInput
             id="signin-password"
-            type="password"
-            autoComplete="current-password"
+                        autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
