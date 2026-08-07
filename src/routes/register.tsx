@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Check, X as XIcon } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/auth/AuthShell";
@@ -6,6 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  PASSWORD_RULES,
+  friendlyError,
+  validateEmail,
+  validatePassword,
+  validatePhone,
+} from "@/lib/validation";
+import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/register")({
   head: () => ({
