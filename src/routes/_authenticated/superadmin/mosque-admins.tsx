@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { friendlyError } from "@/lib/validation";
 import { SuperAdminShell } from "@/components/superadmin/SuperAdminShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -90,8 +91,16 @@ function MosqueAdminsPage() {
     );
   }, [assignments.data, search]);
 
+  const alreadyAssigned =
+    Boolean(adminId) &&
+    Boolean(mosqueId) &&
+    (assignments.data ?? []).some((a) => a.admin_id === adminId && a.mosque_id === mosqueId);
+
   const assign = useMutation({
     mutationFn: async () => {
+      if (alreadyAssigned) {
+        throw new Error("This admin is already linked to that mosque.");
+      }
       const { data: auth } = await supabase.auth.getUser();
       const { error } = await supabase
         .from("mosque_admin_mosques")
@@ -106,7 +115,7 @@ function MosqueAdminsPage() {
       setMosqueId("");
       void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(friendlyError(error)),
   });
 
   const unassign = useMutation({
@@ -120,7 +129,7 @@ function MosqueAdminsPage() {
       setRemoving(null);
       void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(friendlyError(error)),
   });
 
   return (
@@ -214,7 +223,10 @@ function MosqueAdminsPage() {
             <Button variant="ghost" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button disabled={!adminId || !mosqueId || assign.isPending} onClick={() => assign.mutate()}>
+            <Button
+              disabled={!adminId || !mosqueId || alreadyAssigned || assign.isPending}
+              onClick={() => assign.mutate()}
+            >
               Assign
             </Button>
           </DialogFooter>
