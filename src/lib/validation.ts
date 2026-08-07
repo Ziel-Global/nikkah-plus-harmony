@@ -120,7 +120,7 @@ export function friendlyError(error: unknown, fallback = "Something didn't work.
   if (!m) return fallback;
 
   if (m.includes("profiles_email") || (m.includes("duplicate") && m.includes("email"))) {
-    return "An account with this email may already exist. Try logging in, or use 'Forgot password' if you don't remember your credentials.";
+    return "An account with this email may already exist. Try adding a unique email.";
   }
   if (m.includes("mosque_affiliation") && (m.includes("duplicate") || m.includes("unique"))) {
     return "You already have a pending request with this mosque. Please wait for them to review it.";
