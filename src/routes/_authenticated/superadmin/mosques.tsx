@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { friendlyError, validateOptionalEmail, validatePhone } from "@/lib/validation";
 import { SuperAdminShell } from "@/components/superadmin/SuperAdminShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -74,6 +75,25 @@ function MosquesPage() {
     );
   }, [data, search]);
 
+  const nameError = form
+    ? form.name.trim().length < 2
+      ? "Please enter the mosque's name."
+      : null
+    : null;
+  const emailError = form ? validateOptionalEmail(form.contact_email) : null;
+  const phoneError =
+    form && form.contact_phone.trim() !== "" ? validatePhone(form.contact_phone) : null;
+  const duplicateWarning =
+    form && !editing && form.name.trim().length > 1
+      ? (data ?? []).some(
+          (m: Mosque) =>
+            m.name.trim().toLowerCase() === form.name.trim().toLowerCase() &&
+            (m.city ?? "").trim().toLowerCase() === form.city.trim().toLowerCase(),
+        )
+        ? "A mosque with this name already exists in this city. Please double-check before adding it again."
+        : null
+      : null;
+
   const save = useMutation({
     mutationFn: async () => {
       if (!form) return;
@@ -107,7 +127,7 @@ function MosquesPage() {
       setEditing(null);
       void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(friendlyError(error)),
   });
 
   const setStatus = useMutation({
@@ -123,7 +143,7 @@ function MosquesPage() {
       toast.success("Mosque status updated.");
       void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(friendlyError(error)),
   });
 
   return (
@@ -230,17 +250,34 @@ function MosquesPage() {
                   ["contact_email", "Contact email"],
                   ["contact_phone", "Contact phone"],
                 ] as const
-              ).map(([key, label]) => (
-                <div key={key}>
-                  <Label htmlFor={`mosque-${key}`}>{label}</Label>
-                  <Input
-                    id={`mosque-${key}`}
-                    value={form[key]}
-                    onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                    className="mt-1"
-                  />
-                </div>
-              ))}
+              ).map(([key, label]) => {
+                const err =
+                  key === "name"
+                    ? nameError
+                    : key === "contact_email"
+                      ? emailError
+                      : key === "contact_phone"
+                        ? phoneError
+                        : null;
+                return (
+                  <div key={key}>
+                    <Label htmlFor={`mosque-${key}`}>{label}</Label>
+                    <Input
+                      id={`mosque-${key}`}
+                      value={form[key]}
+                      aria-invalid={err ? true : undefined}
+                      onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                      className="mt-1"
+                    />
+                    {err ? <p className="mt-1 text-sm font-medium text-destructive">{err}</p> : null}
+                  </div>
+                );
+              })}
+              {duplicateWarning ? (
+                <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
+                  {duplicateWarning}
+                </p>
+              ) : null}
               <div>
                 <Label htmlFor="mosque-description">Description</Label>
                 <Textarea
@@ -258,7 +295,7 @@ function MosquesPage() {
               Cancel
             </Button>
             <Button
-              disabled={!form?.name.trim() || save.isPending}
+              disabled={Boolean(nameError || emailError || phoneError) || save.isPending}
               onClick={() => save.mutate()}
             >
               {editing ? "Save changes" : "Add mosque"}

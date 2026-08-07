@@ -26,7 +26,16 @@ import {
   STATUS_COPY,
   type PrivacySettings,
 } from "@/lib/profile-options";
+import {
+  friendlyError,
+  validateDateOfBirth,
+  validateHeight,
+  validateOneOf,
+  validateOptionalEmail,
+  validatePhone,
+} from "@/lib/validation";
 import { cn } from "@/lib/utils";
+
 import type { Database } from "@/integrations/supabase/types";
 
 type ProfileStatus = Database["public"]["Enums"]["profile_status_enum"];
@@ -285,13 +294,63 @@ function ProfilePage() {
     return data.id;
   }
 
+  const fieldErrors = useMemo(() => {
+    return {
+      display_name:
+        form.display_name.length > 0 && form.display_name.trim() === ""
+          ? "Please enter a name — spaces alone aren't enough."
+          : null,
+      date_of_birth: validateDateOfBirth(form.date_of_birth),
+      marital_status: validateOneOf(form.marital_status, MARITAL_STATUS, "a marital status"),
+      height_cm: validateHeight(form.height_cm),
+      education_level: validateOneOf(form.education_level, EDUCATION_LEVELS, "a level of education"),
+      employment_status: validateOneOf(form.employment_status, EMPLOYMENT_STATUS, "your situation"),
+      religious_practice_level: validateOneOf(
+        form.religious_practice_level,
+        PRACTICE_LEVELS,
+        "how you practise",
+      ),
+      sect_or_school_of_thought: validateOneOf(
+        form.sect_or_school_of_thought,
+        SCHOOLS_OF_THOUGHT,
+        "a school of thought",
+      ),
+      expected_marriage_timeline: validateOneOf(
+        form.expected_marriage_timeline,
+        MARRIAGE_TIMELINE,
+        "a timeline",
+      ),
+    } as Partial<Record<keyof Form, string | null>>;
+  }, [form]);
+
+  const waliTouched =
+    [wali.relationship, wali.contact_phone, wali.contact_email, wali.approval_preferences].some(
+      (v) => v.trim() !== "",
+    ) || wali.name.trim() !== "";
+
+  const waliErrors = {
+    name: waliTouched && wali.name.trim() === "" ? "Please give your wali's name." : null,
+    contact_email: validateOptionalEmail(wali.contact_email),
+    contact_phone: wali.contact_phone.trim() === "" ? null : validatePhone(wali.contact_phone),
+  };
+
+  const sectionHasError = (key: SectionKey) =>
+    (SECTION_FIELDS[key] ?? []).some((f) => fieldErrors[f]);
+
+  const waliHasError = Object.values(waliErrors).some(Boolean);
+
   async function saveSection(key: SectionKey) {
     const fields = SECTION_FIELDS[key];
     if (!fields) return;
+    if (sectionHasError(key)) {
+      toast.error("Please correct the highlighted details before saving this section.");
+      return;
+    }
 
     setSavingKey(key);
     const patch: Record<string, unknown> = {};
     for (const f of fields) patch[f] = toDbValue(f, form);
+
 
     const id = await ensureProfile(patch);
     if (!id) {
@@ -342,6 +401,10 @@ function ProfilePage() {
   }
 
   async function saveWali() {
+    if (waliHasError) {
+      toast.error("Please correct your wali's details before saving.");
+      return;
+    }
     setSavingKey("wali");
     const id = await ensureProfile({});
     if (!id) {
@@ -368,7 +431,7 @@ function ProfilePage() {
       : await supabase.from("wali_details").insert(payload);
 
     setSavingKey(null);
-    if (error) toast.error("We couldn't save your wali's details.");
+    if (error) toast.error(friendlyError(error, "We couldn't save your wali's details."));
     else {
       toast.success("Wali details saved.");
       setSavedKey("wali");
@@ -386,10 +449,12 @@ function ProfilePage() {
       ["religious_practice_level", "how you practise"],
       ["personal_bio", "a short introduction"],
     ];
-    return required
+    const blanks = required
       .filter(([k]) => String(form[k] ?? "").trim() === "")
       .map(([, label]) => label);
-  }, [form]);
+    const invalid = Object.values(fieldErrors).filter(Boolean) as string[];
+    return [...blanks, ...invalid];
+  }, [form, fieldErrors]);
 
   async function submitForReview() {
     if (!profileId) {
@@ -411,10 +476,11 @@ function ProfilePage() {
       toast.error(
         error.message.includes("affiliation")
           ? "Your mosque affiliation needs to be approved before you can submit."
-          : "We couldn't submit your profile just now.",
+          : friendlyError(error, "We couldn't submit your profile just now."),
       );
       return;
     }
+
     setStatus("submitted");
     setUnlocked(false);
     setRejectionReason(null);
@@ -509,14 +575,17 @@ function ProfilePage() {
               value={form.display_name}
               readOnly={locked}
               max={80}
+              error={fieldErrors.display_name}
               onChange={(v) => setForm({ ...form, display_name: v })}
             />
             <TextField
               id="date_of_birth"
               label="Date of birth"
+              hint="You must be at least 18 years old to use Nikkah+."
               type="date"
               value={form.date_of_birth}
               readOnly={locked}
+              error={fieldErrors.date_of_birth}
               onChange={(v) => setForm({ ...form, date_of_birth: v })}
             />
             <SelectField
@@ -525,8 +594,10 @@ function ProfilePage() {
               value={form.marital_status}
               options={MARITAL_STATUS}
               readOnly={locked}
+              error={fieldErrors.marital_status}
               onChange={(v) => setForm({ ...form, marital_status: v })}
             />
+
             <TextField
               id="nationality"
               label="Nationality"
@@ -593,9 +664,11 @@ function ProfilePage() {
             <TextField
               id="height_cm"
               label="Height (cm)"
+              hint="Between 100cm and 250cm."
               type="number"
               value={form.height_cm}
               readOnly={locked}
+              error={fieldErrors.height_cm}
               onChange={(v) => setForm({ ...form, height_cm: v })}
             />
             <TextAreaField
@@ -624,6 +697,7 @@ function ProfilePage() {
               value={form.education_level}
               options={EDUCATION_LEVELS}
               readOnly={locked}
+              error={fieldErrors.education_level}
               onChange={(v) => setForm({ ...form, education_level: v })}
             />
             <TextField
@@ -640,6 +714,7 @@ function ProfilePage() {
               value={form.employment_status}
               options={EMPLOYMENT_STATUS}
               readOnly={locked}
+              error={fieldErrors.employment_status}
               onChange={(v) => setForm({ ...form, employment_status: v })}
             />
           </ProfileSection>
@@ -659,6 +734,7 @@ function ProfilePage() {
               value={form.religious_practice_level}
               options={PRACTICE_LEVELS}
               readOnly={locked}
+              error={fieldErrors.religious_practice_level}
               onChange={(v) => setForm({ ...form, religious_practice_level: v })}
             />
             <SelectField
@@ -667,6 +743,7 @@ function ProfilePage() {
               value={form.sect_or_school_of_thought}
               options={SCHOOLS_OF_THOUGHT}
               readOnly={locked}
+              error={fieldErrors.sect_or_school_of_thought}
               onChange={(v) => setForm({ ...form, sect_or_school_of_thought: v })}
             />
             <TagField
@@ -748,6 +825,7 @@ function ProfilePage() {
               value={form.expected_marriage_timeline}
               options={MARRIAGE_TIMELINE}
               readOnly={locked}
+              error={fieldErrors.expected_marriage_timeline}
               onChange={(v) => setForm({ ...form, expected_marriage_timeline: v })}
             />
           </ProfileSection>
@@ -788,6 +866,7 @@ function ProfilePage() {
               value={wali.name}
               readOnly={locked}
               max={120}
+              error={waliErrors.name}
               onChange={(v) => setWali({ ...wali, name: v })}
             />
             <TextField
@@ -806,6 +885,7 @@ function ProfilePage() {
               value={wali.contact_phone}
               readOnly={locked}
               max={32}
+              error={waliErrors.contact_phone}
               onChange={(v) => setWali({ ...wali, contact_phone: v })}
             />
             <TextField
@@ -815,6 +895,7 @@ function ProfilePage() {
               value={wali.contact_email}
               readOnly={locked}
               max={255}
+              error={waliErrors.contact_email}
               onChange={(v) => setWali({ ...wali, contact_email: v })}
             />
             <TextAreaField

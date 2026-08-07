@@ -10,11 +10,13 @@ export function Field({
   label,
   hint,
   htmlFor,
+  error,
   children,
 }: {
   label: string;
   hint?: string | undefined;
   htmlFor?: string | undefined;
+  error?: string | null | undefined;
   children: ReactNode;
 }) {
   return (
@@ -23,7 +25,13 @@ export function Field({
         {label}
       </Label>
       {children}
-      {hint ? <p className="text-caption">{hint}</p> : null}
+      {error ? (
+        <p role="alert" className="text-sm font-medium text-destructive">
+          {error}
+        </p>
+      ) : hint ? (
+        <p className="text-caption">{hint}</p>
+      ) : null}
     </div>
   );
 }
@@ -46,6 +54,8 @@ export function TextField({
   hint,
   value,
   onChange,
+  onBlur,
+  error,
   readOnly,
   type = "text",
   placeholder,
@@ -56,13 +66,15 @@ export function TextField({
   hint?: string;
   value: string;
   onChange: (v: string) => void;
+  onBlur?: (() => void) | undefined;
+  error?: string | null | undefined;
   readOnly?: boolean;
   type?: string;
   placeholder?: string;
   max?: number;
 }) {
   return (
-    <Field label={label} hint={hint} htmlFor={id}>
+    <Field label={label} hint={hint} htmlFor={id} error={error}>
       {readOnly ? (
         <ReadOnlyValue value={value} />
       ) : (
@@ -72,8 +84,10 @@ export function TextField({
           value={value}
           placeholder={placeholder}
           maxLength={max}
+          aria-invalid={error ? true : undefined}
+          onBlur={onBlur}
           onChange={(e) => onChange(e.target.value)}
-          className="min-h-11"
+          className={cn("min-h-11", error && "border-destructive")}
         />
       )}
     </Field>
@@ -87,6 +101,7 @@ export function SelectField({
   value,
   options,
   onChange,
+  error,
   readOnly,
   placeholder = "Please choose",
 }: {
@@ -96,19 +111,24 @@ export function SelectField({
   value: string;
   options: readonly string[];
   onChange: (v: string) => void;
+  error?: string | null | undefined;
   readOnly?: boolean;
   placeholder?: string;
 }) {
   return (
-    <Field label={label} hint={hint} htmlFor={id}>
+    <Field label={label} hint={hint} htmlFor={id} error={error}>
       {readOnly ? (
         <ReadOnlyValue value={value} />
       ) : (
         <select
           id={id}
           value={value}
+          aria-invalid={error ? true : undefined}
           onChange={(e) => onChange(e.target.value)}
-          className="min-h-11 w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          className={cn(
+            "min-h-11 w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+            error && "border-destructive",
+          )}
         >
           <option value="">{placeholder}</option>
           {options.map((o) => (
@@ -128,6 +148,7 @@ export function TextAreaField({
   hint,
   value,
   onChange,
+  error,
   readOnly,
   rows = 4,
   limit,
@@ -138,13 +159,15 @@ export function TextAreaField({
   hint?: string;
   value: string;
   onChange: (v: string) => void;
+  error?: string | null | undefined;
   readOnly?: boolean;
   rows?: number;
   limit?: number;
   placeholder?: string;
 }) {
+  const overLimit = limit ? value.length > limit : false;
   return (
-    <Field label={label} hint={hint} htmlFor={id}>
+    <Field label={label} hint={hint} htmlFor={id} error={error}>
       {readOnly ? (
         <ReadOnlyValue value={value} />
       ) : (
@@ -155,10 +178,17 @@ export function TextAreaField({
             value={value}
             placeholder={placeholder}
             maxLength={limit}
+            aria-invalid={error || overLimit ? true : undefined}
             onChange={(e) => onChange(e.target.value)}
+            className={cn((error || overLimit) && "border-destructive")}
           />
           {limit ? (
-            <p className="text-caption text-right">
+            <p
+              className={cn(
+                "text-caption text-right",
+                value.length >= limit && "font-semibold text-destructive",
+              )}
+            >
               {value.length} / {limit}
             </p>
           ) : null}
@@ -167,6 +197,7 @@ export function TextAreaField({
     </Field>
   );
 }
+
 
 export function ToggleField({
   id,

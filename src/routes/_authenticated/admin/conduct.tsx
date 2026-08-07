@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { friendlyError } from "@/lib/validation";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ADMIN_META, formatDateTime } from "@/lib/admin";
 import { Badge } from "@/components/ui/badge";
@@ -34,10 +35,23 @@ type ReportRow = {
   resolved_at: string | null;
 };
 
+const REASON_LIMIT = 1000;
+
 function ConductPage() {
   const queryClient = useQueryClient();
   const [profileId, setProfileId] = useState("");
   const [reason, setReason] = useState("");
+  const [touched, setTouched] = useState(false);
+
+  const reasonError =
+    reason.trim() === ""
+      ? "Please describe what happened."
+      : reason.trim().length < 10
+        ? "Please give a little more detail (at least 10 characters)."
+        : reason.length > REASON_LIMIT
+          ? `Please keep this to ${REASON_LIMIT} characters or fewer.`
+          : null;
+
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "conduct"],
@@ -72,9 +86,10 @@ function ConductPage() {
       toast.success("Report filed. The platform team will review it.");
       setProfileId("");
       setReason("");
+      setTouched(false);
       void queryClient.invalidateQueries({ queryKey: ["admin", "conduct"] });
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(friendlyError(error, "We couldn't file that report.")),
   });
 
   const nameFor = (id: string) =>
@@ -90,6 +105,8 @@ function ConductPage() {
           className="surface-card space-y-4 rounded-xl border border-border p-5"
           onSubmit={(event) => {
             event.preventDefault();
+            setTouched(true);
+            if (!profileId || reasonError) return;
             submit.mutate();
           }}
         >
@@ -117,18 +134,30 @@ function ConductPage() {
               id="reason"
               rows={5}
               value={reason}
+              maxLength={REASON_LIMIT}
+              aria-invalid={reasonError ? true : undefined}
+              onBlur={() => setTouched(true)}
               onChange={(event) => setReason(event.target.value)}
               placeholder="Describe the concern factually, including dates where you can."
             />
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-sm font-medium text-destructive">
+                {touched && reasonError ? reasonError : ""}
+              </p>
+              <p className="shrink-0 text-xs text-muted-foreground">
+                {reason.length} / {REASON_LIMIT}
+              </p>
+            </div>
           </div>
 
           <Button
             type="submit"
             className="min-h-11"
-            disabled={!profileId || reason.trim().length < 10 || submit.isPending}
+            disabled={!profileId || Boolean(reasonError) || submit.isPending}
           >
-            File report
+            {submit.isPending ? "Filing…" : "File report"}
           </Button>
+
         </form>
 
         <div>

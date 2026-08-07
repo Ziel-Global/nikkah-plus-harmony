@@ -10,7 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { signOutAndRedirect } from "@/hooks/useSession";
+import { friendlyError } from "@/lib/validation";
 import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
@@ -429,6 +431,7 @@ function GenderStep({ userId, onDone }: { userId: string; onDone: () => Promise<
   const [error, setError] = useState<string | null>(null);
 
   async function choose(gender: "male" | "female") {
+    if (gender !== "male" && gender !== "female") return;
     setBusy(true);
     setError(null);
     const { error: updateError } = await supabase
@@ -437,11 +440,12 @@ function GenderStep({ userId, onDone }: { userId: string; onDone: () => Promise<
       .eq("id", userId);
     setBusy(false);
     if (updateError) {
-      setError(updateError.message);
+      setError(friendlyError(updateError, "We couldn't save that just now. Please try again."));
       return;
     }
     await onDone();
   }
+
 
   return (
     <div className="space-y-5">
@@ -512,9 +516,28 @@ function MosqueStep({ userId, onDone }: { userId: string; onDone: () => Promise<
   }, [query]);
 
   async function confirm() {
-    if (!selected) return;
+    if (!selected || !mosques.some((m) => m.id === selected.id)) {
+      setError("Please choose a mosque from the list.");
+      return;
+    }
     setBusy(true);
     setError(null);
+
+    // Surface an existing pending request before hitting the unique index.
+    const { data: existing } = await supabase
+      .from("mosque_affiliation_requests")
+      .select("id, status")
+      .eq("user_id", userId)
+      .eq("mosque_id", selected.id)
+      .eq("status", "pending")
+      .maybeSingle();
+
+    if (existing) {
+      setBusy(false);
+      setError("You already have a pending request with this mosque. Please wait for them to review it.");
+      return;
+    }
+
     const { error: insertError } = await supabase.from("mosque_affiliation_requests").insert({
       user_id: userId,
       mosque_id: selected.id,
@@ -522,13 +545,16 @@ function MosqueStep({ userId, onDone }: { userId: string; onDone: () => Promise<
     });
     if (insertError) {
       setBusy(false);
-      setError(insertError.message);
+      setError(
+        friendlyError(insertError, "We couldn't send your request just now. Please try again."),
+      );
       return;
     }
     await supabase.from("profiles").update({ mosque_id: selected.id }).eq("id", userId);
     setBusy(false);
     await onDone();
   }
+
 
   return (
     <div className="space-y-5">
@@ -613,7 +639,7 @@ function TermsStep({ userId, onDone }: { userId: string; onDone: () => Promise<v
       .eq("id", userId);
     setBusy(false);
     if (updateError) {
-      setError(updateError.message);
+      setError(friendlyError(updateError, "We couldn't save your acceptance. Please try again."));
       return;
     }
     await onDone();
