@@ -26,7 +26,16 @@ import {
   STATUS_COPY,
   type PrivacySettings,
 } from "@/lib/profile-options";
+import {
+  friendlyError,
+  validateDateOfBirth,
+  validateHeight,
+  validateOneOf,
+  validateOptionalEmail,
+  validatePhone,
+} from "@/lib/validation";
 import { cn } from "@/lib/utils";
+
 import type { Database } from "@/integrations/supabase/types";
 
 type ProfileStatus = Database["public"]["Enums"]["profile_status_enum"];
