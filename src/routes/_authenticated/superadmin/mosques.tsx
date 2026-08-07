@@ -85,8 +85,8 @@ function MosquesPage() {
     form && form.contact_phone.trim() !== "" ? validatePhone(form.contact_phone) : null;
   const duplicateWarning =
     form && !editing && form.name.trim().length > 1
-      ? (mosques.data ?? []).some(
-          (m) =>
+      ? (data ?? []).some(
+          (m: Mosque) =>
             m.name.trim().toLowerCase() === form.name.trim().toLowerCase() &&
             (m.city ?? "").trim().toLowerCase() === form.city.trim().toLowerCase(),
         )
