@@ -401,6 +401,10 @@ function ProfilePage() {
   }
 
   async function saveWali() {
+    if (waliHasError) {
+      toast.error("Please correct your wali's details before saving.");
+      return;
+    }
     setSavingKey("wali");
     const id = await ensureProfile({});
     if (!id) {
@@ -427,7 +431,7 @@ function ProfilePage() {
       : await supabase.from("wali_details").insert(payload);
 
     setSavingKey(null);
-    if (error) toast.error("We couldn't save your wali's details.");
+    if (error) toast.error(friendlyError(error, "We couldn't save your wali's details."));
     else {
       toast.success("Wali details saved.");
       setSavedKey("wali");
@@ -445,10 +449,12 @@ function ProfilePage() {
       ["religious_practice_level", "how you practise"],
       ["personal_bio", "a short introduction"],
     ];
-    return required
+    const blanks = required
       .filter(([k]) => String(form[k] ?? "").trim() === "")
       .map(([, label]) => label);
-  }, [form]);
+    const invalid = Object.values(fieldErrors).filter(Boolean) as string[];
+    return [...blanks, ...invalid];
+  }, [form, fieldErrors]);
 
   async function submitForReview() {
     if (!profileId) {
@@ -470,10 +476,11 @@ function ProfilePage() {
       toast.error(
         error.message.includes("affiliation")
           ? "Your mosque affiliation needs to be approved before you can submit."
-          : "We couldn't submit your profile just now.",
+          : friendlyError(error, "We couldn't submit your profile just now."),
       );
       return;
     }
+
     setStatus("submitted");
     setUnlocked(false);
     setRejectionReason(null);
