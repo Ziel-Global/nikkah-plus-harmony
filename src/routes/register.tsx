@@ -83,25 +83,43 @@ function RegisterPage() {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/onboarding`,
-        data: { phone: trimmedPhone },
+        data: { gender: null, role: null, phone: trimmedPhone },
       },
     });
     setBusy(false);
 
     if (signUpError) {
-      const m = signUpError.message.toLowerCase();
-      setError(
-        m.includes("already") || m.includes("registered") || m.includes("duplicate")
-          ? DUPLICATE_MESSAGE
-          : friendlyError(signUpError, "We couldn't create your account just now. Please try again."),
-      );
+      const m = `${signUpError.message} ${(signUpError as { code?: string }).code ?? ""}`.toLowerCase();
+      const phoneDuplicate =
+        m.includes("profiles_phone_unique") || (m.includes("phone") && m.includes("unique"));
+      const emailDuplicate =
+        !phoneDuplicate &&
+        (m.includes("email") || m.includes("user already registered")) &&
+        (m.includes("already") || m.includes("registered") || m.includes("unique"));
+      const unclearDuplicate =
+        m.includes("duplicate") ||
+        m.includes("23505") ||
+        m.includes("already") ||
+        m.includes("database error");
+
+      if (phoneDuplicate) {
+        setError(DUPLICATE_PHONE_MESSAGE);
+      } else if (emailDuplicate) {
+        setError(DUPLICATE_EMAIL_MESSAGE);
+      } else if (unclearDuplicate) {
+        setError(DUPLICATE_UNCLEAR_MESSAGE);
+      } else {
+        setError(
+          friendlyError(signUpError, "We couldn't create your account just now. Please try again."),
+        );
+      }
       return;
     }
 
     // Supabase never errors on a duplicate signup (anti-enumeration): it returns
     // a success-shaped response with an empty `identities` array instead.
     if (data.user && (data.user.identities?.length ?? 0) === 0) {
-      setError(DUPLICATE_MESSAGE);
+      setError(DUPLICATE_EMAIL_MESSAGE);
       return;
     }
 
