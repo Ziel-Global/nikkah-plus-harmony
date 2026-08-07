@@ -39,8 +39,12 @@ export const Route = createFileRoute("/register")({
   component: RegisterPage,
 });
 
-const DUPLICATE_MESSAGE =
+const DUPLICATE_EMAIL_MESSAGE =
   "An account with this email may already exist. Try adding a unique email.";
+const DUPLICATE_PHONE_MESSAGE =
+  "This phone number is already registered. Try adding a unique phone number.";
+const DUPLICATE_UNCLEAR_MESSAGE =
+  "This email or phone number is already registered. Please use a unique email and phone number.";
 
 function RegisterPage() {
   const navigate = useNavigate();
