@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -84,10 +85,9 @@ function ResetPasswordPage() {
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="new-password">New password</Label>
-          <Input
+          <PasswordInput
             id="new-password"
-            type="password"
-            autoComplete="new-password"
+                        autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={!ready}
@@ -96,10 +96,9 @@ function ResetPasswordPage() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="new-confirm">Confirm new password</Label>
-          <Input
+          <PasswordInput
             id="new-confirm"
-            type="password"
-            autoComplete="new-password"
+                        autoComplete="new-password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             disabled={!ready}

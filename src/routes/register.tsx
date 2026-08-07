@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -197,10 +198,9 @@ function RegisterPage() {
 
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
-            autoComplete="new-password"
+                        autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onBlur={blur("password")}
@@ -233,10 +233,9 @@ function RegisterPage() {
 
         <div className="space-y-2">
           <Label htmlFor="confirm">Confirm password</Label>
-          <Input
+          <PasswordInput
             id="confirm"
-            type="password"
-            autoComplete="new-password"
+                        autoComplete="new-password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             onBlur={blur("confirm")}
