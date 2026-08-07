@@ -664,9 +664,11 @@ function ProfilePage() {
             <TextField
               id="height_cm"
               label="Height (cm)"
+              hint="Between 100cm and 250cm."
               type="number"
               value={form.height_cm}
               readOnly={locked}
+              error={fieldErrors.height_cm}
               onChange={(v) => setForm({ ...form, height_cm: v })}
             />
             <TextAreaField
@@ -695,6 +697,7 @@ function ProfilePage() {
               value={form.education_level}
               options={EDUCATION_LEVELS}
               readOnly={locked}
+              error={fieldErrors.education_level}
               onChange={(v) => setForm({ ...form, education_level: v })}
             />
             <TextField
@@ -711,6 +714,7 @@ function ProfilePage() {
               value={form.employment_status}
               options={EMPLOYMENT_STATUS}
               readOnly={locked}
+              error={fieldErrors.employment_status}
               onChange={(v) => setForm({ ...form, employment_status: v })}
             />
           </ProfileSection>
@@ -730,6 +734,7 @@ function ProfilePage() {
               value={form.religious_practice_level}
               options={PRACTICE_LEVELS}
               readOnly={locked}
+              error={fieldErrors.religious_practice_level}
               onChange={(v) => setForm({ ...form, religious_practice_level: v })}
             />
             <SelectField
@@ -738,6 +743,7 @@ function ProfilePage() {
               value={form.sect_or_school_of_thought}
               options={SCHOOLS_OF_THOUGHT}
               readOnly={locked}
+              error={fieldErrors.sect_or_school_of_thought}
               onChange={(v) => setForm({ ...form, sect_or_school_of_thought: v })}
             />
             <TagField
@@ -819,6 +825,7 @@ function ProfilePage() {
               value={form.expected_marriage_timeline}
               options={MARRIAGE_TIMELINE}
               readOnly={locked}
+              error={fieldErrors.expected_marriage_timeline}
               onChange={(v) => setForm({ ...form, expected_marriage_timeline: v })}
             />
           </ProfileSection>
@@ -859,6 +866,7 @@ function ProfilePage() {
               value={wali.name}
               readOnly={locked}
               max={120}
+              error={waliErrors.name}
               onChange={(v) => setWali({ ...wali, name: v })}
             />
             <TextField
@@ -877,6 +885,7 @@ function ProfilePage() {
               value={wali.contact_phone}
               readOnly={locked}
               max={32}
+              error={waliErrors.contact_phone}
               onChange={(v) => setWali({ ...wali, contact_phone: v })}
             />
             <TextField
@@ -886,6 +895,7 @@ function ProfilePage() {
               value={wali.contact_email}
               readOnly={locked}
               max={255}
+              error={waliErrors.contact_email}
               onChange={(v) => setWali({ ...wali, contact_email: v })}
             />
             <TextAreaField
