@@ -39,7 +39,7 @@ export const Route = createFileRoute("/register")({
 });
 
 const DUPLICATE_MESSAGE =
-  "An account with this email may already exist. Try logging in, or use 'Forgot password' if you don't remember your credentials.";
+  "An account with this email may already exist. Try adding a unique email.";
 
 function RegisterPage() {
   const navigate = useNavigate();
