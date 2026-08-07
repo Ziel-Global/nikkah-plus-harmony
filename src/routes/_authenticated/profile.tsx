@@ -294,13 +294,63 @@ function ProfilePage() {
     return data.id;
   }
 
+  const fieldErrors = useMemo(() => {
+    return {
+      display_name:
+        form.display_name.length > 0 && form.display_name.trim() === ""
+          ? "Please enter a name — spaces alone aren't enough."
+          : null,
+      date_of_birth: validateDateOfBirth(form.date_of_birth),
+      marital_status: validateOneOf(form.marital_status, MARITAL_STATUS, "a marital status"),
+      height_cm: validateHeight(form.height_cm),
+      education_level: validateOneOf(form.education_level, EDUCATION_LEVELS, "a level of education"),
+      employment_status: validateOneOf(form.employment_status, EMPLOYMENT_STATUS, "your situation"),
+      religious_practice_level: validateOneOf(
+        form.religious_practice_level,
+        PRACTICE_LEVELS,
+        "how you practise",
+      ),
+      sect_or_school_of_thought: validateOneOf(
+        form.sect_or_school_of_thought,
+        SCHOOLS_OF_THOUGHT,
+        "a school of thought",
+      ),
+      expected_marriage_timeline: validateOneOf(
+        form.expected_marriage_timeline,
+        MARRIAGE_TIMELINE,
+        "a timeline",
+      ),
+    } as Partial<Record<keyof Form, string | null>>;
+  }, [form]);
+
+  const waliTouched =
+    [wali.relationship, wali.contact_phone, wali.contact_email, wali.approval_preferences].some(
+      (v) => v.trim() !== "",
+    ) || wali.name.trim() !== "";
+
+  const waliErrors = {
+    name: waliTouched && wali.name.trim() === "" ? "Please give your wali's name." : null,
+    contact_email: validateOptionalEmail(wali.contact_email),
+    contact_phone: wali.contact_phone.trim() === "" ? null : validatePhone(wali.contact_phone),
+  };
+
+  const sectionHasError = (key: SectionKey) =>
+    (SECTION_FIELDS[key] ?? []).some((f) => fieldErrors[f]);
+
+  const waliHasError = Object.values(waliErrors).some(Boolean);
+
   async function saveSection(key: SectionKey) {
     const fields = SECTION_FIELDS[key];
     if (!fields) return;
+    if (sectionHasError(key)) {
+      toast.error("Please correct the highlighted details before saving this section.");
+      return;
+    }
 
     setSavingKey(key);
     const patch: Record<string, unknown> = {};
     for (const f of fields) patch[f] = toDbValue(f, form);
+
 
     const id = await ensureProfile(patch);
     if (!id) {
