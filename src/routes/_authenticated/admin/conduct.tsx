@@ -34,10 +34,23 @@ type ReportRow = {
   resolved_at: string | null;
 };
 
+const REASON_LIMIT = 1000;
+
 function ConductPage() {
   const queryClient = useQueryClient();
   const [profileId, setProfileId] = useState("");
   const [reason, setReason] = useState("");
+  const [touched, setTouched] = useState(false);
+
+  const reasonError =
+    reason.trim() === ""
+      ? "Please describe what happened."
+      : reason.trim().length < 10
+        ? "Please give a little more detail (at least 10 characters)."
+        : reason.length > REASON_LIMIT
+          ? `Please keep this to ${REASON_LIMIT} characters or fewer.`
+          : null;
+
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "conduct"],
