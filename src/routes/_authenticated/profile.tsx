@@ -575,14 +575,17 @@ function ProfilePage() {
               value={form.display_name}
               readOnly={locked}
               max={80}
+              error={fieldErrors.display_name}
               onChange={(v) => setForm({ ...form, display_name: v })}
             />
             <TextField
               id="date_of_birth"
               label="Date of birth"
+              hint="You must be at least 18 years old to use Nikkah+."
               type="date"
               value={form.date_of_birth}
               readOnly={locked}
+              error={fieldErrors.date_of_birth}
               onChange={(v) => setForm({ ...form, date_of_birth: v })}
             />
             <SelectField
@@ -591,8 +594,10 @@ function ProfilePage() {
               value={form.marital_status}
               options={MARITAL_STATUS}
               readOnly={locked}
+              error={fieldErrors.marital_status}
               onChange={(v) => setForm({ ...form, marital_status: v })}
             />
+
             <TextField
               id="nationality"
               label="Nationality"
