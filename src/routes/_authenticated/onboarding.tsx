@@ -639,7 +639,7 @@ function TermsStep({ userId, onDone }: { userId: string; onDone: () => Promise<v
       .eq("id", userId);
     setBusy(false);
     if (updateError) {
-      setError(updateError.message);
+      setError(friendlyError(updateError, "We couldn't save your acceptance. Please try again."));
       return;
     }
     await onDone();
