@@ -10,7 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { signOutAndRedirect } from "@/hooks/useSession";
+import { friendlyError } from "@/lib/validation";
 import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
