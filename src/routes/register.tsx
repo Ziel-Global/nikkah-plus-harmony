@@ -262,7 +262,6 @@ function RegisterPage() {
         </Button>
       </form>
 
-      </form>
     </AuthShell>
   );
 }
