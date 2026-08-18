@@ -1,31 +1,9 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { MemberShell } from "@/components/layout/MemberShell";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_FILTERS } from "@/lib/browse";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  beforeLoad: async () => {
-    const { data: isSuper } = await supabase.rpc("is_super_admin");
-    if (isSuper) throw redirect({ to: "/superadmin" });
-
-    const { data: adminOf } = await supabase
-      .from("mosque_admin_mosques")
-      .select("mosque_id")
-      .limit(1)
-      .maybeSingle();
-    if (adminOf) throw redirect({ to: "/admin" });
-
-
-    const { data } = await supabase
-      .from("mosque_affiliation_requests")
-      .select("status")
-      .eq("status", "approved")
-      .limit(1)
-      .maybeSingle();
-
-    if (!data) throw redirect({ to: "/pending" });
-  },
   head: () => ({
     meta: [
       { title: "Your dashboard — Nikkah+" },
