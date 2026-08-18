@@ -48,6 +48,7 @@ const DUPLICATE_UNCLEAR_MESSAGE =
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const ready = useRedirectIfSignedIn();
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -131,6 +132,14 @@ function RegisterPage() {
     setEmailSent(true);
   }
 
+
+  if (!ready) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      </div>
+    );
+  }
 
   if (emailSent) {
     return (
