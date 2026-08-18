@@ -12,9 +12,10 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-border bg-muted">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="mt-auto bg-muted">
+      <div className="h-[3px] w-full bg-gradient-to-r from-transparent via-secondary to-transparent" />
+      <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="max-w-sm">
             <Logo variant="lockup" />
             <p className="mt-3 text-sm text-muted-foreground">
