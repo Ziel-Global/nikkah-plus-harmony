@@ -16,6 +16,7 @@ import {
   validatePhone,
 } from "@/lib/validation";
 import { cn } from "@/lib/utils";
+import { useRedirectIfSignedIn } from "@/hooks/useRedirectIfSignedIn";
 
 
 export const Route = createFileRoute("/register")({
