@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useRedirectIfSignedIn } from "@/hooks/useRedirectIfSignedIn";
+import { fetchAccessState, landingPath } from "@/lib/access";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -28,6 +30,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const ready = useRedirectIfSignedIn();
   const [mode, setMode] = useState<"signin" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,7 +51,8 @@ function AuthPage() {
       setError(signInError.message);
       return;
     }
-    navigate({ to: "/onboarding" });
+    const access = await fetchAccessState();
+    navigate({ to: landingPath(access), replace: true });
   }
 
   async function onForgot(e: React.FormEvent) {
@@ -65,6 +69,14 @@ function AuthPage() {
     }
     setNotice(
       "If an account exists for that address, we've sent a link to reset your password. Please check your inbox.",
+    );
+  }
+
+  if (!ready) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      </div>
     );
   }
 
