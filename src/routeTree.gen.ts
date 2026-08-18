@@ -46,6 +46,7 @@ import { Route as AuthenticatedSuperadminProfilesRouteImport } from './routes/_a
 import { Route as AuthenticatedSuperadminRequestsRouteImport } from './routes/_authenticated/superadmin/requests'
 import { Route as AuthenticatedSuperadminSettingsRouteRouteImport } from './routes/_authenticated/superadmin/settings/route'
 import { Route as AuthenticatedSuperadminUsersRouteImport } from './routes/_authenticated/superadmin/users'
+import { Route as ApiPublicSeedTestDataRouteImport } from './routes/api/public/seed-test-data'
 import { Route as AuthenticatedSuperadminSettingsIndexRouteImport } from './routes/_authenticated/superadmin/settings/index'
 import { Route as AuthenticatedSuperadminSettingsBrandingRouteImport } from './routes/_authenticated/superadmin/settings/branding'
 import { Route as AuthenticatedSuperadminSettingsRolesRouteImport } from './routes/_authenticated/superadmin/settings/roles'
@@ -255,6 +256,11 @@ const AuthenticatedSuperadminUsersRoute =
     path: '/users',
     getParentRoute: () => AuthenticatedSuperadminRouteRoute,
   } as any)
+const ApiPublicSeedTestDataRoute = ApiPublicSeedTestDataRouteImport.update({
+  id: '/api/public/seed-test-data',
+  path: '/api/public/seed-test-data',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedSuperadminSettingsIndexRoute =
   AuthenticatedSuperadminSettingsIndexRouteImport.update({
     id: '/',
@@ -315,6 +321,7 @@ export interface FileRoutesByFullPath {
   '/superadmin/profiles': typeof AuthenticatedSuperadminProfilesRoute
   '/superadmin/requests': typeof AuthenticatedSuperadminRequestsRoute
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
+  '/api/public/seed-test-data': typeof ApiPublicSeedTestDataRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/superadmin/': typeof AuthenticatedSuperadminIndexRoute
   '/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
@@ -354,6 +361,7 @@ export interface FileRoutesByTo {
   '/superadmin/profiles': typeof AuthenticatedSuperadminProfilesRoute
   '/superadmin/requests': typeof AuthenticatedSuperadminRequestsRoute
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
+  '/api/public/seed-test-data': typeof ApiPublicSeedTestDataRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/superadmin': typeof AuthenticatedSuperadminIndexRoute
   '/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
@@ -398,6 +406,7 @@ export interface FileRoutesById {
   '/_authenticated/superadmin/profiles': typeof AuthenticatedSuperadminProfilesRoute
   '/_authenticated/superadmin/requests': typeof AuthenticatedSuperadminRequestsRoute
   '/_authenticated/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
+  '/api/public/seed-test-data': typeof ApiPublicSeedTestDataRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/superadmin/': typeof AuthenticatedSuperadminIndexRoute
   '/_authenticated/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
@@ -442,6 +451,7 @@ export interface FileRouteTypes {
     | '/superadmin/profiles'
     | '/superadmin/requests'
     | '/superadmin/users'
+    | '/api/public/seed-test-data'
     | '/admin/'
     | '/superadmin/'
     | '/superadmin/settings/branding'
@@ -481,6 +491,7 @@ export interface FileRouteTypes {
     | '/superadmin/profiles'
     | '/superadmin/requests'
     | '/superadmin/users'
+    | '/api/public/seed-test-data'
     | '/admin'
     | '/superadmin'
     | '/superadmin/settings/branding'
@@ -524,6 +535,7 @@ export interface FileRouteTypes {
     | '/_authenticated/superadmin/profiles'
     | '/_authenticated/superadmin/requests'
     | '/_authenticated/superadmin/users'
+    | '/api/public/seed-test-data'
     | '/_authenticated/admin/'
     | '/_authenticated/superadmin/'
     | '/_authenticated/superadmin/settings/branding'
@@ -541,6 +553,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  ApiPublicSeedTestDataRoute: typeof ApiPublicSeedTestDataRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -804,6 +817,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperadminUsersRouteImport
       parentRoute: typeof AuthenticatedSuperadminRouteRoute
     }
+    '/api/public/seed-test-data': {
+      id: '/api/public/seed-test-data'
+      path: '/api/public/seed-test-data'
+      fullPath: '/api/public/seed-test-data'
+      preLoaderRoute: typeof ApiPublicSeedTestDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/superadmin/settings/': {
       id: '/_authenticated/superadmin/settings/'
       path: '/'
@@ -964,7 +984,18 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  ApiPublicSeedTestDataRoute: ApiPublicSeedTestDataRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
