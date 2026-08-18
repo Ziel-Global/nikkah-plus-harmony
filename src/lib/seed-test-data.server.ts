@@ -421,7 +421,7 @@ export async function runSeed() {
     const id = await ensureUser(email, { role: 'mosque_admin', phone: `+4471000005${String(i + 1).padStart(2, '0')}` })
     adminIds.push(id)
     const { error } = await supabaseAdmin.from('profiles').update({
-      role: 'mosque_admin', mosque_id: mosqueIds[i], account_status: 'active',
+      role: 'mosque_admin', mosque_id: mosqueIds[i]!, account_status: 'active',
       verification_method: 'email', terms_accepted_at: new Date().toISOString(),
     }).eq('id', id)
     if (error) throw new Error(`mosque admin profile: ${error.message}`)
@@ -453,7 +453,7 @@ export async function runSeed() {
       gender: spec.gender,
       role: spec.gender === 'male' ? 'male_user' : 'female_user',
       phone: spec.phone,
-      mosque_id: spec.affiliation === 'approved' ? mosqueIds[spec.mosqueIndex] : null,
+      mosque_id: spec.affiliation === "approved" ? mosqueIds[spec.mosqueIndex]! : null,
       account_status: 'active',
       verification_method: 'email',
       phone_verified_at: new Date().toISOString(),
