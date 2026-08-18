@@ -265,3 +265,80 @@
     transparent
   );
 }
+
+/* --- Landing visual elevation --- */
+
+/* Low-opacity Islamic geometric line-art texture (rose gold / dusty rose) */
+@utility pattern-geo {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23C9967A' stroke-width='1'%3E%3Cpath d='M60 0 L120 60 L60 120 L0 60 Z'/%3E%3Cpath d='M60 20 L100 60 L60 100 L20 60 Z'/%3E%3Cpath d='M0 0 L120 120 M120 0 L0 120'/%3E%3Ccircle cx='60' cy='60' r='18'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 120px 120px;
+    opacity: 0.09;
+  }
+}
+
+@utility pattern-geo-light {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23D9B8B0' stroke-width='1'%3E%3Cpath d='M60 0 L120 60 L60 120 L0 60 Z'/%3E%3Cpath d='M60 20 L100 60 L60 100 L20 60 Z'/%3E%3Ccircle cx='60' cy='60' r='18'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 120px 120px;
+    opacity: 0.35;
+  }
+}
+
+@utility card-lift {
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    border-color 200ms ease;
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elevated);
+    border-color: color-mix(in oklab, var(--color-secondary) 55%, transparent);
+  }
+}
+
+@utility surface-raised {
+  background-color: var(--color-card);
+  border: 1px solid color-mix(in oklab, var(--color-border) 80%, transparent);
+  border-radius: var(--radius-2xl);
+  box-shadow:
+    0 1px 2px oklch(0.2414 0.0268 34.58 / 5%),
+    0 6px 16px -10px oklch(0.2414 0.0268 34.58 / 14%),
+    0 24px 48px -28px oklch(0.2414 0.0268 34.58 / 22%);
+}
+
+@utility rule-gold {
+  height: 2px;
+  width: 3rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary),
+    color-mix(in oklab, var(--color-secondary) 90%, transparent)
+  );
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-rise {
+  animation: rise-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
