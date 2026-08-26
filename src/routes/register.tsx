@@ -18,7 +18,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useRedirectIfSignedIn } from "@/hooks/useRedirectIfSignedIn";
 
-
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
@@ -91,7 +90,8 @@ function RegisterPage() {
     setBusy(false);
 
     if (signUpError) {
-      const m = `${signUpError.message} ${(signUpError as { code?: string }).code ?? ""}`.toLowerCase();
+      const m =
+        `${signUpError.message} ${(signUpError as { code?: string }).code ?? ""}`.toLowerCase();
       const phoneDuplicate =
         m.includes("profiles_phone_unique") || (m.includes("phone") && m.includes("unique"));
       const emailDuplicate =
@@ -133,7 +133,6 @@ function RegisterPage() {
     setEmailSent(true);
   }
 
-
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -154,7 +153,13 @@ function RegisterPage() {
         }
         footer={
           <>
-            Already confirmed? <Link to="/auth" className="font-semibold text-primary underline-offset-4 hover:underline">Sign in</Link>
+            Already confirmed?{" "}
+            <Link
+              to="/auth"
+              className="font-semibold text-primary underline-offset-4 hover:underline"
+            >
+              Sign in
+            </Link>
           </>
         }
       >
@@ -173,7 +178,10 @@ function RegisterPage() {
       footer={
         <>
           Already have an account?{" "}
-          <Link to="/auth" className="font-semibold text-primary underline-offset-4 hover:underline">
+          <Link
+            to="/auth"
+            className="font-semibold text-primary underline-offset-4 hover:underline"
+          >
             Sign in
           </Link>
         </>
@@ -232,7 +240,7 @@ function RegisterPage() {
           <Label htmlFor="password">Password</Label>
           <PasswordInput
             id="password"
-                        autoComplete="new-password"
+            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onBlur={blur("password")}
@@ -267,7 +275,7 @@ function RegisterPage() {
           <Label htmlFor="confirm">Confirm password</Label>
           <PasswordInput
             id="confirm"
-                        autoComplete="new-password"
+            autoComplete="new-password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             onBlur={blur("confirm")}
@@ -292,7 +300,6 @@ function RegisterPage() {
           {busy ? "Creating your account…" : "Create account"}
         </Button>
       </form>
-
     </AuthShell>
   );
 }

@@ -118,7 +118,7 @@ function SettingsPage() {
               <Label htmlFor="password">New password</Label>
               <PasswordInput
                 id="password"
-                                className="min-h-11"
+                className="min-h-11"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 autoComplete="new-password"
@@ -128,7 +128,7 @@ function SettingsPage() {
               <Label htmlFor="confirm">Confirm new password</Label>
               <PasswordInput
                 id="confirm"
-                                className="min-h-11"
+                className="min-h-11"
                 value={confirm}
                 onChange={(event) => setConfirm(event.target.value)}
                 autoComplete="new-password"

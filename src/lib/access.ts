@@ -35,11 +35,22 @@ export async function fetchAccessState(): Promise<AccessState> {
   const user = auth?.user;
   if (authError || !user) return SIGNED_OUT;
 
-  const { data: profile } = await supabase
+  let { data: profile } = await supabase
     .from("profiles")
     .select("role, gender, terms_accepted_at")
     .eq("id", user.id)
     .maybeSingle();
+
+  // If user exists but profile isn't found, retry once after 500ms to allow DB trigger execution
+  if (!profile) {
+    await new Promise((res) => setTimeout(res, 500));
+    const retry = await supabase
+      .from("profiles")
+      .select("role, gender, terms_accepted_at")
+      .eq("id", user.id)
+      .maybeSingle();
+    profile = retry.data;
+  }
 
   const role = (profile?.role as AppRole | undefined) ?? null;
 

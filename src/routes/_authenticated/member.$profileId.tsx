@@ -164,7 +164,10 @@ function MemberDetailPage() {
         <p className="mt-3 text-body text-muted-foreground">
           This member’s profile is no longer being shown. There are others waiting to be met.
         </p>
-        <Button className="mt-6 min-h-11" onClick={() => void navigate({ to: "/browse", search: DEFAULT_FILTERS })}>
+        <Button
+          className="mt-6 min-h-11"
+          onClick={() => void navigate({ to: "/browse", search: DEFAULT_FILTERS })}
+        >
           Back to members
         </Button>
       </main>
@@ -245,9 +248,7 @@ function MemberDetailPage() {
                     placeholder="Optional — a few sincere words for their consideration."
                     onChange={(e) => setMessage(e.target.value)}
                   />
-                  <p className="text-right text-xs text-muted-foreground">
-                    {message.length} / 500
-                  </p>
+                  <p className="text-right text-xs text-muted-foreground">{message.length} / 500</p>
                   <DialogFooter>
                     <Button
                       variant="outline"
@@ -276,10 +277,7 @@ function MemberDetailPage() {
           <Detail label="Marital status" value={profile.marital_status} />
           <Detail label="Nationality" value={profile.nationality} />
           <Detail label="Ethnicity" value={profile.ethnicity} />
-          <Detail
-            label="Height"
-            value={profile.height_cm ? `${profile.height_cm} cm` : null}
-          />
+          <Detail label="Height" value={profile.height_cm ? `${profile.height_cm} cm` : null} />
           <Detail label="Appearance" value={profile.appearance_description} />
         </Section>
 

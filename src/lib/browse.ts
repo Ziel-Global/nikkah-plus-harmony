@@ -74,13 +74,12 @@ export function toRpcArgs(filters: BrowseFilters): RpcArgs {
     if (v) args[key] = v;
   }
 
-  if (languages.length > 0) args['p_languages'] = languages;
-  if (filters.relocate === "yes") args['p_relocate'] = true;
-  if (filters.relocate === "no") args['p_relocate'] = false;
+  if (languages.length > 0) args["p_languages"] = languages;
+  if (filters.relocate === "yes") args["p_relocate"] = true;
+  if (filters.relocate === "no") args["p_relocate"] = false;
 
   return args;
 }
-
 
 export function activeFilterCount(filters: BrowseFilters) {
   let count = 0;

@@ -222,10 +222,7 @@ function MatchPage() {
         </p>
         {match.counterpart_profile_id && (
           <Button asChild variant="outline" className="mt-4 min-h-11">
-            <Link
-              to="/member/$profileId"
-              params={{ profileId: match.counterpart_profile_id }}
-            >
+            <Link to="/member/$profileId" params={{ profileId: match.counterpart_profile_id }}>
               View their profile
             </Link>
           </Button>
@@ -255,14 +252,17 @@ function MatchPage() {
                 <p className="mt-2 text-muted-foreground">{wali.approval_preferences}</p>
               )}
               <p className="mt-3 text-xs text-muted-foreground">
-                These details are visible only to you and your mosque. Nikkah+ does not contact
-                your wali on your behalf.
+                These details are visible only to you and your mosque. Nikkah+ does not contact your
+                wali on your behalf.
               </p>
             </div>
           ) : (
             <div className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
               You have not recorded wali details yet.{" "}
-              <Link to="/profile" className="font-semibold text-primary underline-offset-4 hover:underline">
+              <Link
+                to="/profile"
+                className="font-semibold text-primary underline-offset-4 hover:underline"
+              >
                 Add them to your profile
               </Link>
               .
@@ -313,7 +313,11 @@ function MatchPage() {
                 onChange={(e) => setReason(e.target.value)}
               />
               <DialogFooter>
-                <Button variant="outline" className="min-h-11" onClick={() => setEscalateOpen(false)}>
+                <Button
+                  variant="outline"
+                  className="min-h-11"
+                  onClick={() => setEscalateOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button
@@ -349,7 +353,6 @@ function MatchPage() {
             counterpartName={match.counterpart_name ?? "this member"}
           />
         </Panel>
-
       </div>
     </MemberShell>
   );

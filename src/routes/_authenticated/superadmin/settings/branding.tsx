@@ -263,9 +263,7 @@ function BrandingSettingsPage() {
             >
               {save.isPending ? "Saving…" : "Save branding"}
             </Button>
-            {dirty ? (
-              <span className="text-sm text-muted-foreground">Unsaved changes.</span>
-            ) : null}
+            {dirty ? <span className="text-sm text-muted-foreground">Unsaved changes.</span> : null}
           </div>
         </div>
 
@@ -289,7 +287,10 @@ function BrandingSettingsPage() {
               <Button type="button">Default</Button>
               <Button
                 type="button"
-                style={{ background: colors.button_hover_bg_color, color: colors.button_text_color }}
+                style={{
+                  background: colors.button_hover_bg_color,
+                  color: colors.button_text_color,
+                }}
               >
                 Hover
               </Button>

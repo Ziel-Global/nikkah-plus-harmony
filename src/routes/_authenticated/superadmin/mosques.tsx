@@ -195,7 +195,10 @@ function MosquesPage() {
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {m.status !== "active" ? (
-                  <Button size="sm" onClick={() => setStatus.mutate({ mosque: m, status: "active" })}>
+                  <Button
+                    size="sm"
+                    onClick={() => setStatus.mutate({ mosque: m, status: "active" })}
+                  >
                     Approve mosque
                   </Button>
                 ) : (
@@ -269,7 +272,9 @@ function MosquesPage() {
                       onChange={(e) => setForm({ ...form, [key]: e.target.value })}
                       className="mt-1"
                     />
-                    {err ? <p className="mt-1 text-sm font-medium text-destructive">{err}</p> : null}
+                    {err ? (
+                      <p className="mt-1 text-sm font-medium text-destructive">{err}</p>
+                    ) : null}
                   </div>
                 );
               })}

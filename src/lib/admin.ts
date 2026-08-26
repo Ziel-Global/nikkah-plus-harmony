@@ -14,8 +14,10 @@ export async function fetchMyMosques(): Promise<AdminMosque[]> {
 
   return (data ?? [])
     .map((row) => {
-      const mosque = row.mosques as unknown as { id: string; name: string } | null;
-      return mosque ? { id: mosque.id, name: mosque.name } : null;
+      const raw = row.mosques as unknown as
+        { id: string; name: string } | { id: string; name: string }[] | null;
+      const mosque = Array.isArray(raw) ? (raw[0] ?? null) : raw;
+      return mosque && mosque.id && mosque.name ? { id: mosque.id, name: mosque.name } : null;
     })
     .filter((m): m is AdminMosque => Boolean(m));
 }

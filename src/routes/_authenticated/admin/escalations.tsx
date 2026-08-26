@@ -35,7 +35,9 @@ function EscalationsPage() {
       const [{ data: rows, error }, { data: profiles, error: pErr }] = await Promise.all([
         supabase
           .from("escalations")
-          .select("id, request_id, raised_by, mosque_admin_id, reason, status, created_at, resolved_at")
+          .select(
+            "id, request_id, raised_by, mosque_admin_id, reason, status, created_at, resolved_at",
+          )
           .order("created_at", { ascending: false }),
         supabase.from("marriage_profiles").select("user_id, display_name"),
       ]);

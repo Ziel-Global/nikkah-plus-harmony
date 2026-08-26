@@ -45,18 +45,25 @@ function UsersPage() {
   const [selected, setSelected] = useState<Row | null>(null);
   const [pending, setPending] = useState<{ row: Row; status: string } | null>(null);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["superadmin", "users"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
         .select(
-          "id, email, phone, role, gender, mosque_id, account_status, verification_method, last_login_at, terms_accepted_at, created_at, mosques(name)",
+          "id, email, phone, role, gender, mosque_id, account_status, verification_method, last_login_at, terms_accepted_at, created_at, mosques!profiles_mosque_id_fkey(name)",
         )
         .order("created_at", { ascending: false })
         .limit(1000);
       if (error) throw error;
-      return (data ?? []) as unknown as Row[];
+      return (data ?? []).map((r: Record<string, unknown>) => {
+        const rawMosques = r["mosques"];
+        return {
+          ...r,
+          mosques: Array.isArray(rawMosques) ? (rawMosques[0] ?? null) : rawMosques,
+        };
+      }) as Row[];
     },
   });
 
@@ -111,6 +118,16 @@ function UsersPage() {
       <div className="mt-6 space-y-3">
         {isLoading ? (
           Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)
+        ) : isError ? (
+          <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-5 text-center">
+            <p className="font-semibold text-foreground">Could not load users</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {error instanceof Error ? error.message : "An unexpected error occurred."}
+            </p>
+            <Button size="sm" variant="outline" className="mt-4" onClick={() => void refetch()}>
+              Try again
+            </Button>
+          </div>
         ) : rows.length === 0 ? (
           <p className="text-sm text-muted-foreground">No accounts match that search.</p>
         ) : (
@@ -155,7 +172,10 @@ function UsersPage() {
                 ["Verification", selected.verification_method ?? "—"],
                 ["Terms accepted", formatDateTime(selected.terms_accepted_at)],
                 ["Last sign-in", formatDateTime(selected.last_login_at)],
-                ["Standing", ACCOUNT_STATUS_LABEL[selected.account_status] ?? selected.account_status],
+                [
+                  "Standing",
+                  ACCOUNT_STATUS_LABEL[selected.account_status] ?? selected.account_status,
+                ],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-4 border-b border-border pb-1">
                   <dt className="text-muted-foreground">{k}</dt>

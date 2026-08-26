@@ -76,15 +76,15 @@ copy anywhere in the UI.
 
 COLOR TOKENS (define as CSS variables / Tailwind theme extension):
 
-- --color-primary: #6B1E2A      (Maroon — logo, headers, primary buttons, key accents)
+- --color-primary: #6B1E2A (Maroon — logo, headers, primary buttons, key accents)
 
-- --color-secondary: #C9967A    (Rose Gold — highlights, icons, secondary buttons, dividers)
+- --color-secondary: #C9967A (Rose Gold — highlights, icons, secondary buttons, dividers)
 
-- --color-background: #FBF6F0   (Ivory/Champagne — app background, cards)
+- --color-background: #FBF6F0 (Ivory/Champagne — app background, cards)
 
 - --color-text-primary: #2B1B17 (Espresso — primary text)
 
-- --color-tertiary: #D9B8B0     (Dusty Rose — tags, badges, soft highlights)
+- --color-tertiary: #D9B8B0 (Dusty Rose — tags, badges, soft highlights)
 
 - --color-text-secondary: #8C8078 (Stone Gray — secondary text, borders, disabled states, placeholders)
 

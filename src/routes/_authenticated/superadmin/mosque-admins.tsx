@@ -28,7 +28,10 @@ import { SUPER_META, formatDay, logActivity } from "@/lib/superadmin";
 
 export const Route = createFileRoute("/_authenticated/superadmin/mosque-admins")({
   head: () =>
-    SUPER_META("Mosque admins", "Assign and reassign the people who verify members for each mosque."),
+    SUPER_META(
+      "Mosque admins",
+      "Assign and reassign the people who verify members for each mosque.",
+    ),
   component: MosqueAdminsPage,
 });
 
@@ -54,7 +57,9 @@ function MosqueAdminsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mosque_admin_mosques")
-        .select("id, admin_id, mosque_id, created_at, profiles!mosque_admin_mosques_admin_id_fkey(email, role), mosques(name)")
+        .select(
+          "id, admin_id, mosque_id, created_at, profiles!mosque_admin_mosques_admin_id_fkey(email, role), mosques(name)",
+        )
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as unknown as Assignment[];
@@ -106,7 +111,10 @@ function MosqueAdminsPage() {
         .from("mosque_admin_mosques")
         .insert({ admin_id: adminId, mosque_id: mosqueId, assigned_by: auth.user?.id ?? null });
       if (error) throw error;
-      await logActivity("mosque_admin_assigned", "mosque_admin_mosques", null, { adminId, mosqueId });
+      await logActivity("mosque_admin_assigned", "mosque_admin_mosques", null, {
+        adminId,
+        mosqueId,
+      });
     },
     onSuccess: () => {
       toast.success("Mosque admin assigned.");
@@ -161,7 +169,9 @@ function MosqueAdminsPage() {
               className="surface-card flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border p-4"
             >
               <div>
-                <p className="font-semibold text-foreground">{row.profiles?.email ?? row.admin_id}</p>
+                <p className="font-semibold text-foreground">
+                  {row.profiles?.email ?? row.admin_id}
+                </p>
                 <p className="text-xs text-muted-foreground">
                   {row.mosques?.name ?? "Unknown mosque"} · assigned {formatDay(row.created_at)}
                 </p>

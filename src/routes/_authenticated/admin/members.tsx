@@ -49,7 +49,9 @@ type MarriageProfile = {
 };
 
 function MembersPage() {
-  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as { mosques: AdminMosque[] };
+  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as {
+    mosques: AdminMosque[];
+  };
   const mosqueIds = mosques.map((m) => m.id);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<MemberRow | null>(null);
@@ -73,9 +75,7 @@ function MembersPage() {
       if (mErr) throw mErr;
       return {
         members: (profiles ?? []) as MemberRow[],
-        profilesByUser: new Map(
-          ((marriage ?? []) as MarriageProfile[]).map((p) => [p.user_id, p]),
-        ),
+        profilesByUser: new Map(((marriage ?? []) as MarriageProfile[]).map((p) => [p.user_id, p])),
       };
     },
   });
@@ -121,9 +121,15 @@ function MembersPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Badge variant="secondary">
-                    {profile ? PROFILE_STATUS_LABEL[profile.status] ?? profile.status : "No profile yet"}
+                    {profile
+                      ? (PROFILE_STATUS_LABEL[profile.status] ?? profile.status)
+                      : "No profile yet"}
                   </Badge>
-                  <Button variant="outline" className="min-h-11" onClick={() => setSelected(member)}>
+                  <Button
+                    variant="outline"
+                    className="min-h-11"
+                    onClick={() => setSelected(member)}
+                  >
                     View
                   </Button>
                 </div>
@@ -157,7 +163,10 @@ function MembersPage() {
                 />
                 <Row
                   label="Location"
-                  value={[selectedProfile.city, selectedProfile.country].filter(Boolean).join(", ") || "—"}
+                  value={
+                    [selectedProfile.city, selectedProfile.country].filter(Boolean).join(", ") ||
+                    "—"
+                  }
                 />
                 <Row label="Profession" value={selectedProfile.profession ?? "—"} />
                 <Row label="Education" value={selectedProfile.education_level ?? "—"} />

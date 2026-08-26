@@ -37,12 +37,20 @@ function AnalyticsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mosque_affiliation_requests")
-        .select("mosque_id, created_at, reviewed_at, mosques(name)")
+        .select(
+          "mosque_id, created_at, reviewed_at, mosques!mosque_affiliation_requests_mosque_id_fkey(name)",
+        )
         .not("reviewed_at", "is", null)
         .limit(2000);
       if (error) throw error;
 
-      const rows = (data ?? []) as unknown as TurnaroundRow[];
+      const rows = (data ?? []).map((r: Record<string, unknown>) => {
+        const rawMosques = r["mosques"];
+        return {
+          ...r,
+          mosques: Array.isArray(rawMosques) ? (rawMosques[0] ?? null) : rawMosques,
+        };
+      }) as TurnaroundRow[];
       const byMosque = new Map<string, { name: string; total: number; count: number }>();
       let grandTotal = 0;
 
@@ -95,7 +103,11 @@ function AnalyticsPage() {
             <StatCard label="Approved profiles" value={kpis.data.approvedProfiles} />
             <StatCard label="Awaiting review" value={kpis.data.submittedProfiles} />
             <StatCard label="Inactive profiles" value={kpis.data.inactiveProfiles} />
-            <StatCard label="Mosques" value={kpis.data.mosques} hint={`${kpis.data.activeMosques} active`} />
+            <StatCard
+              label="Mosques"
+              value={kpis.data.mosques}
+              hint={`${kpis.data.activeMosques} active`}
+            />
           </div>
         )}
       </section>
@@ -107,7 +119,11 @@ function AnalyticsPage() {
         <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {kpis.data
             ? Object.entries(kpis.data.byStatus).map(([status, value]) => (
-                <StatCard key={status} label={REQUEST_STATUS_LABEL[status] ?? status} value={value} />
+                <StatCard
+                  key={status}
+                  label={REQUEST_STATUS_LABEL[status] ?? status}
+                  value={value}
+                />
               ))
             : null}
         </div>
@@ -137,9 +153,15 @@ function AnalyticsPage() {
                 <caption className="sr-only">Average verification turnaround per mosque</caption>
                 <thead className="border-b border-border text-muted-foreground">
                   <tr>
-                    <th scope="col" className="px-4 py-3 font-semibold">Mosque</th>
-                    <th scope="col" className="px-4 py-3 font-semibold">Reviewed</th>
-                    <th scope="col" className="px-4 py-3 font-semibold">Average turnaround</th>
+                    <th scope="col" className="px-4 py-3 font-semibold">
+                      Mosque
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-semibold">
+                      Reviewed
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-semibold">
+                      Average turnaround
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -154,7 +176,9 @@ function AnalyticsPage() {
                       <tr key={m.name} className="border-b border-border last:border-0">
                         <td className="px-4 py-3 font-medium text-foreground">{m.name}</td>
                         <td className="px-4 py-3 text-muted-foreground">{m.count}</td>
-                        <td className="px-4 py-3 text-muted-foreground">{formatHours(m.average)}</td>
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {formatHours(m.average)}
+                        </td>
                       </tr>
                     ))
                   )}

@@ -52,7 +52,6 @@ function ConductPage() {
           ? `Please keep this to ${REASON_LIMIT} characters or fewer.`
           : null;
 
-
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "conduct"],
     queryFn: async () => {
@@ -60,7 +59,9 @@ function ConductPage() {
         supabase.from("marriage_profiles").select("id, display_name, user_id, status"),
         supabase
           .from("conduct_reports")
-          .select("id, reported_profile_id, reason, status, resolution_notes, created_at, resolved_at")
+          .select(
+            "id, reported_profile_id, reason, status, resolution_notes, created_at, resolved_at",
+          )
           .order("created_at", { ascending: false }),
       ]);
       if (error) throw error;
@@ -157,7 +158,6 @@ function ConductPage() {
           >
             {submit.isPending ? "Filing…" : "File report"}
           </Button>
-
         </form>
 
         <div>

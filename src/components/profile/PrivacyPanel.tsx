@@ -26,9 +26,7 @@ export function PrivacyPanel({
           >
             <div>
               <p className="text-sm font-semibold text-foreground">{field.label}</p>
-              <p className="text-caption">
-                {OPTIONS.find((o) => o.value === current)?.hint}
-              </p>
+              <p className="text-caption">{OPTIONS.find((o) => o.value === current)?.hint}</p>
             </div>
             <div
               role="group"
