@@ -27,10 +27,7 @@ async function fetchCounts(mosqueIds: string[]) {
       .from("interest_requests")
       .select("id", { count: "exact", head: true })
       .eq("status", "active_match"),
-    supabase
-      .from("escalations")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "open"),
+    supabase.from("escalations").select("id", { count: "exact", head: true }).eq("status", "open"),
   ]);
 
   return {
@@ -42,7 +39,9 @@ async function fetchCounts(mosqueIds: string[]) {
 }
 
 function AdminOverview() {
-  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as { mosques: AdminMosque[] };
+  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as {
+    mosques: AdminMosque[];
+  };
   const mosqueIds = mosques.map((m) => m.id);
 
   const { data, isLoading } = useQuery({
@@ -111,9 +110,9 @@ function AdminOverview() {
         <div className="surface-card rounded-xl border border-border p-5">
           <h2 className="text-h3 text-foreground">What this workspace is for</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            You confirm that members genuinely belong to your community, keep an eye on conduct,
-            and support members who ask for help. Matches themselves stay entirely between the
-            members and their families.
+            You confirm that members genuinely belong to your community, keep an eye on conduct, and
+            support members who ask for help. Matches themselves stay entirely between the members
+            and their families.
           </p>
         </div>
         <div className="surface-card rounded-xl border border-border p-5">

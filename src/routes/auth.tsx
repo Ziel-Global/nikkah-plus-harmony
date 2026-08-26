@@ -136,7 +136,10 @@ function AuthPage() {
       footer={
         <>
           New to Nikkah+?{" "}
-          <Link to="/register" className="font-semibold text-primary underline-offset-4 hover:underline">
+          <Link
+            to="/register"
+            className="font-semibold text-primary underline-offset-4 hover:underline"
+          >
             Create an account
           </Link>
         </>
@@ -158,7 +161,7 @@ function AuthPage() {
           <Label htmlFor="signin-password">Password</Label>
           <PasswordInput
             id="signin-password"
-                        autoComplete="current-password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

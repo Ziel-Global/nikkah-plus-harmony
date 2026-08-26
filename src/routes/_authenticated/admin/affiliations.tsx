@@ -41,7 +41,9 @@ type AffiliationRow = {
 };
 
 function AffiliationsPage() {
-  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as { mosques: AdminMosque[] };
+  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as {
+    mosques: AdminMosque[];
+  };
   const mosqueIds = mosques.map((m) => m.id);
   const queryClient = useQueryClient();
   const [rejecting, setRejecting] = useState<AffiliationRow | null>(null);
@@ -52,7 +54,9 @@ function AffiliationsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mosque_affiliation_requests")
-        .select("id, user_id, mosque_id, status, rejection_reason, created_at, reviewed_at, profiles(email, phone, gender, role)")
+        .select(
+          "id, user_id, mosque_id, status, rejection_reason, created_at, reviewed_at, profiles(email, phone, gender, role)",
+        )
         .in("mosque_id", mosqueIds)
         .order("created_at", { ascending: false });
       if (error) throw error;

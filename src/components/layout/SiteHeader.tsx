@@ -19,7 +19,6 @@ export function SiteHeader() {
   const { session } = useSession();
   const signedIn = Boolean(session);
 
-
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
     onScroll();
@@ -123,7 +122,6 @@ export function SiteHeader() {
                 </Button>
               </>
             )}
-
           </nav>
         </div>
       )}

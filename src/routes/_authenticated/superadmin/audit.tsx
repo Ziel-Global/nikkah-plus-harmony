@@ -26,16 +26,25 @@ type LogRow = {
 function AuditPage() {
   const [search, setSearch] = useState("");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["superadmin", "audit"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("activity_logs")
-        .select("id, action, target_table, target_id, metadata, created_at, profiles(email)")
+        .select(
+          "id, action, target_table, target_id, metadata, created_at, profiles!activity_logs_actor_id_fkey(email)",
+        )
         .order("created_at", { ascending: false })
         .limit(500);
       if (error) throw error;
-      return (data ?? []) as unknown as LogRow[];
+      return (data ?? []).map((r: Record<string, unknown>) => {
+        const rawProfiles = r["profiles"];
+        return {
+          ...r,
+          profiles: Array.isArray(rawProfiles) ? (rawProfiles[0] ?? null) : rawProfiles,
+        };
+      }) as LogRow[];
     },
   });
 
@@ -43,7 +52,10 @@ function AuditPage() {
     const term = search.trim().toLowerCase();
     if (!term) return data ?? [];
     return (data ?? []).filter((r) =>
-      [r.action, r.target_table ?? "", r.profiles?.email ?? ""].join(" ").toLowerCase().includes(term),
+      [r.action, r.target_table ?? "", r.profiles?.email ?? ""]
+        .join(" ")
+        .toLowerCase()
+        .includes(term),
     );
   }, [data, search]);
 
@@ -68,10 +80,18 @@ function AuditPage() {
           <caption className="sr-only">Administrative activity log</caption>
           <thead className="border-b border-border text-muted-foreground">
             <tr>
-              <th scope="col" className="px-4 py-3 font-semibold">When</th>
-              <th scope="col" className="px-4 py-3 font-semibold">Administrator</th>
-              <th scope="col" className="px-4 py-3 font-semibold">Action</th>
-              <th scope="col" className="px-4 py-3 font-semibold">Record</th>
+              <th scope="col" className="px-4 py-3 font-semibold">
+                When
+              </th>
+              <th scope="col" className="px-4 py-3 font-semibold">
+                Administrator
+              </th>
+              <th scope="col" className="px-4 py-3 font-semibold">
+                Action
+              </th>
+              <th scope="col" className="px-4 py-3 font-semibold">
+                Record
+              </th>
             </tr>
           </thead>
           <tbody>

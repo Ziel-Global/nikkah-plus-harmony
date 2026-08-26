@@ -40,23 +40,67 @@ export async function fetchPlatformKpis() {
     openFlags,
   ] = await Promise.all([
     count(() => supabase.from("profiles").select("id", { count: "exact", head: true })),
-    count(() => supabase.from("profiles").select("id", { count: "exact", head: true }).eq("gender", "male")),
-    count(() => supabase.from("profiles").select("id", { count: "exact", head: true }).eq("gender", "female")),
-    count(() => supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "active")),
-    count(() => supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "suspended")),
-    count(() => supabase.from("marriage_profiles").select("id", { count: "exact", head: true }).eq("status", "approved")),
-    count(() => supabase.from("marriage_profiles").select("id", { count: "exact", head: true }).eq("status", "submitted")),
-    count(() => supabase.from("marriage_profiles").select("id", { count: "exact", head: true }).eq("status", "inactive")),
+    count(() =>
+      supabase.from("profiles").select("id", { count: "exact", head: true }).eq("gender", "male"),
+    ),
+    count(() =>
+      supabase.from("profiles").select("id", { count: "exact", head: true }).eq("gender", "female"),
+    ),
+    count(() =>
+      supabase
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("account_status", "active"),
+    ),
+    count(() =>
+      supabase
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("account_status", "suspended"),
+    ),
+    count(() =>
+      supabase
+        .from("marriage_profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "approved"),
+    ),
+    count(() =>
+      supabase
+        .from("marriage_profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "submitted"),
+    ),
+    count(() =>
+      supabase
+        .from("marriage_profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "inactive"),
+    ),
     count(() => supabase.from("mosques").select("id", { count: "exact", head: true })),
-    count(() => supabase.from("mosques").select("id", { count: "exact", head: true }).eq("status", "active")),
-    count(() => supabase.from("conduct_reports").select("id", { count: "exact", head: true }).eq("status", "pending")),
-    count(() => supabase.from("account_flags").select("id", { count: "exact", head: true }).eq("action_taken", "none")),
+    count(() =>
+      supabase.from("mosques").select("id", { count: "exact", head: true }).eq("status", "active"),
+    ),
+    count(() =>
+      supabase
+        .from("conduct_reports")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "pending"),
+    ),
+    count(() =>
+      supabase
+        .from("account_flags")
+        .select("id", { count: "exact", head: true })
+        .eq("action_taken", "none"),
+    ),
   ]);
 
   const byStatus: Record<string, number> = {};
   for (const status of REQUEST_STATUSES) {
     byStatus[status] = await count(() =>
-      supabase.from("interest_requests").select("id", { count: "exact", head: true }).eq("status", status),
+      supabase
+        .from("interest_requests")
+        .select("id", { count: "exact", head: true })
+        .eq("status", status),
     );
   }
 
@@ -105,7 +149,11 @@ function SuperDashboard() {
           People
         </h2>
         <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard label="Total accounts" value={data.users} hint={`${data.activeAccounts} active`} />
+          <StatCard
+            label="Total accounts"
+            value={data.users}
+            hint={`${data.activeAccounts} active`}
+          />
           <StatCard label="Brothers" value={data.male} hint="Registered as male" />
           <StatCard label="Sisters" value={data.female} hint="Registered as female" />
           <StatCard label="Suspended accounts" value={data.suspended} hint="Access withdrawn" />
@@ -138,7 +186,7 @@ function SuperDashboard() {
           ))}
           <StatCard
             label="Successful matches"
-            value={data.byStatus['closed_mutual'] ?? 0}
+            value={data.byStatus["closed_mutual"] ?? 0}
             hint="Closed with mutual agreement"
           />
         </div>
@@ -153,14 +201,18 @@ function SuperDashboard() {
             to="/superadmin/moderation"
             className="surface-card rounded-xl border border-border p-4 transition-shadow hover:shadow-md"
           >
-            <span className="text-sm font-semibold text-muted-foreground">Conduct reports pending</span>
+            <span className="text-sm font-semibold text-muted-foreground">
+              Conduct reports pending
+            </span>
             <p className="text-3xl font-bold text-foreground">{data.pendingReports}</p>
           </Link>
           <Link
             to="/superadmin/flags"
             className="surface-card rounded-xl border border-border p-4 transition-shadow hover:shadow-md"
           >
-            <span className="text-sm font-semibold text-muted-foreground">Flagged accounts unreviewed</span>
+            <span className="text-sm font-semibold text-muted-foreground">
+              Flagged accounts unreviewed
+            </span>
             <p className="text-3xl font-bold text-foreground">{data.openFlags}</p>
           </Link>
         </div>

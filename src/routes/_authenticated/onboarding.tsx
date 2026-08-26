@@ -13,7 +13,6 @@ import { signOutAndRedirect } from "@/hooks/useSession";
 import { friendlyError } from "@/lib/validation";
 import { cn } from "@/lib/utils";
 
-
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
@@ -26,7 +25,8 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
       { property: "og:title", content: "Complete your registration — Nikkah+" },
       {
         property: "og:description",
-        content: "Verify your account and choose your mosque to complete your Nikkah+ registration.",
+        content:
+          "Verify your account and choose your mosque to complete your Nikkah+ registration.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -152,10 +152,7 @@ function OnboardingPage() {
         {STEP_ORDER.map((s, i) => (
           <span
             key={s}
-            className={cn(
-              "h-1.5 flex-1 rounded-full",
-              i <= stepIndex ? "bg-primary" : "bg-muted",
-            )}
+            className={cn("h-1.5 flex-1 rounded-full", i <= stepIndex ? "bg-primary" : "bg-muted")}
           />
         ))}
       </div>
@@ -278,8 +275,8 @@ function VerifyStep({
   return (
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
-        Verifying your account helps us keep Nikkah+ safe and genuine for everyone. Choose how
-        you'd like to confirm it's really you.
+        Verifying your account helps us keep Nikkah+ safe and genuine for everyone. Choose how you'd
+        like to confirm it's really you.
       </p>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -446,12 +443,11 @@ function GenderStep({ userId, onDone }: { userId: string; onDone: () => Promise<
     await onDone();
   }
 
-
   return (
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
-        Nikkah+ keeps the experience separate and respectful for brothers and sisters. Please
-        select which applies to you — this cannot be changed later without contacting your mosque.
+        Nikkah+ keeps the experience separate and respectful for brothers and sisters. Please select
+        which applies to you — this cannot be changed later without contacting your mosque.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <ChoiceCard
@@ -534,7 +530,9 @@ function MosqueStep({ userId, onDone }: { userId: string; onDone: () => Promise<
 
     if (existing) {
       setBusy(false);
-      setError("You already have a pending request with this mosque. Please wait for them to review it.");
+      setError(
+        "You already have a pending request with this mosque. Please wait for them to review it.",
+      );
       return;
     }
 
@@ -554,7 +552,6 @@ function MosqueStep({ userId, onDone }: { userId: string; onDone: () => Promise<
     setBusy(false);
     await onDone();
   }
-
 
   return (
     <div className="space-y-5">
@@ -583,8 +580,8 @@ function MosqueStep({ userId, onDone }: { userId: string; onDone: () => Promise<
           <p className="text-sm text-muted-foreground">Searching…</p>
         ) : mosques.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No mosques matched that search. Try a different spelling, or ask your mosque to
-            register with Nikkah+.
+            No mosques matched that search. Try a different spelling, or ask your mosque to register
+            with Nikkah+.
           </p>
         ) : (
           mosques.map((m) => (
@@ -615,7 +612,11 @@ function MosqueStep({ userId, onDone }: { userId: string; onDone: () => Promise<
         </Alert>
       ) : null}
 
-      <Button className="min-h-11 w-full" onClick={() => void confirm()} disabled={!selected || busy}>
+      <Button
+        className="min-h-11 w-full"
+        onClick={() => void confirm()}
+        disabled={!selected || busy}
+      >
         {busy ? "Sending request…" : "Request verification from this mosque"}
       </Button>
     </div>
@@ -654,12 +655,18 @@ function TermsStep({ userId, onDone }: { userId: string; onDone: () => Promise<v
 
       <ul className="space-y-2 text-sm text-muted-foreground">
         <li>
-          <Link to="/terms" className="font-semibold text-primary underline-offset-4 hover:underline">
+          <Link
+            to="/terms"
+            className="font-semibold text-primary underline-offset-4 hover:underline"
+          >
             Terms of Use
           </Link>
         </li>
         <li>
-          <Link to="/privacy" className="font-semibold text-primary underline-offset-4 hover:underline">
+          <Link
+            to="/privacy"
+            className="font-semibold text-primary underline-offset-4 hover:underline"
+          >
             Privacy Policy
           </Link>
         </li>

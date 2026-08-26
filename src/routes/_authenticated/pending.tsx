@@ -36,7 +36,9 @@ function PendingPage() {
     setLoading(true);
     const { data } = await supabase
       .from("mosque_affiliation_requests")
-      .select("status, rejection_reason, mosques(name, city)")
+      .select(
+        "status, rejection_reason, mosques!mosque_affiliation_requests_mosque_id_fkey(name, city)",
+      )
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -46,7 +48,9 @@ function PendingPage() {
       return;
     }
 
-    const mosque = data.mosques as { name: string; city: string | null } | null;
+    const rawMosque = data.mosques as unknown as
+      { name: string; city: string | null } | { name: string; city: string | null }[] | null;
+    const mosque = Array.isArray(rawMosque) ? (rawMosque[0] ?? null) : rawMosque;
     setMosqueName(mosque ? [mosque.name, mosque.city].filter(Boolean).join(", ") : null);
     setStatus(data.status);
     setReason(data.rejection_reason ?? null);

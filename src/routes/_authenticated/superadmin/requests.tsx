@@ -18,7 +18,10 @@ import { REQUEST_STATUS_LABEL, SUPER_META, formatDateTime } from "@/lib/superadm
 
 export const Route = createFileRoute("/_authenticated/superadmin/requests")({
   head: () =>
-    SUPER_META("Requests & matches", "Oversight of every introduction requested across the platform."),
+    SUPER_META(
+      "Requests & matches",
+      "Oversight of every introduction requested across the platform.",
+    ),
   component: RequestsMonitor,
 });
 

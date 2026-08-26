@@ -83,9 +83,7 @@ function RequestCard({
   request: InterestRequestRow;
   children?: React.ReactNode;
 }) {
-  const place = [request.counterpart_city, request.counterpart_country]
-    .filter(Boolean)
-    .join(", ");
+  const place = [request.counterpart_city, request.counterpart_country].filter(Boolean).join(", ");
 
   return (
     <article className="surface-card rounded-xl border border-border p-5">
@@ -167,20 +165,17 @@ function RequestsPage() {
   });
 
   const CLOSED = ["closed_mutual", "closed_declined", "cancelled"] as const;
-  const isClosed = (r: InterestRequestRow) =>
-    (CLOSED as readonly string[]).includes(r.status);
+  const isClosed = (r: InterestRequestRow) => (CLOSED as readonly string[]).includes(r.status);
   const all = requestsQuery.data ?? [];
   const received = all.filter((r) => r.direction === "received" && !isClosed(r));
   const sent = all.filter((r) => r.direction === "sent" && !isClosed(r));
   const history = all.filter(isClosed);
-
 
   return (
     <MemberShell
       title="Interest requests"
       description="Every introduction here is known to your mosque. Take your time — there is no obligation to answer immediately, and declining is always an honourable choice."
     >
-
       {requestsQuery.isPending ? (
         <div className="mt-8 space-y-4">
           <Skeleton className="h-40 w-full rounded-xl" />
@@ -199,7 +194,6 @@ function RequestsPage() {
               History ({history.length})
             </TabsTrigger>
           </TabsList>
-
 
           <TabsContent value="received" className="mt-5 space-y-4">
             {received.length === 0 ? (
@@ -230,9 +224,9 @@ function RequestsPage() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Decline this request?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              The other member will simply be told the request has closed. No
-                              reason is shared, and your decision remains private between you and
-                              your mosque.
+                              The other member will simply be told the request has closed. No reason
+                              is shared, and your decision remains private between you and your
+                              mosque.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -320,7 +314,6 @@ function RequestsPage() {
               ))
             )}
           </TabsContent>
-
         </Tabs>
       )}
     </MemberShell>

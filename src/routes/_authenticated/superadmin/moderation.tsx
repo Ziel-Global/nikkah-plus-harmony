@@ -130,7 +130,9 @@ function ModerationPage() {
 
         <TabsContent value={tab} className="mt-4 space-y-3">
           {isLoading ? (
-            Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)
+            Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-24 rounded-xl" />
+            ))
           ) : rows.length === 0 ? (
             <p className="text-sm text-muted-foreground">Nothing in this queue.</p>
           ) : (

@@ -27,7 +27,6 @@ function DashboardPage() {
       description="Your mosque has verified your affiliation. Manage your profile, introductions and active match from here."
     >
       <div className="space-y-5">
-
         <div className="rounded-lg border border-border bg-muted p-4">
           <h2 className="text-h3 text-foreground">Your marriage profile</h2>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -44,14 +43,16 @@ function DashboardPage() {
             Browse mosque-verified members and send an interest request when someone feels right.
           </p>
           <Button asChild variant="outline" className="mt-4 min-h-11">
-            <Link to="/browse" search={DEFAULT_FILTERS}>Browse members</Link>
+            <Link to="/browse" search={DEFAULT_FILTERS}>
+              Browse members
+            </Link>
           </Button>
         </div>
         <div className="rounded-lg border border-border bg-muted p-4">
           <h2 className="text-h3 text-foreground">Interest requests</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Review introductions you have sent and received, and open your active match when one
-            has been agreed.
+            Review introductions you have sent and received, and open your active match when one has
+            been agreed.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Button asChild variant="outline" className="min-h-11">

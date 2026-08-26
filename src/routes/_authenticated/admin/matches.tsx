@@ -10,10 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/admin/matches")({
   head: () =>
-    ADMIN_META(
-      "Requests & matches",
-      "A read-only view of introductions connected to your mosque.",
-    ),
+    ADMIN_META("Requests & matches", "A read-only view of introductions connected to your mosque."),
   component: MatchesPage,
 });
 
@@ -27,7 +24,9 @@ type RequestRow = {
 };
 
 function MatchesPage() {
-  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as { mosques: AdminMosque[] };
+  const { mosques } = useRouteContext({ from: "/_authenticated/admin" }) as {
+    mosques: AdminMosque[];
+  };
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "matches", mosques.map((m) => m.id)],
@@ -61,7 +60,9 @@ function MatchesPage() {
       <div className="mb-5 flex items-start gap-3 rounded-xl border border-secondary/50 bg-secondary/10 p-4">
         <Lock className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
         <div>
-          <p className="font-semibold text-foreground">Read-only — mosques do not control matches</p>
+          <p className="font-semibold text-foreground">
+            Read-only — mosques do not control matches
+          </p>
           <p className="mt-1 text-sm text-muted-foreground">
             There are no accept, decline or close actions on this page by design. Members and their
             families decide who they proceed with; messages, shared contact details and closing
@@ -73,9 +74,7 @@ function MatchesPage() {
       {isLoading ? (
         <Skeleton className="h-40 w-full" />
       ) : (data?.requests.length ?? 0) === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          No introductions involving your mosque yet.
-        </p>
+        <p className="text-sm text-muted-foreground">No introductions involving your mosque yet.</p>
       ) : (
         <ul className="space-y-3">
           {data?.requests.map((row) => (

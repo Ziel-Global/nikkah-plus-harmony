@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import type { BrowseFilters } from "@/lib/browse";
 import { DEFAULT_FILTERS } from "@/lib/browse";
-import {
-  EDUCATION_LEVELS,
-  MARITAL_STATUS,
-  PRACTICE_LEVELS,
-} from "@/lib/profile-options";
+import { EDUCATION_LEVELS, MARITAL_STATUS, PRACTICE_LEVELS } from "@/lib/profile-options";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

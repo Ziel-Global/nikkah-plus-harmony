@@ -108,7 +108,10 @@ export function PhotoManager({
     if (!profileId) return;
     setBusy(true);
     await supabase.from("profile_photos").update({ is_primary: false }).eq("profile_id", profileId);
-    const { error } = await supabase.from("profile_photos").update({ is_primary: true }).eq("id", id);
+    const { error } = await supabase
+      .from("profile_photos")
+      .update({ is_primary: true })
+      .eq("id", id);
     setBusy(false);
     if (error) toast.error("We couldn't set that as your main photo.");
     else void load();
@@ -178,8 +181,8 @@ export function PhotoManager({
         </ul>
       ) : (
         <p className="text-sm text-muted-foreground">
-          No photographs added yet. Photographs are optional and remain hidden until an
-          introduction is agreed.
+          No photographs added yet. Photographs are optional and remain hidden until an introduction
+          is agreed.
         </p>
       )}
 

@@ -45,11 +45,7 @@ export function validatePassword(value: string): string | null {
   return `Your password still needs: ${failed.map((r) => r.label.toLowerCase()).join(", ")}.`;
 }
 
-export function validateRequiredText(
-  value: string,
-  label: string,
-  max?: number,
-): string | null {
+export function validateRequiredText(value: string, label: string, max?: number): string | null {
   const v = value.trim();
   if (!v) return `${label} cannot be blank.`;
   if (max && v.length > max) return `${label} must be ${max} characters or fewer.`;
@@ -110,11 +106,12 @@ export function validateImageFile(file: File, maxBytes: number): string | null {
  * Turns raw Postgres/Supabase errors into plain language. Never show a raw
  * constraint violation to a member.
  */
-export function friendlyError(error: unknown, fallback = "Something didn't work. Please try again."): string {
+export function friendlyError(
+  error: unknown,
+  fallback = "Something didn't work. Please try again.",
+): string {
   const raw =
-    typeof error === "string"
-      ? error
-      : ((error as { message?: string } | null)?.message ?? "");
+    typeof error === "string" ? error : ((error as { message?: string } | null)?.message ?? "");
   const m = raw.toLowerCase();
 
   if (!m) return fallback;

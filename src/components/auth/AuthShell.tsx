@@ -30,7 +30,9 @@ export function AuthShell({
             {intro ? <div className="text-body mt-3 text-muted-foreground">{intro}</div> : null}
             <div className="mt-6">{children}</div>
           </div>
-          {footer ? <div className="mt-5 text-center text-sm text-muted-foreground">{footer}</div> : null}
+          {footer ? (
+            <div className="mt-5 text-center text-sm text-muted-foreground">{footer}</div>
+          ) : null}
         </div>
       </main>
 

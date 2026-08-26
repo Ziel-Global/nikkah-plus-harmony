@@ -87,7 +87,7 @@ function ResetPasswordPage() {
           <Label htmlFor="new-password">New password</Label>
           <PasswordInput
             id="new-password"
-                        autoComplete="new-password"
+            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={!ready}
@@ -98,7 +98,7 @@ function ResetPasswordPage() {
           <Label htmlFor="new-confirm">Confirm new password</Label>
           <PasswordInput
             id="new-confirm"
-                        autoComplete="new-password"
+            autoComplete="new-password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             disabled={!ready}

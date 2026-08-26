@@ -1,9 +1,4 @@
-export const MARITAL_STATUS = [
-  "Never married",
-  "Divorced",
-  "Widowed",
-  "Separated",
-] as const;
+export const MARITAL_STATUS = ["Never married", "Divorced", "Widowed", "Separated"] as const;
 
 export const EDUCATION_LEVELS = [
   "Secondary school",

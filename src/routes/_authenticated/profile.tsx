@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { ProfileSection } from "@/components/profile/ProfileSection";
 import { PrivacyPanel } from "@/components/profile/PrivacyPanel";
 import { PhotoManager } from "@/components/profile/PhotoManager";
+import { ProfileBasicInfoForm } from "@/components/profile/ProfileBasicInfoForm";
+import { ProfileBackgroundForm } from "@/components/profile/ProfileBackgroundForm";
+import { ProfilePreferencesForm } from "@/components/profile/ProfilePreferencesForm";
 import {
   SelectField,
   TagField,
@@ -303,7 +306,11 @@ function ProfilePage() {
       date_of_birth: validateDateOfBirth(form.date_of_birth),
       marital_status: validateOneOf(form.marital_status, MARITAL_STATUS, "a marital status"),
       height_cm: validateHeight(form.height_cm),
-      education_level: validateOneOf(form.education_level, EDUCATION_LEVELS, "a level of education"),
+      education_level: validateOneOf(
+        form.education_level,
+        EDUCATION_LEVELS,
+        "a level of education",
+      ),
       employment_status: validateOneOf(form.employment_status, EMPLOYMENT_STATUS, "your situation"),
       religious_practice_level: validateOneOf(
         form.religious_practice_level,
@@ -350,7 +357,6 @@ function ProfilePage() {
     setSavingKey(key);
     const patch: Record<string, unknown> = {};
     for (const f of fields) patch[f] = toDbValue(f, form);
-
 
     const id = await ensureProfile(patch);
     if (!id) {
@@ -511,461 +517,199 @@ function ProfilePage() {
       title="Your marriage profile"
       description="This is how your mosque, and one day a prospective spouse and their family, will come to know you. Write it as you would speak about yourself to an elder — honestly, warmly, and without exaggeration. Each section saves on its own, so there is no rush."
     >
+      <div className={cn("rounded-lg border p-4", toneClass)}>
+        <p className="text-caption">Profile status</p>
+        <p className="text-h3 mt-1 text-foreground">{statusCopy.label}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{statusCopy.note}</p>
 
-        <div className={cn("rounded-lg border p-4", toneClass)}>
-          <p className="text-caption">Profile status</p>
-          <p className="text-h3 mt-1 text-foreground">{statusCopy.label}</p>
-          <p className="mt-2 text-sm text-muted-foreground">{statusCopy.note}</p>
+        {status === "rejected" && rejectionReason ? (
+          <div className="mt-3 rounded-md border border-destructive/40 bg-card p-3">
+            <p className="text-sm font-semibold text-foreground">What your mosque has asked for</p>
+            <p className="mt-1 text-sm text-muted-foreground">{rejectionReason}</p>
+          </div>
+        ) : null}
 
-          {status === "rejected" && rejectionReason ? (
-            <div className="mt-3 rounded-md border border-destructive/40 bg-card p-3">
-              <p className="text-sm font-semibold text-foreground">What your mosque has asked for</p>
-              <p className="mt-1 text-sm text-muted-foreground">{rejectionReason}</p>
+        {status === "approved" ? (
+          <Button
+            type="button"
+            variant={unlocked ? "secondary" : "default"}
+            className="mt-4 min-h-11"
+            onClick={() => setUnlocked((v) => !v)}
+          >
+            {unlocked ? "Stop editing" : "Make changes"}
+          </Button>
+        ) : null}
+
+        {status === "approved" && unlocked ? (
+          <p className="text-caption mt-3">
+            Any change you save will return your profile to your mosque for a fresh review — it will
+            not stay approved in the meantime.
+          </p>
+        ) : null}
+      </div>
+
+      <nav
+        aria-label="Profile sections"
+        className="sticky top-0 z-10 -mx-4 mt-6 bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6"
+      >
+        <ul className="flex gap-2 overflow-x-auto pb-1">
+          {SECTIONS.map((s) => (
+            <li key={s.id}>
+              <a
+                href={`#${s.id}`}
+                className="inline-flex min-h-9 items-center rounded-full border border-border bg-card px-3 text-xs font-semibold whitespace-nowrap text-foreground/80 transition-colors hover:bg-accent hover:text-primary"
+              >
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div className="mt-4 space-y-6">
+        <ProfileBasicInfoForm
+          form={form}
+          locked={locked}
+          savingKey={savingKey}
+          savedKey={savedKey}
+          fieldErrors={fieldErrors}
+          onChange={(patch) => setForm((prev) => ({ ...prev, ...patch }))}
+          onSaveSection={(key) => void saveSection(key)}
+        />
+
+        <ProfileBackgroundForm
+          form={form}
+          locked={locked}
+          savingKey={savingKey}
+          savedKey={savedKey}
+          fieldErrors={fieldErrors}
+          onChange={(patch) => setForm((prev) => ({ ...prev, ...patch }))}
+          onSaveSection={(key) => void saveSection(key)}
+        />
+
+        <ProfilePreferencesForm
+          form={form}
+          locked={locked}
+          savingKey={savingKey}
+          savedKey={savedKey}
+          fieldErrors={fieldErrors}
+          onChange={(patch) => setForm((prev) => ({ ...prev, ...patch }))}
+          onSaveSection={(key) => void saveSection(key)}
+        />
+
+        <ProfileSection
+          id="wali"
+          title="Your wali or guardian"
+          intro="The person who will be present for conversations and give their blessing. Their details are shared only with your mosque."
+          readOnly={locked}
+          saving={savingKey === "wali"}
+          saved={savedKey === "wali"}
+          onSave={() => void saveWali()}
+        >
+          <TextField
+            id="wali_name"
+            label="Their name"
+            value={wali.name}
+            readOnly={locked}
+            max={120}
+            error={waliErrors.name}
+            onChange={(v) => setWali({ ...wali, name: v })}
+          />
+          <TextField
+            id="wali_relationship"
+            label="Relationship to you"
+            hint="Father, brother, uncle, or an imam acting as wali."
+            value={wali.relationship}
+            readOnly={locked}
+            max={80}
+            onChange={(v) => setWali({ ...wali, relationship: v })}
+          />
+          <TextField
+            id="wali_phone"
+            label="Contact number"
+            type="tel"
+            value={wali.contact_phone}
+            readOnly={locked}
+            max={32}
+            error={waliErrors.contact_phone}
+            onChange={(v) => setWali({ ...wali, contact_phone: v })}
+          />
+          <TextField
+            id="wali_email"
+            label="Contact email"
+            type="email"
+            value={wali.contact_email}
+            readOnly={locked}
+            max={255}
+            error={waliErrors.contact_email}
+            onChange={(v) => setWali({ ...wali, contact_email: v })}
+          />
+          <TextAreaField
+            id="wali_preferences"
+            label="How they would like to be involved"
+            hint="For example: to be contacted first, or to be present at every conversation."
+            value={wali.approval_preferences}
+            readOnly={locked}
+            limit={400}
+            onChange={(v) => setWali({ ...wali, approval_preferences: v })}
+          />
+        </ProfileSection>
+
+        <ProfileSection
+          id="photos"
+          title="Photographs"
+          intro="Entirely optional. Nothing is browsable — photographs stay hidden until an introduction is agreed."
+          readOnly={locked}
+        >
+          {userId ? <PhotoManager profileId={profileId} userId={userId} readOnly={locked} /> : null}
+        </ProfileSection>
+
+        <ProfileSection
+          id="privacy"
+          title="Who sees what"
+          intro="Choose, detail by detail, what a matched member may see and what stays with your mosque alone. Anything you leave as “mosque admin only” is never shown to other members."
+          readOnly={locked}
+          saving={savingKey === "privacy"}
+          saved={savedKey === "privacy"}
+          onSave={() => void savePrivacy()}
+        >
+          <PrivacyPanel settings={privacy} onChange={setPrivacy} readOnly={locked} />
+        </ProfileSection>
+
+        <section className="surface-card p-5 sm:p-7">
+          <h2 className="text-h2 text-foreground">Ready for your mosque to review?</h2>
+          <p className="text-body mt-2 text-muted-foreground">
+            When you submit, your mosque will read your profile before anyone else can. You can keep
+            refining it while it is with them.
+          </p>
+
+          {missing.length > 0 ? (
+            <div className="mt-4 rounded-lg border border-border bg-muted p-4">
+              <p className="text-sm font-semibold text-foreground">Still to add</p>
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                {missing.map((m) => (
+                  <li key={m}>{m}</li>
+                ))}
+              </ul>
             </div>
           ) : null}
 
-          {status === "approved" ? (
+          <div className="mt-5 flex flex-wrap gap-3">
             <Button
               type="button"
-              variant={unlocked ? "secondary" : "default"}
-              className="mt-4 min-h-11"
-              onClick={() => setUnlocked((v) => !v)}
+              className="min-h-11"
+              disabled={submitting || missing.length > 0 || status === "approved"}
+              onClick={() => void submitForReview()}
             >
-              {unlocked ? "Stop editing" : "Make changes"}
+              {submitting ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
+              {status === "submitted" ? "Resubmit for review" : "Submit for review"}
             </Button>
-          ) : null}
-
-          {status === "approved" && unlocked ? (
-            <p className="text-caption mt-3">
-              Any change you save will return your profile to your mosque for a fresh review — it
-              will not stay approved in the meantime.
-            </p>
-          ) : null}
-        </div>
-
-        <nav aria-label="Profile sections" className="sticky top-0 z-10 -mx-4 mt-6 bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
-          <ul className="flex gap-2 overflow-x-auto pb-1">
-            {SECTIONS.map((s) => (
-              <li key={s.id}>
-                <a
-                  href={`#${s.id}`}
-                  className="inline-flex min-h-9 items-center rounded-full border border-border bg-card px-3 text-xs font-semibold whitespace-nowrap text-foreground/80 transition-colors hover:bg-accent hover:text-primary"
-                >
-                  {s.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="mt-4 space-y-6">
-          <ProfileSection
-            id="basics"
-            title="Basic information"
-            intro="The essentials your mosque needs to recognise you."
-            readOnly={locked}
-            saving={savingKey === "basics"}
-            saved={savedKey === "basics"}
-            onSave={() => void saveSection("basics")}
-          >
-            <TextField
-              id="display_name"
-              label="Name to be known by"
-              hint="A first name or family name is enough — full names are only shared with your mosque."
-              value={form.display_name}
-              readOnly={locked}
-              max={80}
-              error={fieldErrors.display_name}
-              onChange={(v) => setForm({ ...form, display_name: v })}
-            />
-            <TextField
-              id="date_of_birth"
-              label="Date of birth"
-              hint="You must be at least 18 years old to use Nikkah+."
-              type="date"
-              value={form.date_of_birth}
-              readOnly={locked}
-              error={fieldErrors.date_of_birth}
-              onChange={(v) => setForm({ ...form, date_of_birth: v })}
-            />
-            <SelectField
-              id="marital_status"
-              label="Marital status"
-              value={form.marital_status}
-              options={MARITAL_STATUS}
-              readOnly={locked}
-              error={fieldErrors.marital_status}
-              onChange={(v) => setForm({ ...form, marital_status: v })}
-            />
-
-            <TextField
-              id="nationality"
-              label="Nationality"
-              value={form.nationality}
-              readOnly={locked}
-              max={80}
-              onChange={(v) => setForm({ ...form, nationality: v })}
-            />
-            <TextField
-              id="ethnicity"
-              label="Ethnicity or heritage"
-              value={form.ethnicity}
-              readOnly={locked}
-              max={80}
-              onChange={(v) => setForm({ ...form, ethnicity: v })}
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            id="location"
-            title="Where you live"
-            intro="Helpful for families thinking about distance and settling."
-            readOnly={locked}
-            saving={savingKey === "location"}
-            saved={savedKey === "location"}
-            onSave={() => void saveSection("location")}
-          >
-            <TextField
-              id="country"
-              label="Country"
-              value={form.country}
-              readOnly={locked}
-              max={80}
-              onChange={(v) => setForm({ ...form, country: v })}
-            />
-            <TextField
-              id="city"
-              label="City or town"
-              value={form.city}
-              readOnly={locked}
-              max={80}
-              onChange={(v) => setForm({ ...form, city: v })}
-            />
-            <TextField
-              id="area"
-              label="Area"
-              hint="Optional — a borough or district, never your address."
-              value={form.area}
-              readOnly={locked}
-              max={80}
-              onChange={(v) => setForm({ ...form, area: v })}
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            id="physical"
-            title="Physical details"
-            intro="Kept modest and brief — only what genuinely helps someone picture you."
-            readOnly={locked}
-            saving={savingKey === "physical"}
-            saved={savedKey === "physical"}
-            onSave={() => void saveSection("physical")}
-          >
-            <TextField
-              id="height_cm"
-              label="Height (cm)"
-              hint="Between 100cm and 250cm."
-              type="number"
-              value={form.height_cm}
-              readOnly={locked}
-              error={fieldErrors.height_cm}
-              onChange={(v) => setForm({ ...form, height_cm: v })}
-            />
-            <TextAreaField
-              id="appearance_description"
-              label="A short description"
-              hint="A sentence or two, written respectfully."
-              value={form.appearance_description}
-              readOnly={locked}
-              limit={300}
-              onChange={(v) => setForm({ ...form, appearance_description: v })}
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            id="education"
-            title="Education & work"
-            intro="A sense of how you spend your days and what you have studied."
-            readOnly={locked}
-            saving={savingKey === "education"}
-            saved={savedKey === "education"}
-            onSave={() => void saveSection("education")}
-          >
-            <SelectField
-              id="education_level"
-              label="Level of education"
-              value={form.education_level}
-              options={EDUCATION_LEVELS}
-              readOnly={locked}
-              error={fieldErrors.education_level}
-              onChange={(v) => setForm({ ...form, education_level: v })}
-            />
-            <TextField
-              id="profession"
-              label="Profession or field"
-              value={form.profession}
-              readOnly={locked}
-              max={120}
-              onChange={(v) => setForm({ ...form, profession: v })}
-            />
-            <SelectField
-              id="employment_status"
-              label="Current situation"
-              value={form.employment_status}
-              options={EMPLOYMENT_STATUS}
-              readOnly={locked}
-              error={fieldErrors.employment_status}
-              onChange={(v) => setForm({ ...form, employment_status: v })}
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            id="religion"
-            title="Your deen"
-            intro="The heart of the matter — where you are in your practice today, not where you hope to be."
-            readOnly={locked}
-            saving={savingKey === "religion"}
-            saved={savedKey === "religion"}
-            onSave={() => void saveSection("religion")}
-          >
-            <SelectField
-              id="religious_practice_level"
-              label="How you practise"
-              value={form.religious_practice_level}
-              options={PRACTICE_LEVELS}
-              readOnly={locked}
-              error={fieldErrors.religious_practice_level}
-              onChange={(v) => setForm({ ...form, religious_practice_level: v })}
-            />
-            <SelectField
-              id="sect_or_school_of_thought"
-              label="School of thought"
-              value={form.sect_or_school_of_thought}
-              options={SCHOOLS_OF_THOUGHT}
-              readOnly={locked}
-              error={fieldErrors.sect_or_school_of_thought}
-              onChange={(v) => setForm({ ...form, sect_or_school_of_thought: v })}
-            />
-            <TagField
-              id="languages_spoken"
-              label="Languages you speak"
-              hint="Press Enter after each language."
-              values={form.languages_spoken}
-              readOnly={locked}
-              placeholder="English, Urdu, Arabic…"
-              onChange={(v) => setForm({ ...form, languages_spoken: v })}
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            id="family"
-            title="Family background"
-            intro="Marriage joins two families, so a little context goes a long way."
-            readOnly={locked}
-            saving={savingKey === "family"}
-            saved={savedKey === "family"}
-            onSave={() => void saveSection("family")}
-          >
-            <TextField
-              id="family_origin"
-              label="Family origin"
-              hint="Where your family is from."
-              value={form.family_origin}
-              readOnly={locked}
-              max={120}
-              onChange={(v) => setForm({ ...form, family_origin: v })}
-            />
-            <TextAreaField
-              id="family_values"
-              label="Family values"
-              value={form.family_values}
-              readOnly={locked}
-              limit={400}
-              onChange={(v) => setForm({ ...form, family_values: v })}
-            />
-            <TextAreaField
-              id="household_background"
-              label="Household"
-              hint="Who you live with, siblings, and anything a family would kindly want to know."
-              value={form.household_background}
-              readOnly={locked}
-              limit={400}
-              onChange={(v) => setForm({ ...form, household_background: v })}
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            id="preferences"
-            title="What you are looking for"
-            intro="Be sincere and reasonable — describe the character you hope for, rather than a checklist."
-            readOnly={locked}
-            saving={savingKey === "preferences"}
-            saved={savedKey === "preferences"}
-            onSave={() => void saveSection("preferences")}
-          >
-            <TextAreaField
-              id="preferred_spouse_criteria"
-              label="Qualities you hope for in a spouse"
-              value={form.preferred_spouse_criteria}
-              readOnly={locked}
-              limit={600}
-              onChange={(v) => setForm({ ...form, preferred_spouse_criteria: v })}
-            />
-            <ToggleField
-              id="willingness_to_relocate"
-              label="Open to relocating"
-              hint="Would you consider moving city or country after marriage?"
-              checked={form.willingness_to_relocate}
-              readOnly={locked}
-              onChange={(v) => setForm({ ...form, willingness_to_relocate: v })}
-            />
-            <SelectField
-              id="expected_marriage_timeline"
-              label="Timeline you have in mind"
-              value={form.expected_marriage_timeline}
-              options={MARRIAGE_TIMELINE}
-              readOnly={locked}
-              error={fieldErrors.expected_marriage_timeline}
-              onChange={(v) => setForm({ ...form, expected_marriage_timeline: v })}
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            id="introduction"
-            title="A short introduction"
-            intro="A few sentences in your own words. This is the part people remember."
-            readOnly={locked}
-            saving={savingKey === "introduction"}
-            saved={savedKey === "introduction"}
-            onSave={() => void saveSection("introduction")}
-          >
-            <TextAreaField
-              id="personal_bio"
-              label="About you"
-              hint="Your character, what matters to you, and what you hope for from marriage."
-              value={form.personal_bio}
-              readOnly={locked}
-              rows={6}
-              limit={BIO_LIMIT}
-              onChange={(v) => setForm({ ...form, personal_bio: v })}
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            id="wali"
-            title="Your wali or guardian"
-            intro="The person who will be present for conversations and give their blessing. Their details are shared only with your mosque."
-            readOnly={locked}
-            saving={savingKey === "wali"}
-            saved={savedKey === "wali"}
-            onSave={() => void saveWali()}
-          >
-            <TextField
-              id="wali_name"
-              label="Their name"
-              value={wali.name}
-              readOnly={locked}
-              max={120}
-              error={waliErrors.name}
-              onChange={(v) => setWali({ ...wali, name: v })}
-            />
-            <TextField
-              id="wali_relationship"
-              label="Relationship to you"
-              hint="Father, brother, uncle, or an imam acting as wali."
-              value={wali.relationship}
-              readOnly={locked}
-              max={80}
-              onChange={(v) => setWali({ ...wali, relationship: v })}
-            />
-            <TextField
-              id="wali_phone"
-              label="Contact number"
-              type="tel"
-              value={wali.contact_phone}
-              readOnly={locked}
-              max={32}
-              error={waliErrors.contact_phone}
-              onChange={(v) => setWali({ ...wali, contact_phone: v })}
-            />
-            <TextField
-              id="wali_email"
-              label="Contact email"
-              type="email"
-              value={wali.contact_email}
-              readOnly={locked}
-              max={255}
-              error={waliErrors.contact_email}
-              onChange={(v) => setWali({ ...wali, contact_email: v })}
-            />
-            <TextAreaField
-              id="wali_preferences"
-              label="How they would like to be involved"
-              hint="For example: to be contacted first, or to be present at every conversation."
-              value={wali.approval_preferences}
-              readOnly={locked}
-              limit={400}
-              onChange={(v) => setWali({ ...wali, approval_preferences: v })}
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            id="photos"
-            title="Photographs"
-            intro="Entirely optional. Nothing is browsable — photographs stay hidden until an introduction is agreed."
-            readOnly={locked}
-          >
-            {userId ? (
-              <PhotoManager profileId={profileId} userId={userId} readOnly={locked} />
-            ) : null}
-          </ProfileSection>
-
-          <ProfileSection
-            id="privacy"
-            title="Who sees what"
-            intro="Choose, detail by detail, what a matched member may see and what stays with your mosque alone. Anything you leave as “mosque admin only” is never shown to other members."
-            readOnly={locked}
-            saving={savingKey === "privacy"}
-            saved={savedKey === "privacy"}
-            onSave={() => void savePrivacy()}
-          >
-            <PrivacyPanel settings={privacy} onChange={setPrivacy} readOnly={locked} />
-          </ProfileSection>
-
-          <section className="surface-card p-5 sm:p-7">
-            <h2 className="text-h2 text-foreground">Ready for your mosque to review?</h2>
-            <p className="text-body mt-2 text-muted-foreground">
-              When you submit, your mosque will read your profile before anyone else can. You can
-              keep refining it while it is with them.
-            </p>
-
-            {missing.length > 0 ? (
-              <div className="mt-4 rounded-lg border border-border bg-muted p-4">
-                <p className="text-sm font-semibold text-foreground">Still to add</p>
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                  {missing.map((m) => (
-                    <li key={m}>{m}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Button
-                type="button"
-                className="min-h-11"
-                disabled={submitting || missing.length > 0 || status === "approved"}
-                onClick={() => void submitForReview()}
-              >
-                {submitting ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
-                {status === "submitted" ? "Resubmit for review" : "Submit for review"}
-              </Button>
-              <Button asChild variant="secondary" className="min-h-11">
-                <Link to="/dashboard">Back to dashboard</Link>
-              </Button>
-            </div>
-          </section>
-        </div>
+            <Button asChild variant="secondary" className="min-h-11">
+              <Link to="/dashboard">Back to dashboard</Link>
+            </Button>
+          </div>
+        </section>
+      </div>
     </MemberShell>
   );
 }

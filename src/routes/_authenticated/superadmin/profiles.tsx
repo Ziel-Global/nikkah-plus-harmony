@@ -81,7 +81,12 @@ function ProfilesPage() {
       .filter((r) => (tab === "all" ? true : r.status === tab))
       .filter((r) =>
         term
-          ? [r.display_name ?? "", r.profiles?.email ?? "", r.city ?? "", r.profiles?.mosques?.name ?? ""]
+          ? [
+              r.display_name ?? "",
+              r.profiles?.email ?? "",
+              r.city ?? "",
+              r.profiles?.mosques?.name ?? "",
+            ]
               .join(" ")
               .toLowerCase()
               .includes(term)
@@ -110,7 +115,11 @@ function ProfilesPage() {
         })
         .eq("id", row.id);
       if (error) throw error;
-      await logActivity(approve ? "profile_approved" : "profile_rejected", "marriage_profiles", row.id);
+      await logActivity(
+        approve ? "profile_approved" : "profile_rejected",
+        "marriage_profiles",
+        row.id,
+      );
     },
     onSuccess: (_d, vars) => {
       toast.success(vars.approve ? "Profile approved." : "Profile returned for changes.");
@@ -176,7 +185,9 @@ function ProfilesPage() {
 
         <TabsContent value={tab} className="mt-4 space-y-3">
           {isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)
+            Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-24 rounded-xl" />
+            ))
           ) : rows.length === 0 ? (
             <p className="text-sm text-muted-foreground">Nothing here right now.</p>
           ) : (
@@ -251,7 +262,8 @@ function ProfilesPage() {
             <Button
               disabled={reason.trim().length < 5 || review.isPending}
               onClick={() =>
-                rejecting && review.mutate({ row: rejecting, approve: false, rejectionReason: reason })
+                rejecting &&
+                review.mutate({ row: rejecting, approve: false, rejectionReason: reason })
               }
             >
               Return profile
@@ -295,7 +307,10 @@ function ProfilesPage() {
             <Button variant="ghost" onClick={() => setEditing(null)}>
               Cancel
             </Button>
-            <Button disabled={saveEdit.isPending} onClick={() => editing && saveEdit.mutate(editing)}>
+            <Button
+              disabled={saveEdit.isPending}
+              onClick={() => editing && saveEdit.mutate(editing)}
+            >
               Save changes
             </Button>
           </DialogFooter>

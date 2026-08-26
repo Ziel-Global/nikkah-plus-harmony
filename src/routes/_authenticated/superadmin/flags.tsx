@@ -12,7 +12,10 @@ import { SUPER_META, formatDateTime, logActivity } from "@/lib/superadmin";
 
 export const Route = createFileRoute("/_authenticated/superadmin/flags")({
   head: () =>
-    SUPER_META("Inactive flags", "Review accounts flagged as dormant and decide what happens next."),
+    SUPER_META(
+      "Inactive flags",
+      "Review accounts flagged as dormant and decide what happens next.",
+    ),
   component: FlagsPage,
 });
 
@@ -107,7 +110,9 @@ function FlagsPage() {
 
         <TabsContent value={tab} className="mt-4 space-y-3">
           {isLoading ? (
-            Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)
+            Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-20 rounded-xl" />
+            ))
           ) : rows.length === 0 ? (
             <p className="text-sm text-muted-foreground">No flags in this view.</p>
           ) : (
@@ -115,7 +120,9 @@ function FlagsPage() {
               <div key={row.id} className="surface-card rounded-xl border border-border p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="font-semibold text-foreground">{row.profiles?.email ?? row.user_id}</p>
+                    <p className="font-semibold text-foreground">
+                      {row.profiles?.email ?? row.user_id}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       Flagged {formatDateTime(row.flagged_at)} · last sign-in{" "}
                       {formatDateTime(row.profiles?.last_login_at ?? null)}

@@ -31,20 +31,20 @@ function str(value: unknown) {
 
 export const Route = createFileRoute("/_authenticated/browse")({
   validateSearch: (search: Record<string, unknown>): BrowseFilters => ({
-    minAge: num(search['minAge'], DEFAULT_FILTERS.minAge),
-    maxAge: num(search['maxAge'], DEFAULT_FILTERS.maxAge),
-    country: str(search['country']),
-    city: str(search['city']),
-    nationality: str(search['nationality']),
-    education: str(search['education']),
-    marital: str(search['marital']),
-    practice: str(search['practice']),
-    languages: str(search['languages']),
-    relocate: str(search['relocate']),
-    mosque: str(search['mosque']),
-    profession: str(search['profession']),
-    family: str(search['family']),
-    page: Math.max(1, num(search['page'], 1)),
+    minAge: num(search["minAge"], DEFAULT_FILTERS.minAge),
+    maxAge: num(search["maxAge"], DEFAULT_FILTERS.maxAge),
+    country: str(search["country"]),
+    city: str(search["city"]),
+    nationality: str(search["nationality"]),
+    education: str(search["education"]),
+    marital: str(search["marital"]),
+    practice: str(search["practice"]),
+    languages: str(search["languages"]),
+    relocate: str(search["relocate"]),
+    mosque: str(search["mosque"]),
+    profession: str(search["profession"]),
+    family: str(search["family"]),
+    page: Math.max(1, num(search["page"], 1)),
   }),
   beforeLoad: async () => {
     const { data } = await supabase
@@ -60,8 +60,7 @@ export const Route = createFileRoute("/_authenticated/browse")({
       { title: "Browse members — Nikkah+" },
       {
         name: "description",
-        content:
-          "Browse mosque-verified Nikkah+ members with privacy respected on every profile.",
+        content: "Browse mosque-verified Nikkah+ members with privacy respected on every profile.",
       },
       { property: "og:title", content: "Browse members — Nikkah+" },
       {
@@ -167,7 +166,6 @@ function BrowsePage() {
       title="Members"
       description="Each person here has been verified by their mosque. You will only see the details they have chosen to share openly — everything else stays with their mosque until an introduction is agreed."
     >
-
       {matchQuery.data ? (
         <div className="mb-6">
           <ActiveMatchBanner />
@@ -209,8 +207,8 @@ function BrowsePage() {
             <div className="surface-card rounded-xl border border-border p-8 text-center">
               <h2 className="text-h3 text-foreground">No matches just yet</h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Try widening the age range or clearing a filter or two. New members are verified
-                by their mosques every week.
+                Try widening the age range or clearing a filter or two. New members are verified by
+                their mosques every week.
               </p>
             </div>
           ) : (
