@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "How it works", href: "#how-it-works" },
   { label: "For mosques", href: "#for-mosques" },
   { label: "FAQ", href: "#faq" },
+  { label: "My Local Masjid", to: "/my-local-masjid" },
 ];
 
 export function SiteHeader() {
@@ -47,15 +48,25 @@ export function SiteHeader() {
         </a>
 
         <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="rounded-md px-3 py-2.5 text-sm font-semibold text-foreground/80 transition-colors hover:bg-accent hover:text-primary"
-            >
-              {link.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((link) =>
+            link.to ? (
+              <Link
+                key={link.label}
+                to={link.to}
+                className="rounded-md px-3 py-2.5 text-sm font-semibold text-foreground/80 transition-colors hover:bg-accent hover:text-primary"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                key={link.label}
+                href={link.href}
+                className="rounded-md px-3 py-2.5 text-sm font-semibold text-foreground/80 transition-colors hover:bg-accent hover:text-primary"
+              >
+                {link.label}
+              </a>
+            ),
+          )}
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
@@ -92,16 +103,27 @@ export function SiteHeader() {
             aria-label="Mobile"
             className="surface-card animate-fade-in flex flex-col gap-1 p-3 shadow-[var(--shadow-elevated)]"
           >
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-primary"
-              >
-                {link.label}
-              </a>
-            ))}
+            {NAV_LINKS.map((link) =>
+              link.to ? (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-primary"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-primary"
+                >
+                  {link.label}
+                </a>
+              ),
+            )}
             {signedIn ? (
               <Button asChild className="mt-2 min-h-11 w-full">
                 <Link to="/onboarding" onClick={() => setMenuOpen(false)}>
