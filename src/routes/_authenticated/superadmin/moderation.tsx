@@ -62,13 +62,13 @@ function ModerationPage() {
   const [pending, setPending] = useState<{ report: Report; action: Action } | null>(null);
   const [notes, setNotes] = useState("");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["superadmin", "reports"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("conduct_reports")
         .select(
-          "id, reported_profile_id, reported_by, reason, status, resolution_notes, created_at, resolved_at, marriage_profiles(id, display_name, user_id)",
+          "id, reported_profile_id, reported_by, reason, status, resolution_notes, created_at, resolved_at, marriage_profiles!conduct_reports_reported_profile_id_fkey(id, display_name, user_id)",
         )
         .order("created_at", { ascending: false })
         .limit(1000);
@@ -133,6 +133,16 @@ function ModerationPage() {
             Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="h-24 rounded-xl" />
             ))
+          ) : isError ? (
+            <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-5 text-center">
+              <p className="font-semibold text-foreground">Could not load moderation reports</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {error instanceof Error ? error.message : "An unexpected error occurred."}
+              </p>
+              <Button size="sm" variant="outline" className="mt-4" onClick={() => void refetch()}>
+                Try again
+              </Button>
+            </div>
           ) : rows.length === 0 ? (
             <p className="text-sm text-muted-foreground">Nothing in this queue.</p>
           ) : (

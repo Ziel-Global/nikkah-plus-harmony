@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { friendlyError } from "@/lib/validation";
 import { SuperAdminShell } from "@/components/superadmin/SuperAdminShell";
@@ -25,6 +26,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { SUPER_META, formatDay, logActivity } from "@/lib/superadmin";
+import { EditMosqueAdminModal } from "@/components/superadmin/EditMosqueAdminModal";
+import { ConfirmDeleteModal } from "@/components/superadmin/ConfirmDeleteModal";
 
 export const Route = createFileRoute("/_authenticated/superadmin/mosque-admins")({
   head: () =>
@@ -50,6 +53,7 @@ function MosqueAdminsPage() {
   const [open, setOpen] = useState(false);
   const [adminId, setAdminId] = useState("");
   const [mosqueId, setMosqueId] = useState("");
+  const [editingAssignment, setEditingAssignment] = useState<Assignment | null>(null);
   const [removing, setRemoving] = useState<Assignment | null>(null);
 
   const assignments = useQuery({
@@ -176,13 +180,49 @@ function MosqueAdminsPage() {
                   {row.mosques?.name ?? "Unknown mosque"} · assigned {formatDay(row.created_at)}
                 </p>
               </div>
-              <Button variant="outline" size="sm" onClick={() => setRemoving(row)}>
-                Remove
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  title="Reassign mosque admin"
+                  aria-label="Reassign mosque admin"
+                  className="text-muted-foreground hover:text-foreground"
+                  onClick={() => setEditingAssignment(row)}
+                >
+                  <Pencil className="size-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  title="Remove admin assignment"
+                  aria-label="Remove admin assignment"
+                  className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                  onClick={() => setRemoving(row)}
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </div>
             </div>
           ))
         )}
       </div>
+
+      {/* Edit Mosque Admin Modal */}
+      <EditMosqueAdminModal
+        assignment={editingAssignment}
+        onOpenChange={(open) => !open && setEditingAssignment(null)}
+      />
+
+      {/* Confirm Remove Assignment Modal */}
+      <ConfirmDeleteModal
+        open={Boolean(removing)}
+        onOpenChange={(open) => !open && setRemoving(null)}
+        title="Remove admin assignment?"
+        description={`${removing?.profiles?.email ?? "This admin"} will lose access to manage ${removing?.mosques?.name ?? "this mosque"}.`}
+        confirmText="Remove assignment"
+        loading={unassign.isPending}
+        onConfirm={() => removing && unassign.mutate(removing)}
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
@@ -243,29 +283,6 @@ function MosqueAdminsPage() {
               onClick={() => assign.mutate()}
             >
               Assign
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={Boolean(removing)} onOpenChange={(o) => !o && setRemoving(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Remove assignment</DialogTitle>
-            <DialogDescription>
-              {removing?.profiles?.email} will lose access to {removing?.mosques?.name}.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setRemoving(null)}>
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              disabled={unassign.isPending}
-              onClick={() => removing && unassign.mutate(removing)}
-            >
-              Remove
             </Button>
           </DialogFooter>
         </DialogContent>

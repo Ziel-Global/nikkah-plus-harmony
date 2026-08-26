@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 // Replace these URL strings with your desired destinations.
 // ============================================================================
 export const MARRIAGE_DATABASE_URL = "/"; // e.g. "/" or "https://marriage.mylocalmasjid.com"
-export const MASAIL_URL = "https://masail.mylocalmasjid.com"; // e.g. "https://masail.mylocalmasjid.com"
+export const MASAIL_URL = "https://masail.lovable.app";
 
 export const Route = createFileRoute("/my-local-masjid")({
   head: () => ({

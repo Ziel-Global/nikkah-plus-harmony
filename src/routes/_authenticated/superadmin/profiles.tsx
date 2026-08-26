@@ -60,13 +60,13 @@ function ProfilesPage() {
   const [rejecting, setRejecting] = useState<ProfileRow | null>(null);
   const [reason, setReason] = useState("");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["superadmin", "profiles"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("marriage_profiles")
         .select(
-          "id, user_id, display_name, date_of_birth, city, country, profession, personal_bio, status, rejection_reason, created_at, updated_at, profiles(email, gender, mosques(name))",
+          "id, user_id, display_name, date_of_birth, city, country, profession, personal_bio, status, rejection_reason, created_at, updated_at, profiles!marriage_profiles_user_id_fkey(email, gender, mosques!profiles_mosque_id_fkey(name))",
         )
         .order("updated_at", { ascending: false })
         .limit(1000);
@@ -188,6 +188,16 @@ function ProfilesPage() {
             Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="h-24 rounded-xl" />
             ))
+          ) : isError ? (
+            <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-5 text-center">
+              <p className="font-semibold text-foreground">Could not load profiles</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {error instanceof Error ? error.message : "An unexpected error occurred."}
+              </p>
+              <Button size="sm" variant="outline" className="mt-4" onClick={() => void refetch()}>
+                Try again
+              </Button>
+            </div>
           ) : rows.length === 0 ? (
             <p className="text-sm text-muted-foreground">Nothing here right now.</p>
           ) : (

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { friendlyError, validateOptionalEmail, validatePhone } from "@/lib/validation";
 import { SuperAdminShell } from "@/components/superadmin/SuperAdminShell";
@@ -20,6 +21,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { SUPER_META, formatDay, logActivity } from "@/lib/superadmin";
+import { EditMosqueModal } from "@/components/superadmin/EditMosqueModal";
+import { ConfirmDeleteModal } from "@/components/superadmin/ConfirmDeleteModal";
 
 export const Route = createFileRoute("/_authenticated/superadmin/mosques")({
   head: () => SUPER_META("Mosques", "Add, edit and approve the mosques partnered with Nikkah+."),
@@ -54,6 +57,21 @@ function MosquesPage() {
   const [search, setSearch] = useState("");
   const [form, setForm] = useState<typeof EMPTY | null>(null);
   const [editing, setEditing] = useState<Mosque | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Mosque | null>(null);
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("mosques").delete().eq("id", id);
+      if (error) throw error;
+      await logActivity("delete_mosque", "mosques", id, {});
+    },
+    onSuccess: () => {
+      toast.success("Mosque deleted successfully.");
+      setDeleteTarget(null);
+      void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["superadmin", "mosques"],
@@ -210,29 +228,46 @@ function MosquesPage() {
                     Suspend
                   </Button>
                 )}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    setEditing(m);
-                    setForm({
-                      name: m.name,
-                      address: m.address ?? "",
-                      city: m.city ?? "",
-                      country: m.country ?? "",
-                      contact_email: m.contact_email ?? "",
-                      contact_phone: m.contact_phone ?? "",
-                      description: m.description ?? "",
-                    });
-                  }}
-                >
-                  Edit
-                </Button>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    title="Edit mosque details"
+                    aria-label="Edit mosque details"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={() => setEditing(m)}
+                  >
+                    <Pencil className="size-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    title="Delete mosque"
+                    aria-label="Delete mosque"
+                    className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                    onClick={() => setDeleteTarget(m)}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           ))
         )}
       </div>
+
+      {/* Edit Mosque Modal */}
+      <EditMosqueModal mosque={editing} onOpenChange={(open) => !open && setEditing(null)} />
+
+      {/* Confirm Delete Modal */}
+      <ConfirmDeleteModal
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title={`Delete "${deleteTarget?.name}"?`}
+        description="Are you sure you want to delete this mosque? This action cannot be undone and may affect members affiliated with this mosque."
+        loading={deleteMutation.isPending}
+        onConfirm={() => deleteTarget && deleteMutation.mutate(deleteTarget.id)}
+      />
 
       <Dialog open={Boolean(form)} onOpenChange={(open) => !open && setForm(null)}>
         <DialogContent className="max-h-[85vh] overflow-y-auto">

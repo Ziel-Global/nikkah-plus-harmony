@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ADMIN_META, formatDay, PROFILE_STATUS_LABEL, type AdminMosque } from "@/lib/admin";
@@ -8,6 +9,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -54,6 +62,7 @@ function MembersPage() {
   };
   const mosqueIds = mosques.map((m) => m.id);
   const [search, setSearch] = useState("");
+  const [genderFilter, setGenderFilter] = useState<"all" | "brother" | "sister">("all");
   const [selected, setSelected] = useState<MemberRow | null>(null);
 
   const { data, isLoading } = useQuery({
@@ -80,9 +89,28 @@ function MembersPage() {
     },
   });
 
-  const members = (data?.members ?? []).filter((m) =>
-    search.trim() ? m.email.toLowerCase().includes(search.trim().toLowerCase()) : true,
+  const counts = (data?.members ?? []).reduce(
+    (acc, m) => {
+      acc.all++;
+      const g = m.gender?.toLowerCase();
+      if (g === "male" || g === "brother" || m.role === "male_user") acc.brothers++;
+      else if (g === "female" || g === "sister" || m.role === "female_user") acc.sisters++;
+      return acc;
+    },
+    { all: 0, brothers: 0, sisters: 0 },
   );
+
+  const members = (data?.members ?? []).filter((m) => {
+    if (genderFilter === "brother") {
+      const g = m.gender?.toLowerCase();
+      if (g !== "male" && g !== "brother" && m.role !== "male_user") return false;
+    } else if (genderFilter === "sister") {
+      const g = m.gender?.toLowerCase();
+      if (g !== "female" && g !== "sister" && m.role !== "female_user") return false;
+    }
+    return search.trim() ? m.email.toLowerCase().includes(search.trim().toLowerCase()) : true;
+  });
+
   const selectedProfile = selected ? data?.profilesByUser.get(selected.id) : undefined;
 
   return (
@@ -90,13 +118,31 @@ function MembersPage() {
       title="Linked members"
       description="Everyone affiliated with your mosque. These records are read-only: you can see whether someone has completed a marriage profile, but not manage their introductions."
     >
-      <Input
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-        placeholder="Search by email"
-        className="mb-4 max-w-sm"
-        aria-label="Search members by email"
-      />
+      <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <Input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search by email"
+          className="max-w-sm"
+          aria-label="Search members by email"
+        />
+
+        <div className="w-full sm:w-60">
+          <Select
+            value={genderFilter}
+            onValueChange={(val) => setGenderFilter(val as "all" | "brother" | "sister")}
+          >
+            <SelectTrigger aria-label="Filter members by gender">
+              <SelectValue placeholder="All Members" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Members ({counts.all})</SelectItem>
+              <SelectItem value="brother">Brothers ({counts.brothers})</SelectItem>
+              <SelectItem value="sister">Sisters ({counts.sisters})</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {isLoading ? (
         <Skeleton className="h-40 w-full" />
@@ -126,11 +172,14 @@ function MembersPage() {
                       : "No profile yet"}
                   </Badge>
                   <Button
-                    variant="outline"
-                    className="min-h-11"
+                    variant="ghost"
+                    size="icon-sm"
+                    title="View member details"
+                    aria-label="View member details"
+                    className="text-muted-foreground hover:text-foreground"
                     onClick={() => setSelected(member)}
                   >
-                    View
+                    <Eye className="size-4" />
                   </Button>
                 </div>
               </li>
