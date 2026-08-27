@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/community-guidelines")({
   head: () => ({
     meta: [
-      { title: "Community Guidelines — Nikkah+" },
+      { title: "Community Guidelines — Marriage Database" },
       {
         name: "description",
         content:
-          "The standards of conduct expected of every Nikkah+ member, mosque administrator and family.",
+          "The standards of conduct expected of every Marriage Database member, mosque administrator and family.",
       },
-      { property: "og:title", content: "Community Guidelines — Nikkah+" },
+      { property: "og:title", content: "Community Guidelines — Marriage Database" },
       {
         property: "og:description",
-        content: "The standards of conduct expected of every Nikkah+ member and mosque.",
+        content: "The standards of conduct expected of every Marriage Database member and mosque.",
       },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },

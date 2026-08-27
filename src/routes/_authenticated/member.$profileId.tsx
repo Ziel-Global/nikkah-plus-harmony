@@ -36,15 +36,16 @@ export const Route = createFileRoute("/_authenticated/member/$profileId")({
   },
   head: () => ({
     meta: [
-      { title: "Member profile — Nikkah+" },
+      { title: "Member profile — Marriage Database" },
       {
         name: "description",
-        content: "A mosque-verified Nikkah+ member profile, shared exactly as they chose.",
+        content:
+          "A mosque-verified Marriage Database member profile, shared exactly as they chose.",
       },
-      { property: "og:title", content: "Member profile — Nikkah+" },
+      { property: "og:title", content: "Member profile — Marriage Database" },
       {
         property: "og:description",
-        content: "A mosque-verified Nikkah+ member profile.",
+        content: "A mosque-verified Marriage Database member profile.",
       },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -324,7 +325,8 @@ function MemberDetailPage() {
 
       <p className="mt-6 text-sm text-muted-foreground">
         Some details are shared only with this member’s mosque. Contact details are never shown on
-        Nikkah+ profiles — they are exchanged through your mosques once an introduction is agreed.
+        Marriage Database profiles — they are exchanged through your mosques once an introduction is
+        agreed.
       </p>
     </MemberShell>
   );

@@ -21,16 +21,16 @@ import { useRedirectIfSignedIn } from "@/hooks/useRedirectIfSignedIn";
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Create your account — Nikkah+" },
+      { title: "Create your account — Marriage Database" },
       {
         name: "description",
         content:
-          "Create your Nikkah+ account and get verified by your local mosque to begin the search for a spouse.",
+          "Create your Marriage Database account and get verified by your local mosque to begin the search for a spouse.",
       },
-      { property: "og:title", content: "Create your account — Nikkah+" },
+      { property: "og:title", content: "Create your account — Marriage Database" },
       {
         property: "og:description",
-        content: "Create your Nikkah+ account and get verified by your local mosque.",
+        content: "Create your Marriage Database account and get verified by your local mosque.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

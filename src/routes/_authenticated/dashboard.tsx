@@ -6,13 +6,14 @@ import { DEFAULT_FILTERS } from "@/lib/browse";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Your dashboard — Nikkah+" },
+      { title: "Your dashboard — Marriage Database" },
       {
         name: "description",
-        content: "Your verified Nikkah+ dashboard — manage your profile and introductions.",
+        content:
+          "Your verified Marriage Database dashboard — manage your profile and introductions.",
       },
-      { property: "og:title", content: "Your dashboard — Nikkah+" },
-      { property: "og:description", content: "Your verified Nikkah+ dashboard." },
+      { property: "og:title", content: "Your dashboard — Marriage Database" },
+      { property: "og:description", content: "Your verified Marriage Database dashboard." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

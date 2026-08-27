@@ -6,15 +6,15 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Use — Nikkah+" },
+      { title: "Terms of Use — Marriage Database" },
       {
         name: "description",
-        content: "The terms that govern the use of the Nikkah+ Muslim marriage platform.",
+        content: "The terms that govern the use of the Marriage Database Muslim marriage platform.",
       },
-      { property: "og:title", content: "Terms of Use — Nikkah+" },
+      { property: "og:title", content: "Terms of Use — Marriage Database" },
       {
         property: "og:description",
-        content: "The terms that govern the use of the Nikkah+ Muslim marriage platform.",
+        content: "The terms that govern the use of the Marriage Database Muslim marriage platform.",
       },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },

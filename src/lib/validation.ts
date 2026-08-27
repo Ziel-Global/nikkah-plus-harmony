@@ -1,5 +1,5 @@
 /**
- * Shared, plain-language form validation used across every Nikkah+ form.
+ * Shared, plain-language form validation used across every Marriage Database form.
  * Each rule mirrors a database-level constraint so members get a fast,
  * friendly answer before a request is ever sent.
  */
@@ -64,7 +64,7 @@ export function validateDateOfBirth(value: string): string | null {
     today.getMonth() < dob.getMonth() ||
     (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate());
   if (beforeBirthday) age -= 1;
-  if (age < 18) return "You must be at least 18 years old to use Nikkah+.";
+  if (age < 18) return "You must be at least 18 years old to use Marriage Database.";
   if (age > 100) return "Please check your date of birth.";
   return null;
 }
@@ -89,7 +89,7 @@ export function validateOneOf(
 export const HEX_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 
 export function validateHexColor(value: string): string | null {
-  return HEX_RE.test(value.trim()) ? null : "Use a valid hex colour, for example #6B1E2A.";
+  return HEX_RE.test(value.trim()) ? null : "Use a valid hex colour, for example #2563EB.";
 }
 
 export const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];

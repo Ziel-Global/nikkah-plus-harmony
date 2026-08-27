@@ -18,7 +18,7 @@ export function AuthShell({
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
       <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-5 sm:px-6">
-        <Link to="/" aria-label="Nikkah+ home">
+        <Link to="/" aria-label="Marriage Database home">
           <Logo variant="lockup" />
         </Link>
       </header>
@@ -38,8 +38,8 @@ export function AuthShell({
 
       <footer className="border-t border-border bg-muted">
         <div className="mx-auto w-full max-w-5xl px-4 py-6 text-caption sm:px-6">
-          Nikkah+ — Faith. Family. Future. Your details are kept private and are only ever shared
-          with your mosque for verification.
+          Marriage Database — Faith. Family. Future. Your details are kept private and are only ever
+          shared with your mosque for verification.
         </div>
       </footer>
     </div>

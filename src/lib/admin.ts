@@ -53,11 +53,13 @@ export const PROFILE_STATUS_LABEL: Record<string, string> = {
 
 export const ADMIN_META = (title: string, description: string) => ({
   meta: [
-    { title: `${title} — Nikkah+ mosque admin` },
+    { title: `${title} — Marriage Database mosque admin` },
     { name: "description", content: description },
-    { property: "og:title", content: `${title} — Nikkah+ mosque admin` },
+    { property: "og:title", content: `${title} — Marriage Database mosque admin` },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
+    { property: "og:image", content: "/og-image.png" },
     { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:image", content: "/og-image.png" },
   ],
 });

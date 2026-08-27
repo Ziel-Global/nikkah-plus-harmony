@@ -91,7 +91,7 @@ export function SiteFooter() {
         </div>
 
         <div className="divider-gold my-6" />
-        <p className="text-caption">© {year} Nikkah+. All rights reserved.</p>
+        <p className="text-caption">© {year} Marriage Database. All rights reserved.</p>
       </div>
     </footer>
   );

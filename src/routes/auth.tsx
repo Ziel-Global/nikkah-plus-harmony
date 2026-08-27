@@ -13,14 +13,14 @@ import { fetchAccessState, landingPath } from "@/lib/access";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Nikkah+" },
+      { title: "Sign in — Marriage Database" },
       {
         name: "description",
         content:
-          "Sign in to your Nikkah+ account to continue your mosque-verified search for a spouse.",
+          "Sign in to your Marriage Database account to continue your mosque-verified search for a spouse.",
       },
-      { property: "og:title", content: "Sign in — Nikkah+" },
-      { property: "og:description", content: "Sign in to your Nikkah+ account." },
+      { property: "og:title", content: "Sign in — Marriage Database" },
+      { property: "og:description", content: "Sign in to your Marriage Database account." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -135,7 +135,7 @@ function AuthPage() {
       intro="Sign in to continue. Your profile stays private and visible only where you've allowed it."
       footer={
         <>
-          New to Nikkah+?{" "}
+          New to Marriage Database?{" "}
           <Link
             to="/register"
             className="font-semibold text-primary underline-offset-4 hover:underline"

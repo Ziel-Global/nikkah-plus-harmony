@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
-  head: () => ADMIN_META("Account settings", "Manage your mosque admin account on Nikkah+."),
+  head: () =>
+    ADMIN_META("Account settings", "Manage your mosque admin account on Marriage Database."),
   component: SettingsPage,
 });
 

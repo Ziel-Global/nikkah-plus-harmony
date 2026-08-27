@@ -9,7 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SUPER_META, formatDateTime } from "@/lib/superadmin";
 
 export const Route = createFileRoute("/_authenticated/superadmin/audit")({
-  head: () => SUPER_META("Audit log", "A read-only record of administrative actions on Nikkah+."),
+  head: () =>
+    SUPER_META("Audit log", "A read-only record of administrative actions on Marriage Database."),
   component: AuditPage,
 });
 

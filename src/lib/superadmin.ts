@@ -86,12 +86,14 @@ export const REPORT_STATUS_LABEL: Record<string, string> = {
 
 export const SUPER_META = (title: string, description: string) => ({
   meta: [
-    { title: `${title} — Nikkah+ platform admin` },
+    { title: `${title} — Marriage Database platform admin` },
     { name: "description", content: description },
-    { property: "og:title", content: `${title} — Nikkah+ platform admin` },
+    { property: "og:title", content: `${title} — Marriage Database platform admin` },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
+    { property: "og:image", content: "/og-image.png" },
     { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:image", content: "/og-image.png" },
   ],
 });
 

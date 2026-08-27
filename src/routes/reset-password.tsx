@@ -12,10 +12,13 @@ export const Route = createFileRoute("/reset-password")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Set a new password — Nikkah+" },
-      { name: "description", content: "Choose a new password for your Nikkah+ account." },
-      { property: "og:title", content: "Set a new password — Nikkah+" },
-      { property: "og:description", content: "Choose a new password for your Nikkah+ account." },
+      { title: "Set a new password — Marriage Database" },
+      { name: "description", content: "Choose a new password for your Marriage Database account." },
+      { property: "og:title", content: "Set a new password — Marriage Database" },
+      {
+        property: "og:description",
+        content: "Choose a new password for your Marriage Database account.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

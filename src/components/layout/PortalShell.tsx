@@ -58,7 +58,12 @@ function SidebarBody({
   return (
     <div className="flex h-full min-h-0 flex-col bg-background">
       <div className="flex flex-col gap-2 border-b border-border px-4 py-4">
-        <Link to={homeTo} onClick={onNavigate} aria-label="Nikkah+ home" className="min-w-0">
+        <Link
+          to={homeTo}
+          onClick={onNavigate}
+          aria-label="Marriage Database home"
+          className="min-w-0"
+        >
           <Logo variant="lockup" />
         </Link>
         {badge ? (

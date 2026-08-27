@@ -5,379 +5,470 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { SiteHeader } from "@/components/layout/SiteHeader";
-import { SiteFooter } from "@/components/layout/SiteFooter";
+import { MasjidHeader, MASAIL_URL } from "@/components/layout/MasjidHeader";
+import { MasjidFooter } from "@/components/layout/MasjidFooter";
+import { MasjidHeroIllustration } from "@/components/brand/MasjidHeroIllustration";
 import {
-  BadgeCheck,
-  Flag,
+  HeartHandshake,
+  BookOpen,
   Landmark,
-  Quote,
   ShieldCheck,
   Users,
-  HeartHandshake,
-  LifeBuoy,
+  BadgeCheck,
+  CheckCircle2,
+  ArrowRight,
+  ExternalLink,
+  Sparkles,
+  Building2,
+  GraduationCap,
 } from "lucide-react";
-import heroArch from "@/assets/hero-arch.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nikkah+ — Faith. Family. Future." },
+      { title: "My Local Masjid — Serving the Community. Strengthening Imaan." },
       {
         name: "description",
         content:
-          "Nikkah+ is a community-based Muslim marriage platform where your local mosque verifies members and introductions are made with respect, privacy and family involvement.",
+          "My Local Masjid connects local Muslim communities with essential digital services — from imam-verified matrimonial introductions to authentic scholar Q&A.",
       },
-      { property: "og:title", content: "Nikkah+ — Faith. Family. Future." },
+      { property: "og:title", content: "My Local Masjid — Community & Guidance Portal" },
       {
         property: "og:description",
         content:
-          "A community-based Muslim marriage platform where introductions happen through your local mosque, with privacy and family at the centre.",
+          "Serving the community. Strengthening imaan. Building together. Explore our Marriage Database and Masail projects.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/og-image.png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "/og-image.png" },
     ],
   }),
-  component: Landing,
+  component: MyLocalMasjidMainPage,
 });
 
-const STEPS = [
+const PILLARS = [
   {
-    title: "Register",
-    body: "Create an account and complete a considered profile — your background, values and what you are looking for in a spouse.",
+    icon: HeartHandshake,
+    title: "Sacred Matrimonial Matching",
+    body: "Connecting Muslim brothers and sisters through imam-verified community profiles with wali privacy, respect, and family involvement.",
   },
   {
-    title: "Get verified by your mosque",
-    body: "Your local mosque reviews and confirms your affiliation, so every member on the platform is known to a real community.",
-  },
-  {
-    title: "Browse respectfully",
-    body: "Read full profiles at your own pace. No swiping, no ranking, no public photo galleries — only meaningful information.",
-  },
-  {
-    title: "Request an introduction",
-    body: "Send an interest request through the mosque. Contact details are only shared once both sides — and their walis — agree.",
-  },
-];
-
-const TRUST = [
-  {
-    icon: ShieldCheck,
-    title: "Privacy by default",
-    body: "Contact details, photos and sensitive fields stay hidden until both parties consent to an introduction.",
+    icon: BookOpen,
+    title: "Authentic Scholar Guidance",
+    body: "Direct access to qualified local scholars for daily masail, fiqh guidance, and family counseling rooted in traditional Islamic knowledge.",
   },
   {
     icon: Landmark,
-    title: "Mosque oversight",
-    body: "Every member is affiliated with a verified mosque, and administrators support each match from request to outcome.",
-  },
-  {
-    icon: Flag,
-    title: "Reporting & moderation",
-    body: "Concerns can be raised at any point. Reports are reviewed by trained administrators and acted on quickly and confidentially.",
+    title: "Mosque Empowerment",
+    body: "Equipping local mosque committees with modern digital tools to verify congregants, manage community requests, and preserve trust.",
   },
 ];
 
-const MOSQUE_POINTS = [
-  { icon: BadgeCheck, text: "Approve affiliation requests before any profile goes live." },
-  { icon: HeartHandshake, text: "Oversee interest requests linked to your community." },
-  { icon: LifeBuoy, text: "Receive and resolve escalations with full confidentiality." },
+const SERVICES_CONGREGANTS = [
+  "Verified community profiles endorsed by your local masjid.",
+  "Privacy-first interaction — contact details stay hidden until mutual consent.",
+  "Direct confidential Q&A with resident scholars and imams.",
+  "Wali involvement built into the introduction process from step one.",
 ];
 
-const STATS = [
-  { stat: "2,400+", label: "Verified members" },
-  { stat: "18", label: "Partner mosques" },
-  { stat: "60+", label: "Introductions supported" },
-];
-
-const TESTIMONIALS = [
-  {
-    quote:
-      "We had almost given up on finding somewhere our family felt comfortable. Knowing the mosque had verified everyone changed the whole conversation at home.",
-    name: "Aisha R.",
-    place: "Green Lane Masjid",
-  },
-  {
-    quote:
-      "As an imam, I finally have a clear way to support families through introductions — the process is documented, respectful and never rushed.",
-    name: "Imam Yusuf Adeyemi",
-    place: "Riverside Islamic Centre",
-  },
+const SERVICES_IMAMS = [
+  "Structured digital dashboard to manage community affiliation requests.",
+  "Oversight tools for matrimonial introductions between congregants.",
+  "Confidential Q&A workspace to answer masail and record fatwa archives.",
+  "Resolution & moderation tools to support families during escalations.",
 ];
 
 const FAQS = [
   {
-    q: "Is Nikkah+ a dating app?",
-    a: "No. Nikkah+ is a marriage platform. There is no swiping, no casual messaging and no public browsing of photos. Every introduction is intentional and made with the involvement of your mosque and family.",
+    q: "What is My Local Masjid?",
+    a: "My Local Masjid is a digital community initiative designed to empower local Islamic centres and congregants. We bridge traditional mosque guidance with modern digital tools to serve Muslim families.",
   },
   {
-    q: "Do I have to be affiliated with a mosque?",
-    a: "Yes. Membership is confirmed by a participating mosque. This is what allows the community to vouch for the people on the platform and keeps standards high for everyone.",
+    q: "What projects does My Local Masjid offer?",
+    a: "We currently host two core projects: (1) Marriage Database — an imam-verified matrimonial matching platform, and (2) Masail — a direct Islamic Q&A portal connecting congregants with trusted local scholars.",
   },
   {
-    q: "Who can see my photos and contact details?",
-    a: "Nobody, until you decide otherwise. Photos and contact information follow your privacy settings, and contact details are only exchanged after mutual consent to an introduction.",
+    q: "How does the Marriage Database work?",
+    a: "Members register, create a profile, and select their local mosque. Once the mosque administration verifies their affiliation, candidates can browse verified profiles and request introductions through the imam with full privacy and family involvement.",
   },
   {
-    q: "Can my wali be involved?",
-    a: "Yes. You can record your wali's details on your profile and they can be included in the introduction process from the beginning.",
+    q: "What is Masail and how do I ask questions?",
+    a: "Masail allows you to submit religious questions directly to verified scholars affiliated with your local masjid. You receive authentic, documented answers based on recognised Islamic jurisprudence.",
   },
   {
-    q: "How does my mosque get involved?",
-    a: "Mosque administrators verify member affiliation, oversee introductions linked to their community, and are available if either family needs support or wants to raise a concern.",
-  },
-  {
-    q: "What does it cost?",
-    a: "Pricing details will be confirmed with participating mosques before launch. Registering your interest today does not commit you to anything.",
+    q: "How can my mosque join My Local Masjid?",
+    a: "Mosque administrators and imams can contact our onboarding team to register their masjid. Once onboarded, your mosque receives an admin dashboard to verify congregants and support your community.",
   },
 ];
 
-function Landing() {
+export function MyLocalMasjidMainPage() {
   return (
-    <div id="top" className="flex min-h-screen flex-col overflow-x-hidden bg-background">
-      <SiteHeader />
+    <div id="top" className="flex min-h-screen flex-col bg-[#F8FAFC] font-sans text-[#0F172A]">
+      {/* Dedicated Separate Header */}
+      <MasjidHeader />
 
       <main className="flex-1">
-        {/* Hero */}
-        <section className="pattern-geo relative isolate overflow-hidden pt-32 pb-20 sm:pt-44 sm:pb-28">
-          <div className="pointer-events-none absolute inset-0 -z-10">
-            <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_15%_0%,color-mix(in_oklab,var(--color-tertiary)_45%,transparent),transparent_60%)]" />
-            <div className="absolute -top-24 -left-32 h-96 w-96 rounded-full bg-secondary/25 blur-3xl" />
-            <div className="absolute top-32 right-0 h-[28rem] w-[28rem] rounded-full bg-primary/10 blur-3xl" />
-          </div>
+        {/* ========================================================================= */}
+        {/* HERO SECTION — Centered Layout with Background Image */}
+        {/* ========================================================================= */}
+        <section className="relative overflow-hidden bg-cover bg-center pt-36 pb-24 sm:pt-44 sm:pb-32 bg-[url('/masjid-hero-bg.png')]">
+          {/* Brand Color Overlay with 0.3 Opacity so Masjid Image is Completely Visible */}
+          <div className="pointer-events-none absolute inset-0 bg-[#2563EB]/30" />
 
-          <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-            <div className="animate-rise max-w-2xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-secondary/50 bg-card/80 px-3.5 py-1.5 text-xs font-semibold tracking-[0.14em] text-primary uppercase shadow-[var(--shadow-card)] backdrop-blur">
-                <Users className="size-3.5" aria-hidden="true" />
-                Community-based Muslim marriage
+          <div className="relative mx-auto w-full max-w-4xl px-4 text-center sm:px-6">
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#93C5FD]/60 bg-white/90 px-4 py-1.5 text-xs font-semibold tracking-wider text-[#2563EB] uppercase shadow-sm backdrop-blur">
+              <Sparkles className="size-3.5 text-[#2563EB]" />
+              Serving the Community · Strengthening Imaan
+            </div>
+
+            {/* Main Headline */}
+            <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-black sm:text-5xl lg:text-6xl sm:leading-[1.1]">
+              Empowering Communities. <br />
+              <span className="bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] bg-clip-text text-transparent">
+                Strengthening Imaan. Building Together.
               </span>
-              <h1 className="text-display mt-6 text-foreground sm:text-[3.25rem] sm:leading-[1.05]">
-                Faith. Family.{" "}
-                <span className="relative inline-block">
-                  Future.
-                  <span className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-gradient-to-r from-primary to-secondary/70" />
-                </span>
-              </h1>
-              <p className="text-body mt-7 max-w-xl text-lg text-foreground/75">
-                Nikkah+ helps practising Muslims find a spouse through their local mosque — with
-                verified members, family involvement and privacy at every step.
-              </p>
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <Button
-                  asChild
-                  size="lg"
-                  className="min-h-12 w-full shadow-[var(--shadow-elevated)] transition-transform duration-200 hover:-translate-y-0.5 sm:w-auto"
-                >
-                  <Link to="/register">Get started</Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="secondary"
-                  className="min-h-12 w-full transition-transform duration-200 hover:-translate-y-0.5 sm:w-auto"
-                >
-                  <a href="#how-it-works">How it works</a>
-                </Button>
-              </div>
+            </h1>
 
-              <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-muted-foreground">
-                <span className="inline-flex items-center gap-2">
-                  <BadgeCheck className="size-4 text-secondary" aria-hidden="true" />
-                  Mosque-verified members
-                </span>
-                <span className="inline-flex items-center gap-2">
-                  <ShieldCheck className="size-4 text-secondary" aria-hidden="true" />
-                  Private by default
-                </span>
-              </div>
-            </div>
-
-            <div className="animate-rise relative [animation-delay:120ms]">
-              <div className="surface-raised relative overflow-hidden rounded-[2rem] p-2">
-                <img
-                  src={heroArch}
-                  alt="Sunlight through an Islamic geometric lattice screen in a calm, warm interior"
-                  width={1024}
-                  height={1280}
-                  className="h-[22rem] w-full rounded-[1.6rem] object-cover sm:h-[30rem] lg:h-[34rem]"
-                />
-              </div>
-              <div className="surface-raised absolute -bottom-6 -left-2 hidden max-w-[15rem] rounded-2xl p-4 sm:block">
-                <p className="font-display text-2xl font-bold text-primary">18</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  partner mosques verifying their own communities
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* How it works */}
-        <section id="how-it-works" className="scroll-mt-28 bg-muted/60 py-20 sm:py-28">
-          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <div className="rule-gold" />
-            <h2 className="text-h2 mt-5 text-foreground">How it works</h2>
-            <p className="text-body mt-3 max-w-xl text-muted-foreground">
-              Four considered steps, from registration to a proper introduction.
+            {/* Subtitle Paragraph */}
+            <p className="mt-6 mx-auto max-w-2xl text-base font-semibold text-black sm:text-lg">
+              My Local Masjid brings essential Islamic community initiatives under one modern
+              digital roof — connecting congregants with local mosques for imam-verified matrimony
+              and authentic scholar guidance.
             </p>
 
-            <ol className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {STEPS.map((step, i) => (
-                <li
-                  key={step.title}
-                  className="surface-raised card-lift group flex flex-col p-6 sm:p-7"
-                >
-                  <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-secondary/60 bg-tertiary/25 transition-colors duration-200 group-hover:bg-tertiary/45">
-                    <span className="absolute inset-1 rounded-full border border-dashed border-secondary/50" />
-                    <span className="font-display text-lg font-bold text-primary">{i + 1}</span>
-                  </span>
-                  <h3 className="text-h3 mt-5 text-foreground">{step.title}</h3>
-                  <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
-                    {step.body}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-
-        {/* For mosques */}
-        <section id="for-mosques" className="scroll-mt-28 py-20 sm:py-28">
-          <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16">
-            <div>
-              <div className="rule-gold" />
-              <h2 className="text-h2 mt-5 text-foreground">For mosques</h2>
-              <p className="text-body mt-4 text-foreground/75">
-                Mosques are the trusted heart of this platform. As a registered mosque, your
-                administrators verify that members belong to your community, oversee introductions
-                between your congregants, and step in when a family needs guidance.
-              </p>
-              <ul className="mt-8 space-y-4">
-                {MOSQUE_POINTS.map(({ icon: Icon, text }) => (
-                  <li key={text} className="flex items-start gap-3.5">
-                    <span className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-secondary/40 bg-tertiary/25 text-primary">
-                      <Icon className="size-4.5" aria-hidden="true" />
-                    </span>
-                    <span className="text-sm leading-relaxed text-foreground/80">{text}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                asChild
-                variant="secondary"
-                size="lg"
-                className="mt-9 min-h-12 transition-transform duration-200 hover:-translate-y-0.5"
+            {/* Action CTA Buttons */}
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <a
+                href="#projects"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-6 text-sm font-bold text-white shadow-lg shadow-[#2563EB]/25 transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-xl sm:w-auto"
               >
-                <Link to="/register">Register a mosque</Link>
-              </Button>
+                <span>Explore Projects</span>
+                <ArrowRight className="size-4" />
+              </a>
+              <a
+                href="#about"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-xl border border-[#E2E8F0] bg-white px-6 text-sm font-bold text-black shadow-sm transition-all duration-200 hover:bg-[#DBEAFE]/40 hover:text-[#2563EB] sm:w-auto"
+              >
+                Learn About Our Mission
+              </a>
             </div>
 
-            <div className="pattern-geo-light relative overflow-hidden rounded-[2rem] border border-secondary/40 bg-gradient-to-br from-tertiary/45 via-muted to-card p-7 shadow-[var(--shadow-elevated)] sm:p-10">
-              <div className="relative">
-                <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-                  <Landmark className="size-5.5" aria-hidden="true" />
-                </span>
-                <p className="text-accent-lg mt-5 text-primary">Trusted verifiers</p>
-                <p className="mt-3 text-sm leading-relaxed text-foreground/75">
-                  Nikkah+ never replaces the role of the mosque or the wali — it gives them clear
-                  tools to do what they already do, with less paperwork and more visibility.
+            {/* Trust Badges */}
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-black">
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/95 px-3.5 py-2 border border-[#E2E8F0] shadow-sm backdrop-blur">
+                <BadgeCheck className="size-4 text-[#2563EB]" />
+                Mosque & Imam Verified
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/95 px-3.5 py-2 border border-[#E2E8F0] shadow-sm backdrop-blur">
+                <ShieldCheck className="size-4 text-[#2563EB]" />
+                100% Privacy-First
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/95 px-3.5 py-2 border border-[#E2E8F0] shadow-sm backdrop-blur">
+                <Users className="size-4 text-[#2563EB]" />
+                Family & Wali Centric
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* ABOUT US SECTION */}
+        {/* ========================================================================= */}
+        <section
+          id="about"
+          className="scroll-mt-28 py-20 sm:py-28 bg-white border-y border-[#E2E8F0]"
+        >
+          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+            <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+              <div>
+                <div className="h-1 w-12 rounded-full bg-[#2563EB]" />
+                <h2 className="mt-4 text-2xl font-bold text-[#0F172A] sm:text-3xl">
+                  Re-anchoring Community Life in the Heart of the Masjid
+                </h2>
+                <p className="mt-4 text-base leading-relaxed text-[#64748B]">
+                  For centuries, the local masjid was far more than a place of daily prayer — it was
+                  the vibrant hub for marriage introductions, scholarly counsel, conflict
+                  resolution, and family support.
                 </p>
-                <div className="divider-gold my-7" />
-                <p className="text-caption">
-                  [Placeholder — participating mosque logos or a short imam endorsement will sit
-                  here.]
+                <p className="mt-3 text-base leading-relaxed text-[#64748B]">
+                  <strong>My Local Masjid</strong> was created to restore this central role in our
+                  modern world. We equip local Islamic centres with purpose-built digital platforms
+                  so congregants can access trusted services easily while keeping imams and families
+                  at the heart of every interaction.
                 </p>
+              </div>
+
+              <div className="relative rounded-3xl border border-[#E2E8F0] bg-gradient-to-br from-[#DBEAFE]/50 via-[#F8FAFC] to-white p-8 shadow-lg shadow-[#2563EB]/5">
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#2563EB] text-white">
+                      <Landmark className="size-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#0F172A]">Community First</h3>
+                      <p className="mt-1 text-sm text-[#64748B]">
+                        Every member and request is grounded in their real, local masjid community.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#3B82F6] text-white">
+                      <GraduationCap className="size-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#0F172A]">Scholarly Oversight</h3>
+                      <p className="mt-1 text-sm text-[#64748B]">
+                        Guidance and introduction rules follow authentic Islamic principles overseen
+                        by qualified scholars.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Trust & safety */}
-        <section id="trust" className="scroll-mt-28 bg-muted/60 py-20 sm:py-28">
+        {/* ========================================================================= */}
+        {/* WHAT WE DO SECTION */}
+        {/* ========================================================================= */}
+        <section id="what-we-do" className="scroll-mt-28 py-20 sm:py-28">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <div className="rule-gold" />
-            <h2 className="text-h2 mt-5 text-foreground">Built on trust</h2>
-            <p className="text-body mt-3 max-w-xl text-muted-foreground">
-              Your dignity and your family's peace of mind come before everything else.
-            </p>
-            <div className="mt-12 grid gap-6 sm:grid-cols-3">
-              {TRUST.map(({ icon: Icon, title, body }) => (
-                <div key={title} className="surface-raised card-lift p-7">
-                  <span className="inline-flex size-14 items-center justify-center rounded-2xl border border-secondary/40 bg-tertiary/25 text-primary">
-                    <Icon className="size-7" aria-hidden="true" />
-                  </span>
-                  <h3 className="text-h3 mt-5 text-foreground">{title}</h3>
-                  <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials / stats */}
-        <section className="py-20 sm:py-28">
-          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <div className="rule-gold" />
-            <h2 className="text-h2 mt-5 text-foreground">Our community</h2>
-
-            <div className="mt-12 grid gap-6 sm:grid-cols-3">
-              {STATS.map((item) => (
-                <div key={item.label} className="surface-raised card-lift p-7 text-center">
-                  <p className="font-display text-4xl font-bold text-primary sm:text-5xl">
-                    {item.stat}
-                  </p>
-                  <span className="mx-auto mt-4 block h-[3px] w-10 rounded-full bg-gradient-to-r from-secondary to-tertiary" />
-                  <p className="mt-4 text-sm font-semibold tracking-wide text-muted-foreground">
-                    {item.label}
-                  </p>
-                </div>
-              ))}
+            <div className="text-center">
+              <div className="mx-auto h-1 w-12 rounded-full bg-[#2563EB]" />
+              <h2 className="mt-4 text-2xl font-bold text-[#0F172A] sm:text-3xl">What We Do</h2>
+              <p className="mt-3 mx-auto max-w-xl text-base text-[#64748B]">
+                Three core pillars dedicated to building strong Muslim families and informed
+                communities.
+              </p>
             </div>
 
-            <div className="mt-6 grid gap-6 sm:grid-cols-2">
-              {TESTIMONIALS.map((t) => (
-                <blockquote
-                  key={t.name}
-                  className="card-lift relative overflow-hidden rounded-[1.75rem] border border-secondary/35 bg-gradient-to-br from-card to-tertiary/20 p-7 shadow-[var(--shadow-card)] sm:p-8"
+            <div className="mt-12 grid gap-8 sm:grid-cols-3">
+              {PILLARS.map(({ icon: Icon, title, body }) => (
+                <div
+                  key={title}
+                  className="group relative rounded-2xl border border-[#E2E8F0] bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#93C5FD] hover:shadow-xl hover:shadow-[#2563EB]/10"
                 >
-                  <Quote
-                    className="pointer-events-none absolute -top-2 right-3 size-24 text-secondary/20"
-                    aria-hidden="true"
-                  />
-                  <p className="text-body relative text-foreground/80">“{t.quote}”</p>
-                  <footer className="relative mt-6 flex items-center gap-3">
-                    <span className="inline-flex size-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                      {t.name.charAt(0)}
-                    </span>
-                    <span className="text-sm">
-                      <span className="block font-semibold text-foreground">{t.name}</span>
-                      <span className="block text-muted-foreground">{t.place}</span>
-                    </span>
-                  </footer>
-                </blockquote>
+                  <div className="flex size-14 items-center justify-center rounded-2xl bg-[#DBEAFE] text-[#2563EB] transition-colors group-hover:bg-[#2563EB] group-hover:text-white">
+                    <Icon className="size-7" />
+                  </div>
+                  <h3 className="text-lg font-bold mt-6 text-[#0F172A]">{title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-[#64748B]">{body}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* FAQ */}
-        <section id="faq" className="scroll-mt-28 bg-muted/60 py-20 sm:py-28">
+        {/* ========================================================================= */}
+        {/* FEATURED PROJECTS SHOWCASE */}
+        {/* ========================================================================= */}
+        <section
+          id="projects"
+          className="scroll-mt-28 bg-[#DBEAFE]/30 py-20 sm:py-28 border-y border-[#E2E8F0]"
+        >
+          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+            <div className="text-center">
+              <span className="rounded-full bg-[#2563EB]/10 px-3.5 py-1 text-xs font-semibold tracking-wider text-[#2563EB] uppercase">
+                Our Flagship Initiatives
+              </span>
+              <h2 className="mt-4 text-2xl font-bold text-[#0F172A] sm:text-4xl">
+                Explore Our Active Projects
+              </h2>
+              <p className="mt-3 mx-auto max-w-xl text-base text-[#64748B]">
+                Direct access to our specialized community solutions designed for Muslims today.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
+              {/* PROJECT 1: MARRIAGE DATABASE */}
+              <div className="group relative flex flex-col justify-between rounded-3xl border border-[#93C5FD]/60 bg-white p-8 shadow-md transition-all duration-300 hover:border-[#2563EB] hover:shadow-2xl hover:shadow-[#2563EB]/15">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex size-16 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-md shadow-[#2563EB]/25">
+                      <HeartHandshake className="size-8" />
+                    </div>
+                    <span className="rounded-full bg-[#DBEAFE] px-3 py-1 text-xs font-bold text-[#2563EB]">
+                      Marriage Database
+                    </span>
+                  </div>
+
+                  <h3 className="mt-6 text-2xl font-bold text-[#0F172A]">Marriage Database</h3>
+                  <p className="mt-2 text-sm font-semibold text-[#2563EB]">Find. Connect. Build.</p>
+
+                  <p className="mt-4 text-sm leading-relaxed text-[#64748B]">
+                    A privacy-first Muslim matrimonial platform where members are verified by their
+                    local mosque and introductions take place under imam mediation and wali
+                    involvement.
+                  </p>
+
+                  <ul className="mt-6 space-y-2.5 text-xs text-[#0F172A] font-medium">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-4 text-[#2563EB]" />
+                      Imam & Mosque Affiliation Verification
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-4 text-[#2563EB]" />
+                      No Public Swiping or Photo Galleries
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-4 text-[#2563EB]" />
+                      Wali & Family Centric Introductions
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-[#E2E8F0]">
+                  <Link
+                    to="/marriage"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2563EB] py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-[#1D4ED8]"
+                  >
+                    <span>Visit Marriage Platform</span>
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* PROJECT 2: MASAIL */}
+              <div className="group relative flex flex-col justify-between rounded-3xl border border-[#93C5FD]/60 bg-white p-8 shadow-md transition-all duration-300 hover:border-[#3B82F6] hover:shadow-2xl hover:shadow-[#3B82F6]/15">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex size-16 items-center justify-center rounded-2xl bg-[#3B82F6] text-white shadow-md shadow-[#3B82F6]/25">
+                      <BookOpen className="size-8" />
+                    </div>
+                    <span className="rounded-full bg-[#DBEAFE] px-3 py-1 text-xs font-bold text-[#2563EB]">
+                      Islamic Q&A
+                    </span>
+                  </div>
+
+                  <h3 className="mt-6 text-2xl font-bold text-[#0F172A]">Masail Portal</h3>
+                  <p className="mt-2 text-sm font-semibold text-[#3B82F6]">Ask. Learn. Grow.</p>
+
+                  <p className="mt-4 text-sm leading-relaxed text-[#64748B]">
+                    A direct religious guidance platform connecting Muslims with trusted scholars
+                    and imams from their local masjid for authentic answers to everyday life
+                    questions.
+                  </p>
+
+                  <ul className="mt-6 space-y-2.5 text-xs text-[#0F172A] font-medium">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-4 text-[#3B82F6]" />
+                      Direct Q&A with Resident Imams & Scholars
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-4 text-[#3B82F6]" />
+                      Searchable Archive of Authentic Answers
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="size-4 text-[#3B82F6]" />
+                      Confidential & Respectful Submission
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-[#E2E8F0]">
+                  <a
+                    href={MASAIL_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#3B82F6] py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-[#2563EB]"
+                  >
+                    <span>Explore Masail Portal</span>
+                    <ExternalLink className="size-4" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* WHAT WE PROVIDE / SERVICES */}
+        {/* ========================================================================= */}
+        <section id="services" className="scroll-mt-28 py-20 sm:py-28 bg-white">
+          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+            <div className="text-center">
+              <div className="mx-auto h-1 w-12 rounded-full bg-[#2563EB]" />
+              <h2 className="mt-4 text-2xl font-bold text-[#0F172A] sm:text-3xl">
+                What We Provide
+              </h2>
+              <p className="mt-3 mx-auto max-w-xl text-base text-[#64748B]">
+                Tailored solutions for congregants, resident scholars, and mosque committees.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-8 lg:grid-cols-2">
+              <div className="rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-8">
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-xl bg-[#2563EB] text-white">
+                    <Users className="size-5" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#0F172A]">For Congregants & Families</h3>
+                </div>
+                <ul className="mt-6 space-y-3">
+                  {SERVICES_CONGREGANTS.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-sm text-[#0F172A]">
+                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#2563EB]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-8">
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-xl bg-[#3B82F6] text-white">
+                    <Building2 className="size-5" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#0F172A]">
+                    For Imams & Mosque Committees
+                  </h3>
+                </div>
+                <ul className="mt-6 space-y-3">
+                  {SERVICES_IMAMS.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-sm text-[#0F172A]">
+                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#3B82F6]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* FAQ SECTION */}
+        {/* ========================================================================= */}
+        <section
+          id="faq"
+          className="scroll-mt-28 bg-[#F8FAFC] py-20 sm:py-28 border-t border-[#E2E8F0]"
+        >
           <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-            <div className="rule-gold" />
-            <h2 className="text-h2 mt-5 text-foreground">Frequently asked questions</h2>
+            <div className="text-center">
+              <div className="mx-auto h-1 w-12 rounded-full bg-[#2563EB]" />
+              <h2 className="mt-4 text-2xl font-bold text-[#0F172A] sm:text-3xl">
+                Frequently Asked Questions
+              </h2>
+              <p className="mt-3 text-base text-[#64748B]">
+                Everything you need to know about My Local Masjid and our initiatives.
+              </p>
+            </div>
+
             <Accordion type="single" collapsible className="mt-10 space-y-3">
               {FAQS.map((faq) => (
                 <AccordionItem
                   key={faq.q}
                   value={faq.q}
-                  className="surface-raised overflow-hidden border-b-0 px-5 transition-colors duration-200 data-[state=open]:bg-tertiary/15"
+                  className="rounded-2xl border border-[#E2E8F0] bg-white px-6 shadow-sm transition-colors duration-200 data-[state=open]:border-[#93C5FD] data-[state=open]:bg-[#DBEAFE]/20"
                 >
-                  <AccordionTrigger className="min-h-12 text-left font-semibold text-foreground hover:no-underline">
+                  <AccordionTrigger className="py-4 text-left font-semibold text-[#0F172A] hover:no-underline hover:text-[#2563EB]">
                     {faq.q}
                   </AccordionTrigger>
-                  <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                  <AccordionContent className="pb-4 text-sm leading-relaxed text-[#64748B]">
                     {faq.a}
                   </AccordionContent>
                 </AccordionItem>
@@ -385,29 +476,10 @@ function Landing() {
             </Accordion>
           </div>
         </section>
-
-        {/* Final CTA */}
-        <section className="px-4 pt-4 pb-20 sm:px-6 sm:pb-28">
-          <div className="pattern-geo relative mx-auto w-full max-w-6xl overflow-hidden rounded-[2rem] bg-primary px-6 py-14 text-center shadow-[var(--shadow-elevated)] sm:px-12 sm:py-20">
-            <div className="relative">
-              <h2 className="text-h2 text-primary-foreground">Begin with intention</h2>
-              <p className="text-body mx-auto mt-4 max-w-lg text-primary-foreground/85">
-                Join a marriage platform your family and your mosque can stand behind.
-              </p>
-              <Button
-                asChild
-                size="lg"
-                variant="soft"
-                className="mt-9 min-h-12 transition-transform duration-200 hover:-translate-y-0.5"
-              >
-                <Link to="/register">Get started</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
       </main>
 
-      <SiteFooter />
+      {/* Dedicated Separate Footer */}
+      <MasjidFooter />
     </div>
   );
 }

@@ -8,7 +8,10 @@ import { ADMIN_META, OVERSIGHT_NOTE, type AdminMosque } from "@/lib/admin";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () =>
-    ADMIN_META("Overview", "Verification and oversight tools for your mosque on Nikkah+."),
+    ADMIN_META(
+      "Overview",
+      "Verification and oversight tools for your mosque on Marriage Database.",
+    ),
   component: AdminOverview,
 });
 

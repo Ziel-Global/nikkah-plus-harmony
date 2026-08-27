@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Central access model for Nikkah+.
+ * Central access model for Marriage Database.
  *
  * All route guarding decisions for authenticated routes are derived here so the
  * redirect logic lives in exactly one place. These are frontend UX guards only —

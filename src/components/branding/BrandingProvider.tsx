@@ -52,15 +52,23 @@ export function BrandingProvider({ children }: { children: ReactNode }) {
     if (settings) applyDarkMode(Boolean(settings.dark_mode_default));
   }, [settings?.dark_mode_default, settings]);
 
+  const platformName = useMemo(() => {
+    const raw = settings?.platform_name?.trim();
+    if (!raw || raw.toLowerCase().includes("nikkah")) {
+      return "Marriage Database";
+    }
+    return raw;
+  }, [settings?.platform_name]);
+
   const value = useMemo<BrandingContextValue>(
     () => ({
       settings: settings ?? null,
       colors,
-      platformName: settings?.platform_name?.trim() || "Nikkah+",
+      platformName,
       logoUrl: logoUrl ?? null,
       refresh: () => void queryClient.invalidateQueries({ queryKey: PLATFORM_SETTINGS_KEY }),
     }),
-    [settings, colors, logoUrl, queryClient],
+    [settings, colors, platformName, logoUrl, queryClient],
   );
 
   return <BrandingContext.Provider value={value}>{children}</BrandingContext.Provider>;
@@ -71,7 +79,7 @@ export function useBranding(): BrandingContextValue {
     useContext(BrandingContext) ?? {
       settings: null,
       colors: brandingFrom(null),
-      platformName: "Nikkah+",
+      platformName: "Marriage Database",
       logoUrl: null,
       refresh: () => {},
     }

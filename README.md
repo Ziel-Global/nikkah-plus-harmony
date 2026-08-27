@@ -1,4 +1,4 @@
-# Nikkah+ Design Kit
+# Marriage Database Design Kit
 
 Set up the global design system and confirm database integration for this
 
@@ -66,7 +66,7 @@ design system below.
 
 ---
 
-BRAND: Nikkah+ — "Faith. Family. Future." A community-based Muslim marriage
+BRAND: Marriage Database — "Faith. Family. Future." A community-based Muslim marriage
 
 platform. Tone: warm, respectful, elegant, modern. Explicitly avoid dating-app
 
@@ -106,7 +106,7 @@ TYPOGRAPHY:
 
   button labels Calibri Semibold 14px.
 
-LOGO: I will upload the Nikkah+ logo file myself after this step. For now,
+LOGO: I will upload the Marriage Database logo file myself after this step. For now,
 
 leave a clearly marked logo placeholder in the header component (both a
 

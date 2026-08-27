@@ -75,7 +75,7 @@ function RolesSettingsPage() {
   return (
     <SuperAdminShell
       title="Settings"
-      description="Configuration that applies to the whole Nikkah+ platform."
+      description="Configuration that applies to the whole Marriage Database platform."
     >
       <SettingsNav />
 

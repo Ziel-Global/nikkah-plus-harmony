@@ -39,16 +39,16 @@ export const Route = createFileRoute("/_authenticated/requests")({
   },
   head: () => ({
     meta: [
-      { title: "Interest requests — Nikkah+" },
+      { title: "Interest requests — Marriage Database" },
       {
         name: "description",
         content:
-          "Review the introductions you have sent and received on Nikkah+, and reply with your mosque alongside you.",
+          "Review the introductions you have sent and received on Marriage Database, and reply with your mosque alongside you.",
       },
-      { property: "og:title", content: "Interest requests — Nikkah+" },
+      { property: "og:title", content: "Interest requests — Marriage Database" },
       {
         property: "og:description",
-        content: "Review the introductions you have sent and received on Nikkah+.",
+        content: "Review the introductions you have sent and received on Marriage Database.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

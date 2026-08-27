@@ -56,13 +56,13 @@ export const Route = createFileRoute("/_authenticated/profile")({
   },
   head: () => ({
     meta: [
-      { title: "Your marriage profile — Nikkah+" },
+      { title: "Your marriage profile — Marriage Database" },
       {
         name: "description",
         content:
-          "Write your Nikkah+ marriage profile section by section, control who sees each detail, and submit it to your mosque for review.",
+          "Write your Marriage Database marriage profile section by section, control who sees each detail, and submit it to your mosque for review.",
       },
-      { property: "og:title", content: "Your marriage profile — Nikkah+" },
+      { property: "og:title", content: "Your marriage profile — Marriage Database" },
       {
         property: "og:description",
         content: "Write your marriage profile and submit it to your mosque for review.",

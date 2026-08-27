@@ -142,7 +142,7 @@ function SuperDashboard() {
   return (
     <SuperAdminShell
       title="Platform dashboard"
-      description={`Everything happening across Nikkah+ at a glance. ${PLATFORM_NOTE}`}
+      description={`Everything happening across Marriage Database at a glance. ${PLATFORM_NOTE}`}
     >
       <section aria-labelledby="people-heading">
         <h2 id="people-heading" className="text-h3 text-foreground">

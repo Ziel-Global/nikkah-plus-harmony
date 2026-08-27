@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CommunityGuidelinesRouteImport } from './routes/community-guidelines'
+import { Route as MarriageRouteImport } from './routes/marriage'
 import { Route as MyLocalMasjidRouteImport } from './routes/my-local-masjid'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
@@ -69,6 +70,11 @@ const AuthRoute = AuthRouteImport.update({
 const CommunityGuidelinesRoute = CommunityGuidelinesRouteImport.update({
   id: '/community-guidelines',
   path: '/community-guidelines',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarriageRoute = MarriageRouteImport.update({
+  id: '/marriage',
+  path: '/marriage',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MyLocalMasjidRoute = MyLocalMasjidRouteImport.update({
@@ -290,6 +296,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/community-guidelines': typeof CommunityGuidelinesRoute
+  '/marriage': typeof MarriageRoute
   '/my-local-masjid': typeof MyLocalMasjidRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
@@ -333,6 +340,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/community-guidelines': typeof CommunityGuidelinesRoute
+  '/marriage': typeof MarriageRoute
   '/my-local-masjid': typeof MyLocalMasjidRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
@@ -375,6 +383,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/community-guidelines': typeof CommunityGuidelinesRoute
+  '/marriage': typeof MarriageRoute
   '/my-local-masjid': typeof MyLocalMasjidRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
@@ -420,6 +429,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/community-guidelines'
+    | '/marriage'
     | '/my-local-masjid'
     | '/privacy'
     | '/register'
@@ -463,6 +473,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/community-guidelines'
+    | '/marriage'
     | '/my-local-masjid'
     | '/privacy'
     | '/register'
@@ -504,6 +515,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/community-guidelines'
+    | '/marriage'
     | '/my-local-masjid'
     | '/privacy'
     | '/register'
@@ -549,6 +561,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CommunityGuidelinesRoute: typeof CommunityGuidelinesRoute
+  MarriageRoute: typeof MarriageRoute
   MyLocalMasjidRoute: typeof MyLocalMasjidRoute
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
@@ -584,6 +597,13 @@ declare module '@tanstack/react-router' {
       path: '/community-guidelines'
       fullPath: '/community-guidelines'
       preLoaderRoute: typeof CommunityGuidelinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marriage': {
+      id: '/marriage'
+      path: '/marriage'
+      fullPath: '/marriage'
+      preLoaderRoute: typeof MarriageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/my-local-masjid': {
@@ -980,6 +1000,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CommunityGuidelinesRoute: CommunityGuidelinesRoute,
+  MarriageRoute: MarriageRoute,
   MyLocalMasjidRoute: MyLocalMasjidRoute,
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
