@@ -45,7 +45,7 @@ function GeneralSettingsPage() {
   return (
     <SuperAdminShell
       title="Settings"
-      description="Configuration that applies to the whole Nikkah+ platform."
+      description="Configuration that applies to the whole Marriage Database platform."
     >
       <SettingsNav />
 
@@ -63,7 +63,7 @@ function GeneralSettingsPage() {
             id="platform-name"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder="Nikkah+"
+            placeholder="Marriage Database"
             maxLength={80}
           />
         </div>

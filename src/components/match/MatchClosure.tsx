@@ -129,8 +129,8 @@ export function MatchClosure({
           <DialogHeader>
             <DialogTitle>Conclude this introduction</DialogTitle>
             <DialogDescription>
-              Share your outcome with Nikkah+. Your answer is confidential — {counterpartName} will
-              only be told that the match has closed.
+              Share your outcome with Marriage Database. Your answer is confidential —{" "}
+              {counterpartName} will only be told that the match has closed.
             </DialogDescription>
           </DialogHeader>
 

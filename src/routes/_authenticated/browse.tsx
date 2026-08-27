@@ -57,12 +57,13 @@ export const Route = createFileRoute("/_authenticated/browse")({
   },
   head: () => ({
     meta: [
-      { title: "Browse members — Nikkah+" },
+      { title: "Browse members — Marriage Database" },
       {
         name: "description",
-        content: "Browse mosque-verified Nikkah+ members with privacy respected on every profile.",
+        content:
+          "Browse mosque-verified Marriage Database members with privacy respected on every profile.",
       },
-      { property: "og:title", content: "Browse members — Nikkah+" },
+      { property: "og:title", content: "Browse members — Marriage Database" },
       {
         property: "og:description",
         content: "Mosque-verified profiles, shared only as each member chose.",

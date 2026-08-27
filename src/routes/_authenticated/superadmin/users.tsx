@@ -37,7 +37,8 @@ import { EditUserModal } from "@/components/superadmin/EditUserModal";
 import { ConfirmDeleteModal } from "@/components/superadmin/ConfirmDeleteModal";
 
 export const Route = createFileRoute("/_authenticated/superadmin/users")({
-  head: () => SUPER_META("Users", "Search every Nikkah+ account and manage account standing."),
+  head: () =>
+    SUPER_META("Users", "Search every Marriage Database account and manage account standing."),
   component: UsersPage,
 });
 

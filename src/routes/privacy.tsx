@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — Nikkah+" },
+      { title: "Privacy Policy — Marriage Database" },
       {
         name: "description",
         content:
-          "How Nikkah+ protects member information, photos and contact details across the platform.",
+          "How Marriage Database protects member information, photos and contact details across the platform.",
       },
-      { property: "og:title", content: "Privacy Policy — Nikkah+" },
+      { property: "og:title", content: "Privacy Policy — Marriage Database" },
       {
         property: "og:description",
-        content: "How Nikkah+ protects member information, photos and contact details.",
+        content: "How Marriage Database protects member information, photos and contact details.",
       },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },

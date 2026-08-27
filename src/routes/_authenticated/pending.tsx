@@ -8,12 +8,13 @@ import { signOutAndRedirect } from "@/hooks/useSession";
 export const Route = createFileRoute("/_authenticated/pending")({
   head: () => ({
     meta: [
-      { title: "Awaiting mosque verification — Nikkah+" },
+      { title: "Awaiting mosque verification — Marriage Database" },
       {
         name: "description",
-        content: "Your Nikkah+ registration is complete and awaiting verification by your mosque.",
+        content:
+          "Your Marriage Database registration is complete and awaiting verification by your mosque.",
       },
-      { property: "og:title", content: "Awaiting mosque verification — Nikkah+" },
+      { property: "og:title", content: "Awaiting mosque verification — Marriage Database" },
       {
         property: "og:description",
         content: "Your registration is complete and awaiting verification by your mosque.",

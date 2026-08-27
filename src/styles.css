@@ -7,15 +7,14 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Nikkah+ design system — "Faith. Family. Future."
+ * Marriage Database design system — "Faith. Family. Future."
  *
- * Brand palette (hex -> oklch):
- *   Maroon      #6B1E2A  primary        (10% of a screen — key actions only)
- *   Rose Gold   #C9967A  secondary      (accents)
- *   Ivory       #FBF6F0  background     (~60%)
- *   Espresso    #2B1B17  text primary   (~25%)
- *   Dusty Rose  #D9B8B0  tertiary       (tags/badges)
- *   Stone Gray  #8C8078  text secondary / borders / disabled
+ * Brand palette:
+ *   Royal Blue   #2563EB  primary
+ *   Bright Blue  #3B82F6  secondary / accents
+ *   Ice Blue     #DBEAFE  active tint / badges
+ *   Off-White    #F8FAFC  page background
+ *   Slate Black  #0F172A  text primary
  *
  * All values are runtime-overridable CSS variables so a future
  * Settings -> Branding screen can inject values from `platform_settings`
@@ -80,66 +79,68 @@
 }
 
 :root {
-  --radius: 0.875rem; /* 14px — cards land in the 12-16px band */
+  --radius: 0.875rem;
 
   --font-heading: Georgia, "Times New Roman", serif;
   --font-body: Calibri, "Carlito", "Helvetica Neue", Arial, sans-serif;
 
   /* Brand primitives */
-  --brand-maroon: oklch(0.3618 0.1088 15.5);
-  --brand-maroon-dark: oklch(0.3085 0.0927 14.33);
-  --brand-rose-gold: oklch(0.7148 0.0731 49.93);
-  --brand-ivory: oklch(0.9753 0.0096 72.66);
-  --brand-ivory-deep: oklch(0.9499 0.0148 70.89);
-  --brand-espresso: oklch(0.2414 0.0268 34.58);
-  --brand-dusty-rose: oklch(0.809 0.0398 33.87);
-  --brand-stone: oklch(0.6082 0.0189 56.01);
+  --brand-blue: #2563eb;
+  --brand-blue-hover: #1d4ed8;
+  --brand-accent: #3b82f6;
+  --brand-light-accent: #93c5fd;
+  --brand-ice-blue: #dbeafe;
+  --brand-bg: #f8fafc;
+  --brand-card: #ffffff;
+  --brand-text: #0f172a;
+  --brand-text-muted: #64748b;
+  --brand-border: #e2e8f0;
 
   /* Semantic tokens */
-  --background: var(--brand-ivory);
-  --foreground: var(--brand-espresso);
-  --card: oklch(1 0 0);
-  --card-foreground: var(--brand-espresso);
-  --popover: oklch(1 0 0);
-  --popover-foreground: var(--brand-espresso);
+  --background: var(--brand-bg);
+  --foreground: var(--brand-text);
+  --card: var(--brand-card);
+  --card-foreground: var(--brand-text);
+  --popover: var(--brand-card);
+  --popover-foreground: var(--brand-text);
 
-  --primary: var(--brand-maroon);
-  --primary-foreground: var(--brand-ivory);
-  --primary-hover: var(--brand-maroon-dark);
+  --primary: var(--brand-blue);
+  --primary-foreground: #ffffff;
+  --primary-hover: var(--brand-blue-hover);
   --button-bg: var(--primary);
   --button-fg: var(--primary-foreground);
-  --primary-active: oklch(0.2685 0.0827 14.2);
+  --primary-active: #1e40af;
 
-  --secondary: var(--brand-rose-gold);
-  --secondary-foreground: var(--brand-maroon);
+  --secondary: var(--brand-accent);
+  --secondary-foreground: #ffffff;
 
-  --tertiary: var(--brand-dusty-rose);
-  --tertiary-foreground: var(--brand-espresso);
+  --tertiary: var(--brand-ice-blue);
+  --tertiary-foreground: var(--brand-blue-hover);
 
-  --muted: var(--brand-ivory-deep);
-  --muted-foreground: var(--brand-stone);
-  --accent: var(--brand-ivory-deep);
-  --accent-foreground: var(--brand-maroon);
+  --muted: var(--brand-ice-blue);
+  --muted-foreground: var(--brand-text-muted);
+  --accent: var(--brand-ice-blue);
+  --accent-foreground: var(--brand-blue);
 
-  --destructive: oklch(0.505 0.185 26.5);
-  --destructive-foreground: oklch(0.985 0.005 70);
-  --success: oklch(0.505 0.09 155);
-  --success-foreground: oklch(0.985 0.005 70);
-  --warning: oklch(0.62 0.13 70);
-  --warning-foreground: oklch(0.22 0.03 40);
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #0f172a;
 
-  --border: oklch(0.8756 0.0128 62);
-  --input: oklch(0.8756 0.0128 62);
-  --ring: var(--brand-rose-gold);
+  --border: var(--brand-border);
+  --input: var(--brand-border);
+  --ring: var(--brand-accent);
 
-  --sidebar: var(--brand-ivory-deep);
-  --sidebar-foreground: var(--brand-espresso);
-  --sidebar-primary: var(--brand-maroon);
-  --sidebar-primary-foreground: var(--brand-ivory);
-  --sidebar-accent: oklch(0.9214 0.0182 66);
-  --sidebar-accent-foreground: var(--brand-maroon);
-  --sidebar-border: oklch(0.8756 0.0128 62);
-  --sidebar-ring: var(--brand-rose-gold);
+  --sidebar: var(--brand-bg);
+  --sidebar-foreground: var(--brand-text);
+  --sidebar-primary: var(--brand-blue);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--brand-ice-blue);
+  --sidebar-accent-foreground: var(--brand-blue);
+  --sidebar-border: var(--brand-border);
+  --sidebar-ring: var(--brand-accent);
 }
 
 .dark {
@@ -278,7 +279,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23C9967A' stroke-width='1'%3E%3Cpath d='M60 0 L120 60 L60 120 L0 60 Z'/%3E%3Cpath d='M60 20 L100 60 L60 100 L20 60 Z'/%3E%3Cpath d='M0 0 L120 120 M120 0 L0 120'/%3E%3Ccircle cx='60' cy='60' r='18'/%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%233B82F6' stroke-width='1'%3E%3Cpath d='M60 0 L120 60 L60 120 L0 60 Z'/%3E%3Cpath d='M60 20 L100 60 L60 100 L20 60 Z'/%3E%3Cpath d='M0 0 L120 120 M120 0 L0 120'/%3E%3Ccircle cx='60' cy='60' r='18'/%3E%3C/g%3E%3C/svg%3E");
     background-size: 120px 120px;
     opacity: 0.09;
   }

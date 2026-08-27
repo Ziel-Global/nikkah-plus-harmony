@@ -25,7 +25,8 @@ import { EditMosqueModal } from "@/components/superadmin/EditMosqueModal";
 import { ConfirmDeleteModal } from "@/components/superadmin/ConfirmDeleteModal";
 
 export const Route = createFileRoute("/_authenticated/superadmin/mosques")({
-  head: () => SUPER_META("Mosques", "Add, edit and approve the mosques partnered with Nikkah+."),
+  head: () =>
+    SUPER_META("Mosques", "Add, edit and approve the mosques partnered with Marriage Database."),
   component: MosquesPage,
 });
 

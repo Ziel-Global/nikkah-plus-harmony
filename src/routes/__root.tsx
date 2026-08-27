@@ -80,19 +80,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Nikkah+ — Faith. Family. Future." },
+      { title: "Marriage Database — Faith. Family. Future." },
       {
         name: "description",
         content: "A community-based Muslim marriage platform built on faith, family and trust.",
       },
-      { name: "author", content: "Nikkah+" },
-      { property: "og:title", content: "Nikkah+ — Faith. Family. Future." },
+      { name: "author", content: "Marriage Database" },
+      { property: "og:title", content: "Marriage Database — Faith. Family. Future." },
       {
         property: "og:description",
         content: "A community-based Muslim marriage platform built on faith, family and trust.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/og-image.png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "/og-image.png" },
     ],
     links: [
       {

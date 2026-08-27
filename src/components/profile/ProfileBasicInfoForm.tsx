@@ -60,7 +60,7 @@ export function ProfileBasicInfoForm({
         <TextField
           id="date_of_birth"
           label="Date of birth"
-          hint="You must be at least 18 years old to use Nikkah+."
+          hint="You must be at least 18 years old to use Marriage Database."
           type="date"
           value={form.date_of_birth}
           readOnly={locked}

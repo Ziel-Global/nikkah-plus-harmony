@@ -33,7 +33,7 @@ export function MemberShell({
       description={description}
       actions={actions}
       wide={wide}
-      footerNote="Nikkah+ — Faith. Family. Future. Your details stay private and are only shared with your mosque for verification."
+      footerNote="Marriage Database — Faith. Family. Future. Your details stay private and are only shared with your mosque for verification."
     >
       {children}
     </PortalShell>

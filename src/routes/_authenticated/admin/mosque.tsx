@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/admin/mosque")({
-  head: () => ADMIN_META("Mosque profile", "Keep your mosque's details up to date on Nikkah+."),
+  head: () =>
+    ADMIN_META("Mosque profile", "Keep your mosque's details up to date on Marriage Database."),
   component: MosquePage,
 });
 

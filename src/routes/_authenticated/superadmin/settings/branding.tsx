@@ -123,7 +123,7 @@ function BrandingSettingsPage() {
   return (
     <SuperAdminShell
       title="Settings"
-      description="Configuration that applies to the whole Nikkah+ platform."
+      description="Configuration that applies to the whole Marriage Database platform."
     >
       <SettingsNav />
 
@@ -191,8 +191,9 @@ function BrandingSettingsPage() {
               <div>
                 <h2 className="text-h3 text-foreground">Colour palette</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Defaults are the Nikkah+ brand values. The preview updates instantly; nothing is
-                  live until you save.
+                  Defaults are the Marriage Database brand values. The preview updates instantly;
+                  nothing is saved to your database until you click <strong>Save branding</strong>{" "}
+                  below.
                 </p>
               </div>
               <Button
@@ -201,7 +202,7 @@ function BrandingSettingsPage() {
                 onClick={() => setColors({ ...DEFAULT_BRANDING })}
               >
                 <RotateCcw aria-hidden="true" />
-                Reset to Nikkah+ defaults
+                Reset to Marriage Database defaults
               </Button>
             </div>
 

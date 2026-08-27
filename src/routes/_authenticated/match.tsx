@@ -36,16 +36,16 @@ export const Route = createFileRoute("/_authenticated/match")({
   },
   head: () => ({
     meta: [
-      { title: "Your active match — Nikkah+" },
+      { title: "Your active match — Marriage Database" },
       {
         name: "description",
         content:
-          "Your active Nikkah+ introduction: involve your wali, escalate to your mosque, and move forward with intention.",
+          "Your active Marriage Database introduction: involve your wali, escalate to your mosque, and move forward with intention.",
       },
-      { property: "og:title", content: "Your active match — Nikkah+" },
+      { property: "og:title", content: "Your active match — Marriage Database" },
       {
         property: "og:description",
-        content: "Your active Nikkah+ introduction, guided by your mosque and your wali.",
+        content: "Your active Marriage Database introduction, guided by your mosque and your wali.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -216,8 +216,8 @@ function MatchPage() {
           </p>
         )}
         <p className="mt-4 text-sm text-muted-foreground">
-          Accepted {formatDate(match.responded_at ?? match.created_at)}. Nikkah+ does not provide
-          open messaging — conversation happens through your families and mosques, with the
+          Accepted {formatDate(match.responded_at ?? match.created_at)}. Marriage Database does not
+          provide open messaging — conversation happens through your families and mosques, with the
           structured steps below.
         </p>
         {match.counterpart_profile_id && (
@@ -252,8 +252,8 @@ function MatchPage() {
                 <p className="mt-2 text-muted-foreground">{wali.approval_preferences}</p>
               )}
               <p className="mt-3 text-xs text-muted-foreground">
-                These details are visible only to you and your mosque. Nikkah+ does not contact your
-                wali on your behalf.
+                These details are visible only to you and your mosque. Marriage Database does not
+                contact your wali on your behalf.
               </p>
             </div>
           ) : (

@@ -42,17 +42,17 @@ export type BrandingColors = Pick<
   | "error_color"
 >;
 
-/** Nikkah+ defaults — mirrors the palette baked into src/styles.css. */
+/** Marriage Database defaults — mirrors the palette baked into src/styles.css. */
 export const DEFAULT_BRANDING: BrandingColors = {
-  primary_color: "#6B1E2A",
-  secondary_color: "#C9967A",
-  button_bg_color: "#6B1E2A",
-  button_text_color: "#FBF6F0",
-  button_hover_bg_color: "#551722",
-  button_active_bg_color: "#43121B",
-  success_color: "#2F7A54",
-  warning_color: "#B4761F",
-  error_color: "#A83232",
+  primary_color: "#2563EB",
+  secondary_color: "#3B82F6",
+  button_bg_color: "#2563EB",
+  button_text_color: "#FFFFFF",
+  button_hover_bg_color: "#1D4ED8",
+  button_active_bg_color: "#1E40AF",
+  success_color: "#16A34A",
+  warning_color: "#D97706",
+  error_color: "#DC2626",
 };
 
 export const COLOR_FIELDS: {
@@ -103,7 +103,7 @@ export function applyBranding(colors: Partial<BrandingColors>, root?: HTMLElemen
   }
 }
 
-/** Clears runtime overrides and falls back to the default Nikkah+ theme. */
+/** Clears runtime overrides and falls back to the default Marriage Database theme. */
 export function resetBranding(root?: HTMLElement | null) {
   const target = resolveTarget(root);
   if (!target) return;
@@ -119,12 +119,18 @@ export function applyDarkMode(enabled: boolean) {
 }
 
 export function brandingFrom(settings: Partial<BrandingColors> | null | undefined): BrandingColors {
-  return {
+  const merged = {
     ...DEFAULT_BRANDING,
     ...Object.fromEntries(
       Object.entries(settings ?? {}).filter(([, v]) => typeof v === "string" && v),
     ),
   } as BrandingColors;
+
+  if (merged.primary_color?.toUpperCase() === "#6B1E2A") {
+    return { ...DEFAULT_BRANDING };
+  }
+
+  return merged;
 }
 
 /** Reads the single settings row. Readable by signed-out visitors too. */

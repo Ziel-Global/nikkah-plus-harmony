@@ -16,17 +16,17 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
-      { title: "Complete your registration — Nikkah+" },
+      { title: "Complete your registration — Marriage Database" },
       {
         name: "description",
         content:
-          "Verify your account, choose your mosque and accept the Nikkah+ terms to complete your registration.",
+          "Verify your account, choose your mosque and accept the Marriage Database terms to complete your registration.",
       },
-      { property: "og:title", content: "Complete your registration — Nikkah+" },
+      { property: "og:title", content: "Complete your registration — Marriage Database" },
       {
         property: "og:description",
         content:
-          "Verify your account and choose your mosque to complete your Nikkah+ registration.",
+          "Verify your account and choose your mosque to complete your Marriage Database registration.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -275,8 +275,8 @@ function VerifyStep({
   return (
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
-        Verifying your account helps us keep Nikkah+ safe and genuine for everyone. Choose how you'd
-        like to confirm it's really you.
+        Verifying your account helps us keep Marriage Database safe and genuine for everyone. Choose
+        how you'd like to confirm it's really you.
       </p>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -446,8 +446,9 @@ function GenderStep({ userId, onDone }: { userId: string; onDone: () => Promise<
   return (
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
-        Nikkah+ keeps the experience separate and respectful for brothers and sisters. Please select
-        which applies to you — this cannot be changed later without contacting your mosque.
+        Marriage Database keeps the experience separate and respectful for brothers and sisters.
+        Please select which applies to you — this cannot be changed later without contacting your
+        mosque.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <ChoiceCard
@@ -581,7 +582,7 @@ function MosqueStep({ userId, onDone }: { userId: string; onDone: () => Promise<
         ) : mosques.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No mosques matched that search. Try a different spelling, or ask your mosque to register
-            with Nikkah+.
+            with Marriage Database.
           </p>
         ) : (
           mosques.map((m) => (
@@ -649,8 +650,9 @@ function TermsStep({ userId, onDone }: { userId: string; onDone: () => Promise<v
   return (
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
-        Nikkah+ exists for one purpose: to help Muslims marry with dignity, family involvement and
-        the support of their mosque. Please read and confirm the following before continuing.
+        Marriage Database exists for one purpose: to help Muslims marry with dignity, family
+        involvement and the support of their mosque. Please read and confirm the following before
+        continuing.
       </p>
 
       <ul className="space-y-2 text-sm text-muted-foreground">
