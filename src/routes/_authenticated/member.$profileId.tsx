@@ -9,6 +9,7 @@ import { MemberShell } from "@/components/layout/MemberShell";
 import { signPublicPhotos } from "@/lib/browse.functions";
 import { ageBand, DEFAULT_FILTERS, type BrowseProfile } from "@/lib/browse";
 import { friendlyRequestError } from "@/lib/requests";
+import { sendInterestNotification } from "@/lib/notifications";
 import { ActiveMatchBanner } from "@/components/browse/ActiveMatchBanner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +25,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+type MemberSearch = {
+  from?: string | undefined;
+};
+
 export const Route = createFileRoute("/_authenticated/member/$profileId")({
+  validateSearch: (search: Record<string, unknown>): MemberSearch => {
+    return {
+      from: typeof search["from"] === "string" ? (search["from"] as string) : undefined,
+    };
+  },
   beforeLoad: async () => {
     const { data } = await supabase
       .from("mosque_affiliation_requests")
@@ -114,6 +124,16 @@ function MemberDetailPage() {
 
   const profile = profileQuery.data ?? null;
 
+  const requestHistoryQuery = useQuery({
+    queryKey: ["existing-request-history", profileId],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("list_my_interest_requests");
+      if (error) return null;
+      const list = (data ?? []) as { counterpart_profile_id: string | null; status: string }[];
+      return list.find((r) => r.counterpart_profile_id === profileId) ?? null;
+    },
+  });
+
   useEffect(() => {
     const path = profile?.photo_url;
     if (!path) {
@@ -145,10 +165,42 @@ function MemberDetailPage() {
       toast.error(friendlyRequestError(error.message));
       return;
     }
+
+    void sendInterestNotification(profileId, "A member");
+
     setDialogOpen(false);
     setSent(true);
     toast.success("Your interest request has been sent to your mosque and this member.");
   };
+
+  const search = Route.useSearch();
+  const fromPath = search.from;
+
+  let backLabel = "Back to members";
+  let backTarget = "/browse";
+  let backSearch: Record<string, unknown> | undefined = DEFAULT_FILTERS;
+
+  if (fromPath === "/requests") {
+    backLabel = "Back to interest requests";
+    backTarget = "/requests";
+    backSearch = undefined;
+  } else if (fromPath === "/match") {
+    backLabel = "Back to active match";
+    backTarget = "/match";
+    backSearch = undefined;
+  } else if (fromPath === "/dashboard") {
+    backLabel = "Back to dashboard";
+    backTarget = "/dashboard";
+    backSearch = undefined;
+  } else if (fromPath === "/admin/members") {
+    backLabel = "Back to mosque members";
+    backTarget = "/admin/members";
+    backSearch = undefined;
+  } else if (fromPath === "/superadmin/profiles") {
+    backLabel = "Back to profile moderation";
+    backTarget = "/superadmin/profiles";
+    backSearch = undefined;
+  }
 
   if (profileQuery.isPending) {
     return (
@@ -167,9 +219,9 @@ function MemberDetailPage() {
         </p>
         <Button
           className="mt-6 min-h-11"
-          onClick={() => void navigate({ to: "/browse", search: DEFAULT_FILTERS })}
+          onClick={() => void navigate({ to: backTarget as never, search: backSearch as never })}
         >
-          Back to members
+          {backLabel}
         </Button>
       </main>
     );
@@ -181,12 +233,12 @@ function MemberDetailPage() {
   return (
     <MemberShell wide title="Member profile">
       <Link
-        to="/browse"
-        search={DEFAULT_FILTERS}
+        to={backTarget as never}
+        search={backSearch as never}
         className="inline-flex items-center gap-2 text-sm font-semibold text-primary underline-offset-4 hover:underline"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Back to members
+        {backLabel}
       </Link>
 
       <div className="mt-5 grid gap-6 md:grid-cols-[260px_1fr]">
@@ -224,11 +276,26 @@ function MemberDetailPage() {
           <div className="mt-5">
             {hasMatch ? (
               <ActiveMatchBanner />
-            ) : sent ? (
+            ) : sent || requestHistoryQuery.data?.status === "submitted" ? (
               <p className="rounded-lg border border-border bg-muted p-4 text-sm text-foreground">
                 Your interest request has been sent. Your mosque will be in touch with the next
                 step, in shaa Allah.
               </p>
+            ) : requestHistoryQuery.data?.status === "closed_mutual" ? (
+              <div className="rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm text-foreground">
+                <p className="font-semibold text-primary">Introduction completed</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  You have already exchanged contact details with this member through your mosques.
+                </p>
+              </div>
+            ) : requestHistoryQuery.data?.status === "closed_declined" ||
+              requestHistoryQuery.data?.status === "cancelled" ? (
+              <div className="rounded-lg border border-border bg-muted p-4 text-sm text-foreground">
+                <p className="font-semibold text-foreground">Introduction closed</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  An introduction request between you and this member was previously concluded.
+                </p>
+              </div>
             ) : (
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>

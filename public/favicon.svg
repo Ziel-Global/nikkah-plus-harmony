@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="url(#bg-grad)"/>
+  <defs>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+  <!-- Finial Crescent -->
+  <path d="M32 8 C32 8 32 12 32 12 M29 10 H35 M32 6 A 2 2 0 1 0 32 10" stroke="#DBEAFE" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Central Dome -->
+  <path d="M32 14 C23 21 20 32 20 44 H44 C44 32 41 21 32 14 Z" fill="#FFFFFF" fill-opacity="0.25" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Left Minaret -->
+  <path d="M10 30 L14 27 L18 30 V50 H10 V30 Z" fill="#FFFFFF" fill-opacity="0.3" stroke="#FFFFFF" stroke-width="2.5"/>
+  <path d="M14 20 V27 M12.5 23 H15.5" stroke="#DBEAFE" stroke-width="2"/>
+  <!-- Right Minaret -->
+  <path d="M46 30 L50 27 L54 30 V50 H46 V30 Z" fill="#FFFFFF" fill-opacity="0.3" stroke="#FFFFFF" stroke-width="2.5"/>
+  <path d="M50 20 V27 M48.5 23 H51.5" stroke="#DBEAFE" stroke-width="2"/>
+  <!-- Arch Base & Doorway -->
+  <path d="M6 50 H58 M28 50 V39 C28 36.8 29.8 35 32 35 C34.2 35 36 36.8 36 39 V50" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+</svg>

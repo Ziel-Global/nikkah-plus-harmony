@@ -970,6 +970,10 @@ export type Database = {
         Args: { p_accept: boolean; p_request_id: string };
         Returns: Database["public"]["Enums"]["request_status_enum"];
       };
+      delete_user_profile: {
+        Args: { target_user_id: string };
+        Returns: void;
+      };
       send_interest_request: {
         Args: { p_message?: string; p_profile_id: string };
         Returns: string;

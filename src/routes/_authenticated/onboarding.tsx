@@ -659,6 +659,7 @@ function TermsStep({ userId, onDone }: { userId: string; onDone: () => Promise<v
         <li>
           <Link
             to="/terms"
+            search={{ from: "/onboarding" }}
             className="font-semibold text-primary underline-offset-4 hover:underline"
           >
             Terms of Use
@@ -667,6 +668,7 @@ function TermsStep({ userId, onDone }: { userId: string; onDone: () => Promise<v
         <li>
           <Link
             to="/privacy"
+            search={{ from: "/onboarding" }}
             className="font-semibold text-primary underline-offset-4 hover:underline"
           >
             Privacy Policy
@@ -675,6 +677,7 @@ function TermsStep({ userId, onDone }: { userId: string; onDone: () => Promise<v
         <li>
           <Link
             to="/community-guidelines"
+            search={{ from: "/onboarding" }}
             className="font-semibold text-primary underline-offset-4 hover:underline"
           >
             Community Guidelines

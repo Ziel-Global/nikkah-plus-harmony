@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { friendlyError } from "@/lib/validation";
 import { SuperAdminShell } from "@/components/superadmin/SuperAdminShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -63,8 +64,25 @@ function UsersPage() {
 
   const deleteUserMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("profiles").delete().eq("id", id);
-      if (error) throw error;
+      // 1. Try calling the delete_user_profile RPC function
+      const { error: rpcError } = await supabase.rpc("delete_user_profile", {
+        target_user_id: id,
+      });
+
+      if (rpcError) {
+        // Fallback to direct table deletion if RPC function is unavailable
+        const { error: directError, count } = await supabase
+          .from("profiles")
+          .delete({ count: "exact" })
+          .eq("id", id);
+        if (directError) throw directError;
+        if (count === 0) {
+          throw new Error(
+            friendlyError(rpcError, "Could not delete user profile. Please check permissions."),
+          );
+        }
+      }
+
       await logActivity("delete_user_profile", "profiles", id, {});
     },
     onSuccess: () => {

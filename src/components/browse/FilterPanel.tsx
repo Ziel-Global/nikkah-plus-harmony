@@ -99,10 +99,14 @@ export function FilterPanel({ filters, mosques, onApply, onReset }: Props) {
             id="filter-min-age"
             className="min-h-11"
             type="number"
-            min={18}
+            min={0}
             max={99}
-            value={draft.minAge}
-            onChange={(e) => set("minAge", Number(e.target.value) || DEFAULT_FILTERS.minAge)}
+            placeholder="Any"
+            value={draft.minAge === 0 ? "" : draft.minAge}
+            onChange={(e) => {
+              const raw = e.target.value;
+              set("minAge", raw === "" ? 0 : Math.max(0, parseInt(raw, 10) || 0));
+            }}
           />
         </div>
         <div className="space-y-1.5">
@@ -111,10 +115,14 @@ export function FilterPanel({ filters, mosques, onApply, onReset }: Props) {
             id="filter-max-age"
             className="min-h-11"
             type="number"
-            min={18}
+            min={0}
             max={99}
-            value={draft.maxAge}
-            onChange={(e) => set("maxAge", Number(e.target.value) || DEFAULT_FILTERS.maxAge)}
+            placeholder="Any"
+            value={draft.maxAge === 0 ? "" : draft.maxAge}
+            onChange={(e) => {
+              const raw = e.target.value;
+              set("maxAge", raw === "" ? 0 : Math.max(0, parseInt(raw, 10) || 0));
+            }}
           />
         </div>
       </div>

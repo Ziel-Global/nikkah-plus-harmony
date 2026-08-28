@@ -206,11 +206,21 @@ function BrowsePage() {
             </div>
           ) : rows.length === 0 ? (
             <div className="surface-card rounded-xl border border-border p-8 text-center">
-              <h2 className="text-h3 text-foreground">No matches just yet</h2>
+              <h2 className="text-h3 text-foreground">No members match your selected filters</h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Try widening the age range or clearing a filter or two. New members are verified by
-                their mosques every week.
+                {count > 0
+                  ? "Try clearing or widening your search choices to see more profiles."
+                  : "No verified profiles are currently available."}
               </p>
+              {count > 0 && (
+                <Button
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => applyFilters(DEFAULT_FILTERS)}
+                >
+                  Clear all filters
+                </Button>
+              )}
             </div>
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">

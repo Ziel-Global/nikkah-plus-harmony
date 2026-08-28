@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Archive, ArrowLeft, Inbox, Send } from "lucide-react";
@@ -141,6 +141,19 @@ function RequestsPage() {
   const requestsQuery = useMyRequests();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
+  useEffect(() => {
+    void (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("user_id", auth.user.id)
+        .eq("is_read", false);
+      void queryClient.invalidateQueries({ queryKey: ["unread-incoming-requests"] });
+    })();
+  }, [queryClient]);
+
   const respond = useMutation({
     mutationFn: async ({ id, accept }: { id: string; accept: boolean }) => {
       const { error } = await supabase.rpc("respond_to_interest_request", {
@@ -250,6 +263,7 @@ function RequestsPage() {
                       <Link
                         to="/member/$profileId"
                         params={{ profileId: request.counterpart_profile_id }}
+                        search={{ from: "/requests" }}
                       >
                         View profile
                       </Link>
@@ -280,6 +294,7 @@ function RequestsPage() {
                       <Link
                         to="/member/$profileId"
                         params={{ profileId: request.counterpart_profile_id }}
+                        search={{ from: "/requests" }}
                       >
                         View profile
                       </Link>
@@ -305,6 +320,7 @@ function RequestsPage() {
                       <Link
                         to="/member/$profileId"
                         params={{ profileId: request.counterpart_profile_id }}
+                        search={{ from: "/requests" }}
                       >
                         View profile
                       </Link>

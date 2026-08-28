@@ -1,9 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Button } from "@/components/ui/button";
 
+type SearchParams = {
+  from?: string | undefined;
+};
+
 export const Route = createFileRoute("/terms")({
+  validateSearch: (search: Record<string, unknown>): SearchParams => ({
+    from: typeof search["from"] === "string" ? (search["from"] as string) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Terms of Use — Marriage Database" },
@@ -24,6 +32,20 @@ export const Route = createFileRoute("/terms")({
 });
 
 function TermsStub() {
+  const navigate = useNavigate();
+  const search = Route.useSearch();
+  const fromPath = search.from;
+
+  const handleBack = () => {
+    if (fromPath) {
+      void navigate({ to: fromPath as never });
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      void navigate({ to: "/" });
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
       <SiteHeader />
@@ -32,8 +54,9 @@ function TermsStub() {
         <p className="text-body mt-4 text-muted-foreground">
           [Placeholder — the full terms of use will be published here.]
         </p>
-        <Button asChild variant="secondary" className="mt-8 min-h-11">
-          <Link to="/">Back to home</Link>
+        <Button variant="secondary" className="mt-8 min-h-11" onClick={handleBack}>
+          <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+          Back
         </Button>
       </main>
       <SiteFooter />
