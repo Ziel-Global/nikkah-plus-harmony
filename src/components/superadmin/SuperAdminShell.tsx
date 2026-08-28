@@ -20,7 +20,6 @@ const NAV: PortalNavItem[] = [
   { to: "/superadmin/users", label: "Users", icon: Users },
   { to: "/superadmin/profiles", label: "Profiles", icon: IdCard },
   { to: "/superadmin/mosques", label: "Mosques", icon: Building2 },
-  { to: "/superadmin/mosque-admins", label: "Mosque admins", icon: UserCog },
   { to: "/superadmin/requests", label: "Requests & matches", icon: ShieldCheck },
   { to: "/superadmin/moderation", label: "Moderation", icon: Flag },
   { to: "/superadmin/flags", label: "Inactive flags", icon: ShieldAlert },

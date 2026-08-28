@@ -2,16 +2,31 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Pencil, Trash2 } from "lucide-react";
+import { Check, Copy, Eye, Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { friendlyError, validateOptionalEmail, validatePhone } from "@/lib/validation";
+import { getSiteOrigin } from "@/lib/config";
+import {
+  friendlyError,
+  validateOptionalEmail,
+  validatePassword,
+  validatePhone,
+} from "@/lib/validation";
 import { SuperAdminShell } from "@/components/superadmin/SuperAdminShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +41,7 @@ import { ConfirmDeleteModal } from "@/components/superadmin/ConfirmDeleteModal";
 
 export const Route = createFileRoute("/_authenticated/superadmin/mosques")({
   head: () =>
-    SUPER_META("Mosques", "Add, edit and approve the mosques partnered with Marriage Database."),
+    SUPER_META("Mosques", "Add, edit and manage partner mosques and their portal credentials."),
   component: MosquesPage,
 });
 
@@ -51,6 +66,7 @@ const EMPTY = {
   contact_email: "",
   contact_phone: "",
   description: "",
+  admin_password: "",
 };
 
 function MosquesPage() {
@@ -58,7 +74,9 @@ function MosquesPage() {
   const [search, setSearch] = useState("");
   const [form, setForm] = useState<typeof EMPTY | null>(null);
   const [editing, setEditing] = useState<Mosque | null>(null);
+  const [viewTarget, setViewTarget] = useState<Mosque | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Mosque | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -79,7 +97,9 @@ function MosquesPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mosques")
-        .select("*")
+        .select(
+          "id, name, address, city, country, contact_email, contact_phone, description, status, created_at",
+        )
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as unknown as Mosque[];
@@ -90,7 +110,10 @@ function MosquesPage() {
     const term = search.trim().toLowerCase();
     if (!term) return data ?? [];
     return (data ?? []).filter((m) =>
-      [m.name, m.city ?? "", m.country ?? ""].join(" ").toLowerCase().includes(term),
+      [m.name, m.city ?? "", m.country ?? "", m.contact_email ?? ""]
+        .join(" ")
+        .toLowerCase()
+        .includes(term),
     );
   }, [data, search]);
 
@@ -99,7 +122,12 @@ function MosquesPage() {
       ? "Please enter the mosque's name."
       : null
     : null;
-  const emailError = form ? validateOptionalEmail(form.contact_email) : null;
+  const emailError = form
+    ? !form.contact_email.trim()
+      ? "Contact email (login username) is required."
+      : validateOptionalEmail(form.contact_email)
+    : null;
+  const passwordError = form && !editing ? validatePassword(form.admin_password) : null;
   const phoneError =
     form && form.contact_phone.trim() !== "" ? validatePhone(form.contact_phone) : null;
   const duplicateWarning =
@@ -125,6 +153,7 @@ function MosquesPage() {
         contact_phone: form.contact_phone.trim() || null,
         description: form.description.trim() || null,
       };
+
       if (editing) {
         const { error } = await supabase.from("mosques").update(payload).eq("id", editing.id);
         if (error) throw error;
@@ -133,15 +162,56 @@ function MosquesPage() {
         const { data: auth } = await supabase.auth.getUser();
         const { data: inserted, error } = await supabase
           .from("mosques")
-          .insert({ ...payload, status: "pending" as never, created_by: auth.user?.id ?? null })
+          .insert({ ...payload, status: "active" as never, created_by: auth.user?.id ?? null })
           .select("id")
           .single();
-        if (error) throw error;
-        await logActivity("mosque_created", "mosques", inserted?.id ?? null);
+        if (error || !inserted) throw error || new Error("Could not insert mosque record.");
+
+        let adminUserId: string | null = null;
+
+        // Create or register Mosque Admin user account in Supabase Auth
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: form.contact_email.trim(),
+          password: form.admin_password,
+          options: {
+            data: { role: "mosque_admin" },
+          },
+        });
+
+        if (signUpData?.user?.id) {
+          adminUserId = signUpData.user.id;
+        } else if (signUpError) {
+          // If account already exists, fetch existing user profile ID
+          const { data: existingUser } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("email", form.contact_email.trim())
+            .maybeSingle();
+          if (existingUser) adminUserId = existingUser.id;
+        }
+
+        if (adminUserId) {
+          // Ensure profile role is set to mosque_admin
+          await supabase
+            .from("profiles")
+            .update({ role: "mosque_admin", mosque_id: inserted.id })
+            .eq("id", adminUserId);
+
+          // Assign admin to mosque in mosque_admin_mosques
+          await supabase.from("mosque_admin_mosques").insert({
+            admin_id: adminUserId,
+            mosque_id: inserted.id,
+            assigned_by: auth.user?.id ?? null,
+          });
+        }
+
+        await logActivity("mosque_created", "mosques", inserted.id);
       }
     },
     onSuccess: () => {
-      toast.success(editing ? "Mosque updated." : "Mosque added.");
+      toast.success(
+        editing ? "Mosque updated." : "Mosque and Admin credentials created successfully.",
+      );
       setForm(null);
       setEditing(null);
       void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
@@ -165,10 +235,24 @@ function MosquesPage() {
     onError: (error: Error) => toast.error(friendlyError(error)),
   });
 
+  const handleCopyCredentials = (mosque: Mosque) => {
+    const portalUrl = `${getSiteOrigin()}/admin`;
+    const text = [
+      `Mosque: ${mosque.name}`,
+      `Portal Link: ${portalUrl}`,
+      `Email (Username): ${mosque.contact_email ?? "Not set"}`,
+    ].join("\n");
+
+    void navigator.clipboard.writeText(text);
+    setCopied(true);
+    toast.success("Mosque credentials copied to clipboard!");
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <SuperAdminShell
       title="Mosques"
-      description="Partner mosques verify their own members. Approve a mosque before it appears at registration."
+      description="Manage partner mosques and their mosque admin login access."
       actions={
         <Button
           onClick={() => {
@@ -186,76 +270,208 @@ function MosquesPage() {
           id="mosque-search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Name, city or country"
+          placeholder="Name, city, country or email"
           className="mt-1"
         />
       </div>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-6">
         {isLoading ? (
-          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)
+          <div className="space-y-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 rounded-xl" />
+            ))}
+          </div>
         ) : rows.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No mosques yet.</p>
+          <p className="text-sm text-muted-foreground">No mosques found.</p>
         ) : (
-          rows.map((m) => (
-            <div key={m.id} className="surface-card rounded-xl border border-border p-4">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="font-semibold text-foreground">{m.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {[m.city, m.country].filter(Boolean).join(", ") || "Location not set"} · added{" "}
-                    {formatDay(m.created_at)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {m.contact_email ?? "No contact email"} · {m.contact_phone ?? "No phone"}
-                  </p>
-                </div>
-                <Badge variant={m.status === "active" ? "secondary" : "outline"}>{m.status}</Badge>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {m.status !== "active" ? (
-                  <Button
-                    size="sm"
-                    onClick={() => setStatus.mutate({ mosque: m, status: "active" })}
-                  >
-                    Approve mosque
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setStatus.mutate({ mosque: m, status: "suspended" })}
-                  >
-                    Suspend
-                  </Button>
-                )}
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    title="Edit mosque details"
-                    aria-label="Edit mosque details"
-                    className="text-muted-foreground hover:text-foreground"
-                    onClick={() => setEditing(m)}
-                  >
-                    <Pencil className="size-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    title="Delete mosque"
-                    aria-label="Delete mosque"
-                    className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                    onClick={() => setDeleteTarget(m)}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))
+          <div className="surface-card overflow-hidden rounded-xl border border-border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Mosque Name</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Contact Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Added Date</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rows.map((m) => (
+                  <TableRow key={m.id}>
+                    <TableCell className="font-semibold text-foreground">{m.name}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {[m.city, m.country].filter(Boolean).join(", ") || "Location not set"}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {m.contact_email ?? "—"}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={m.status === "active" ? "secondary" : "outline"}>
+                        {m.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {formatDay(m.created_at)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          title="View mosque details"
+                          aria-label="View mosque details"
+                          className="text-muted-foreground hover:text-foreground"
+                          onClick={() => setViewTarget(m)}
+                        >
+                          <Eye className="size-4" />
+                        </Button>
+
+                        {m.status !== "active" ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs"
+                            onClick={() => setStatus.mutate({ mosque: m, status: "active" })}
+                          >
+                            Approve
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs"
+                            onClick={() => setStatus.mutate({ mosque: m, status: "suspended" })}
+                          >
+                            Suspend
+                          </Button>
+                        )}
+
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          title="Edit mosque details"
+                          aria-label="Edit mosque details"
+                          className="text-muted-foreground hover:text-foreground"
+                          onClick={() => setEditing(m)}
+                        >
+                          <Pencil className="size-4" />
+                        </Button>
+
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          title="Delete mosque"
+                          aria-label="Delete mosque"
+                          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                          onClick={() => setDeleteTarget(m)}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </div>
+
+      {/* View Mosque Details Modal with Copy Credentials Icon */}
+      <Dialog open={Boolean(viewTarget)} onOpenChange={(open) => !open && setViewTarget(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader className="flex flex-row items-center justify-between gap-4 pr-6">
+            <div>
+              <DialogTitle className="text-h3 text-foreground">{viewTarget?.name}</DialogTitle>
+              <DialogDescription className="mt-1 text-xs">
+                Partner Mosque & Admin Account Details
+              </DialogDescription>
+            </div>
+            {viewTarget && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1.5 text-xs"
+                onClick={() => handleCopyCredentials(viewTarget)}
+              >
+                {copied ? (
+                  <Check className="h-3.5 w-3.5 text-primary" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+                {copied ? "Copied" : "Copy details"}
+              </Button>
+            )}
+          </DialogHeader>
+
+          {viewTarget && (
+            <div className="space-y-3 pt-2 text-sm">
+              <div className="grid grid-cols-2 gap-2 border-b border-border/60 pb-2">
+                <div>
+                  <span className="text-xs text-muted-foreground">Status</span>
+                  <p className="mt-0.5">
+                    <Badge variant={viewTarget.status === "active" ? "secondary" : "outline"}>
+                      {viewTarget.status}
+                    </Badge>
+                  </p>
+                </div>
+                <div>
+                  <span className="text-xs text-muted-foreground">Added Date</span>
+                  <p className="mt-0.5 font-medium text-foreground">
+                    {formatDay(viewTarget.created_at)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 border-b border-border/60 pb-2">
+                <div>
+                  <span className="text-xs text-muted-foreground">City</span>
+                  <p className="mt-0.5 font-medium text-foreground">{viewTarget.city ?? "—"}</p>
+                </div>
+                <div>
+                  <span className="text-xs text-muted-foreground">Country</span>
+                  <p className="mt-0.5 font-medium text-foreground">{viewTarget.country ?? "—"}</p>
+                </div>
+              </div>
+
+              <div className="border-b border-border/60 pb-2">
+                <span className="text-xs text-muted-foreground">Address</span>
+                <p className="mt-0.5 font-medium text-foreground">{viewTarget.address ?? "—"}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 border-b border-border/60 pb-2">
+                <div>
+                  <span className="text-xs text-muted-foreground">Contact Email (Admin Login)</span>
+                  <p className="mt-0.5 font-medium text-foreground">
+                    {viewTarget.contact_email ?? "—"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-xs text-muted-foreground">Contact Phone</span>
+                  <p className="mt-0.5 font-medium text-foreground">
+                    {viewTarget.contact_phone ?? "—"}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <span className="text-xs text-muted-foreground">Description</span>
+                <p className="mt-0.5 text-muted-foreground">
+                  {viewTarget.description ?? "No description provided."}
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="mt-4">
+            <Button variant="ghost" onClick={() => setViewTarget(null)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Mosque Modal */}
       <EditMosqueModal mosque={editing} onOpenChange={(open) => !open && setEditing(null)} />
@@ -270,55 +486,113 @@ function MosquesPage() {
         onConfirm={() => deleteTarget && deleteMutation.mutate(deleteTarget.id)}
       />
 
+      {/* Add Mosque Modal */}
       <Dialog open={Boolean(form)} onOpenChange={(open) => !open && setForm(null)}>
         <DialogContent className="max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editing ? "Edit mosque" : "Add a mosque"}</DialogTitle>
+            <DialogTitle>Add a mosque</DialogTitle>
             <DialogDescription>
-              New mosques start as pending until you approve them.
+              Enter the mosque details and create the Mosque Admin's login password.
             </DialogDescription>
           </DialogHeader>
           {form ? (
             <div className="space-y-3">
-              {(
-                [
-                  ["name", "Mosque name"],
-                  ["address", "Address"],
-                  ["city", "City"],
-                  ["country", "Country"],
-                  ["contact_email", "Contact email"],
-                  ["contact_phone", "Contact phone"],
-                ] as const
-              ).map(([key, label]) => {
-                const err =
-                  key === "name"
-                    ? nameError
-                    : key === "contact_email"
-                      ? emailError
-                      : key === "contact_phone"
-                        ? phoneError
-                        : null;
-                return (
-                  <div key={key}>
-                    <Label htmlFor={`mosque-${key}`}>{label}</Label>
-                    <Input
-                      id={`mosque-${key}`}
-                      value={form[key]}
-                      aria-invalid={err ? true : undefined}
-                      onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                      className="mt-1"
-                    />
-                    {err ? (
-                      <p className="mt-1 text-sm font-medium text-destructive">{err}</p>
-                    ) : null}
-                  </div>
-                );
-              })}
+              <div>
+                <Label htmlFor="mosque-name">Mosque name *</Label>
+                <Input
+                  id="mosque-name"
+                  value={form.name}
+                  aria-invalid={nameError ? true : undefined}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="mt-1"
+                />
+                {nameError ? (
+                  <p className="mt-1 text-sm font-medium text-destructive">{nameError}</p>
+                ) : null}
+              </div>
+
+              <div>
+                <Label htmlFor="mosque-contact_email">Contact Email (Admin Username) *</Label>
+                <Input
+                  id="mosque-contact_email"
+                  type="email"
+                  value={form.contact_email}
+                  aria-invalid={emailError ? true : undefined}
+                  onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
+                  placeholder="admin@mosque.org"
+                  className="mt-1"
+                />
+                {emailError ? (
+                  <p className="mt-1 text-sm font-medium text-destructive">{emailError}</p>
+                ) : null}
+              </div>
+
+              <div>
+                <Label htmlFor="mosque-admin_password">Admin Password *</Label>
+                <PasswordInput
+                  id="mosque-admin_password"
+                  value={form.admin_password}
+                  aria-invalid={passwordError ? true : undefined}
+                  onChange={(e) => setForm({ ...form, admin_password: e.target.value })}
+                  placeholder="Minimum 8 characters"
+                  className="mt-1"
+                />
+                {passwordError ? (
+                  <p className="mt-1 text-sm font-medium text-destructive">{passwordError}</p>
+                ) : null}
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label htmlFor="mosque-city">City</Label>
+                  <Input
+                    id="mosque-city"
+                    value={form.city}
+                    onChange={(e) => setForm({ ...form, city: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="mosque-country">Country</Label>
+                  <Input
+                    id="mosque-country"
+                    value={form.country}
+                    onChange={(e) => setForm({ ...form, country: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="mosque-address">Address</Label>
+                <Input
+                  id="mosque-address"
+                  value={form.address}
+                  onChange={(e) => setForm({ ...form, address: e.target.value })}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="mosque-contact_phone">Contact Phone</Label>
+                <Input
+                  id="mosque-contact_phone"
+                  value={form.contact_phone}
+                  aria-invalid={phoneError ? true : undefined}
+                  onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
+                  className="mt-1"
+                />
+                {phoneError ? (
+                  <p className="mt-1 text-sm font-medium text-destructive">{phoneError}</p>
+                ) : null}
+              </div>
+
               {duplicateWarning ? (
                 <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
                   {duplicateWarning}
                 </p>
               ) : null}
+
               <div>
                 <Label htmlFor="mosque-description">Description</Label>
                 <Textarea
@@ -331,15 +605,17 @@ function MosquesPage() {
               </div>
             </div>
           ) : null}
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <Button variant="ghost" onClick={() => setForm(null)}>
               Cancel
             </Button>
             <Button
-              disabled={Boolean(nameError || emailError || phoneError) || save.isPending}
+              disabled={
+                Boolean(nameError || emailError || passwordError || phoneError) || save.isPending
+              }
               onClick={() => save.mutate()}
             >
-              {editing ? "Save changes" : "Add mosque"}
+              {save.isPending ? "Creating..." : "Add mosque"}
             </Button>
           </DialogFooter>
         </DialogContent>

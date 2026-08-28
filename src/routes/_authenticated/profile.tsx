@@ -247,7 +247,9 @@ function ProfilePage() {
 
     const { data: profile } = await supabase
       .from("marriage_profiles")
-      .select("*")
+      .select(
+        "id, status, rejection_reason, display_name, date_of_birth, marital_status, nationality, ethnicity, country, city, area, height_cm, appearance_description, education_level, profession, employment_status, religious_practice_level, sect_or_school_of_thought, languages_spoken, family_origin, family_values, household_background, preferred_spouse_criteria, willingness_to_relocate, expected_marriage_timeline, personal_bio, privacy_settings",
+      )
       .eq("user_id", uid)
       .maybeSingle();
 
@@ -285,7 +287,7 @@ function ProfilePage() {
 
       const { data: waliRow } = await supabase
         .from("wali_details")
-        .select("*")
+        .select("name, relationship, contact_phone, contact_email, approval_preferences")
         .eq("profile_id", profile.id)
         .maybeSingle();
 

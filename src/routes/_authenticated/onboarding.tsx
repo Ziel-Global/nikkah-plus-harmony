@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Mail, MessageSquare, Search, ShieldCheck } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { getSiteOrigin } from "@/lib/config";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -200,7 +201,7 @@ function VerifyStep({
     const { error: resendError } = await supabase.auth.resend({
       type: "signup",
       email: user.email!,
-      options: { emailRedirectTo: `${window.location.origin}/onboarding` },
+      options: { emailRedirectTo: `${getSiteOrigin()}/onboarding` },
     });
     setBusy(false);
     if (resendError) {
