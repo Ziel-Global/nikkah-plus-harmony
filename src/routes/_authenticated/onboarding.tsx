@@ -432,15 +432,28 @@ function GenderStep({ userId, onDone }: { userId: string; onDone: () => Promise<
     if (gender !== "male" && gender !== "female") return;
     setBusy(true);
     setError(null);
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({ gender, role: gender === "male" ? "male_user" : "female_user" })
-      .eq("id", userId);
-    setBusy(false);
-    if (updateError) {
-      setError(friendlyError(updateError, "We couldn't save that just now. Please try again."));
-      return;
+
+    // Call RPC function to set gender & role cleanly
+    const { error: rpcError } = await supabase.rpc(
+      "set_onboarding_gender" as never,
+      { p_gender: gender } as never,
+    );
+
+    if (rpcError) {
+      // Fallback to profiles table update
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ gender, role: gender === "male" ? "male_user" : "female_user" })
+        .eq("id", userId);
+
+      if (updateError) {
+        setBusy(false);
+        setError(friendlyError(updateError, "We couldn't save that just now. Please try again."));
+        return;
+      }
     }
+
+    setBusy(false);
     await onDone();
   }
 
