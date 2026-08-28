@@ -41,8 +41,8 @@ export function friendlyRequestError(message: string) {
   if (lowered.includes("active match")) {
     return "You or the other member already has an active match right now.";
   }
-  if (lowered.includes("open request")) {
-    return "There is already an open request between you and this member.";
+  if (lowered.includes("open request") || lowered.includes("already exists")) {
+    return "You have already sent a request or completed an introduction with this member.";
   }
   return message;
 }

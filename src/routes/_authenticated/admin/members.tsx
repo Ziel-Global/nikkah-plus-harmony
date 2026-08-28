@@ -68,18 +68,44 @@ function MembersPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "members", mosqueIds],
     queryFn: async () => {
+      // 1. Fetch approved affiliation request user_ids for these mosques
+      const { data: approvedAffiliations } = await supabase
+        .from("mosque_affiliation_requests")
+        .select("user_id, mosque_id")
+        .in("mosque_id", mosqueIds)
+        .eq("status", "approved");
+
+      const approvedUserIds = Array.from(
+        new Set((approvedAffiliations ?? []).map((a) => a.user_id)),
+      );
+
+      // Auto-backfill/sync profiles.mosque_id for any approved affiliations
+      if (approvedAffiliations && approvedAffiliations.length > 0) {
+        for (const aff of approvedAffiliations) {
+          void supabase.from("profiles").update({ mosque_id: aff.mosque_id }).eq("id", aff.user_id);
+        }
+      }
+
+      // 2. Fetch profiles directly linked to mosque_id OR having an approved affiliation request
       const [{ data: profiles, error }, { data: marriage, error: mErr }] = await Promise.all([
-        supabase
-          .from("profiles")
-          .select("id, email, phone, gender, role, account_status, created_at, last_login_at")
-          .in("mosque_id", mosqueIds)
-          .order("created_at", { ascending: false }),
+        approvedUserIds.length > 0
+          ? supabase
+              .from("profiles")
+              .select("id, email, phone, gender, role, account_status, created_at, last_login_at")
+              .or(`mosque_id.in.(${mosqueIds.join(",")}),id.in.(${approvedUserIds.join(",")})`)
+              .order("created_at", { ascending: false })
+          : supabase
+              .from("profiles")
+              .select("id, email, phone, gender, role, account_status, created_at, last_login_at")
+              .in("mosque_id", mosqueIds)
+              .order("created_at", { ascending: false }),
         supabase
           .from("marriage_profiles")
           .select(
             "id, user_id, display_name, status, city, country, profession, education_level, marital_status, religious_practice_level, updated_at, rejection_reason",
           ),
       ]);
+
       if (error) throw error;
       if (mErr) throw mErr;
       return {

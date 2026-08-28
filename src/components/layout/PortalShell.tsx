@@ -12,6 +12,7 @@ export type PortalNavItem = {
   icon: ComponentType<{ className?: string }>;
   exact?: boolean;
   search?: Record<string, unknown>;
+  badgeCount?: number;
 };
 
 function NavList({
@@ -33,7 +34,12 @@ function NavList({
           className="flex min-h-11 items-center gap-3 rounded-lg border-l-2 border-transparent px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-accent hover:text-primary data-[status=active]:border-primary data-[status=active]:bg-primary/10 data-[status=active]:text-primary"
         >
           <item.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-          <span className="truncate">{item.label}</span>
+          <span className="truncate flex-1">{item.label}</span>
+          {typeof item.badgeCount === "number" && item.badgeCount > 0 ? (
+            <span className="ml-auto inline-flex items-center justify-center rounded-full bg-destructive px-2 py-0.5 text-xs font-bold text-destructive-foreground animate-pulse">
+              {item.badgeCount}
+            </span>
+          ) : null}
         </Link>
       ))}
     </nav>

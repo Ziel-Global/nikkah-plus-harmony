@@ -16,6 +16,7 @@ export function ProfileCard({ profile, photoUrl }: Props) {
     <Link
       to="/member/$profileId"
       params={{ profileId: profile.id }}
+      search={{ from: "/browse" }}
       className="surface-card group flex flex-col overflow-hidden rounded-xl border border-border transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div className="relative aspect-4/3 w-full overflow-hidden bg-muted">

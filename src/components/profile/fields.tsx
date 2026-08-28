@@ -94,6 +94,8 @@ export function TextField({
   );
 }
 
+export type SelectOption = string | { value: string; label: string };
+
 export function SelectField({
   id,
   label,
@@ -109,16 +111,19 @@ export function SelectField({
   label: string;
   hint?: string;
   value: string;
-  options: readonly string[];
+  options: readonly SelectOption[];
   onChange: (v: string) => void;
   error?: string | null | undefined;
   readOnly?: boolean;
   placeholder?: string;
 }) {
+  const normalized = options.map((o) => (typeof o === "string" ? { value: o, label: o } : o));
+  const selectedLabel = normalized.find((o) => o.value === value)?.label ?? value;
+
   return (
     <Field label={label} hint={hint} htmlFor={id} error={error}>
       {readOnly ? (
-        <ReadOnlyValue value={value} />
+        <ReadOnlyValue value={selectedLabel} />
       ) : (
         <select
           id={id}
@@ -131,9 +136,9 @@ export function SelectField({
           )}
         >
           <option value="">{placeholder}</option>
-          {options.map((o) => (
-            <option key={o} value={o}>
-              {o}
+          {normalized.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
             </option>
           ))}
         </select>

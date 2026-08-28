@@ -20,8 +20,8 @@ export type BrowseFilters = {
 };
 
 export const DEFAULT_FILTERS: BrowseFilters = {
-  minAge: 18,
-  maxAge: 70,
+  minAge: 0,
+  maxAge: 0,
   country: "",
   city: "",
   nationality: "",
@@ -48,15 +48,16 @@ type RpcArgs = Record<string, string | number | boolean | string[]>;
 export function toRpcArgs(filters: BrowseFilters): RpcArgs {
   const languages = filters.languages
     .split(",")
-    .map((l) => l.trim())
+    .map((l) => l.trim().toLowerCase())
     .filter(Boolean);
 
   const args: RpcArgs = {
-    p_min_age: filters.minAge,
-    p_max_age: filters.maxAge,
     p_limit: PAGE_SIZE,
     p_offset: (Math.max(1, filters.page) - 1) * PAGE_SIZE,
   };
+
+  if (filters.minAge > 0) args["p_min_age"] = filters.minAge;
+  if (filters.maxAge > 0) args["p_max_age"] = filters.maxAge;
 
   const text: [string, string][] = [
     ["p_country", filters.country],
@@ -83,8 +84,7 @@ export function toRpcArgs(filters: BrowseFilters): RpcArgs {
 
 export function activeFilterCount(filters: BrowseFilters) {
   let count = 0;
-  if (filters.minAge !== DEFAULT_FILTERS.minAge || filters.maxAge !== DEFAULT_FILTERS.maxAge)
-    count += 1;
+  if (filters.minAge > 0 || filters.maxAge > 0) count += 1;
   for (const key of [
     "country",
     "city",

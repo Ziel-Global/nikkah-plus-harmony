@@ -222,7 +222,11 @@ function MatchPage() {
         </p>
         {match.counterpart_profile_id && (
           <Button asChild variant="outline" className="mt-4 min-h-11">
-            <Link to="/member/$profileId" params={{ profileId: match.counterpart_profile_id }}>
+            <Link
+              to="/member/$profileId"
+              params={{ profileId: match.counterpart_profile_id }}
+              search={{ from: "/match" }}
+            >
               View their profile
             </Link>
           </Button>

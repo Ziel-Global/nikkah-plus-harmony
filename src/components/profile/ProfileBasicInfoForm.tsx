@@ -2,6 +2,8 @@ import { ProfileSection } from "./ProfileSection";
 import { SelectField, TextAreaField, TextField } from "./fields";
 import { MARITAL_STATUS } from "@/lib/profile-options";
 
+type MosqueOption = { id: string; name: string; city: string | null };
+
 type FormState = {
   display_name: string;
   date_of_birth: string;
@@ -13,12 +15,14 @@ type FormState = {
   area: string;
   height_cm: string;
   appearance_description: string;
+  mosque_id?: string;
 };
 
 type FieldErrors = Partial<Record<keyof FormState, string | null>>;
 
 interface ProfileBasicInfoFormProps {
   form: FormState;
+  mosques?: MosqueOption[];
   locked: boolean;
   savingKey: string | null;
   savedKey: string | null;
@@ -29,6 +33,7 @@ interface ProfileBasicInfoFormProps {
 
 export function ProfileBasicInfoForm({
   form,
+  mosques = [],
   locked,
   savingKey,
   savedKey,
@@ -36,6 +41,11 @@ export function ProfileBasicInfoForm({
   onChange,
   onSaveSection,
 }: ProfileBasicInfoFormProps) {
+  const mosqueOptions = mosques.map((m) => ({
+    value: m.id,
+    label: `${m.name}${m.city ? ` (${m.city})` : ""}`,
+  }));
+
   return (
     <>
       <ProfileSection
@@ -47,6 +57,15 @@ export function ProfileBasicInfoForm({
         saved={savedKey === "basics"}
         onSave={() => onSaveSection("basics")}
       >
+        <SelectField
+          id="mosque_id"
+          label="Affiliated Mosque"
+          hint="The mosque that verifies and oversees your profile."
+          value={form.mosque_id ?? ""}
+          options={mosqueOptions}
+          readOnly={locked}
+          onChange={(v) => onChange({ mosque_id: v })}
+        />
         <TextField
           id="display_name"
           label="Name to be known by"

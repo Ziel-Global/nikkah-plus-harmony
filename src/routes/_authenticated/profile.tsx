@@ -75,6 +75,7 @@ export const Route = createFileRoute("/_authenticated/profile")({
 });
 
 type Form = {
+  mosque_id: string;
   display_name: string;
   date_of_birth: string;
   marital_status: string;
@@ -101,6 +102,7 @@ type Form = {
 };
 
 const EMPTY_FORM: Form = {
+  mosque_id: "",
   display_name: "",
   date_of_birth: "",
   marital_status: "",
@@ -159,7 +161,14 @@ const SECTIONS = [
 type SectionKey = (typeof SECTIONS)[number]["id"];
 
 const SECTION_FIELDS: Record<string, (keyof Form)[]> = {
-  basics: ["display_name", "date_of_birth", "marital_status", "nationality", "ethnicity"],
+  basics: [
+    "mosque_id",
+    "display_name",
+    "date_of_birth",
+    "marital_status",
+    "nationality",
+    "ethnicity",
+  ],
   location: ["country", "city", "area"],
   physical: ["height_cm", "appearance_description"],
   education: ["education_level", "profession", "employment_status"],
@@ -191,6 +200,7 @@ function ProfilePage() {
   const [status, setStatus] = useState<string>("draft");
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
   const [form, setForm] = useState<Form>(EMPTY_FORM);
+  const [mosques, setMosques] = useState<{ id: string; name: string; city: string | null }[]>([]);
   const [wali, setWali] = useState<Wali>(EMPTY_WALI);
   const [privacy, setPrivacy] = useState<PrivacySettings>({});
   const [loading, setLoading] = useState(true);
@@ -212,6 +222,29 @@ function ProfilePage() {
       return;
     }
 
+    const { data: mosquesList } = await supabase
+      .from("mosques")
+      .select("id, name, city")
+      .eq("status", "active")
+      .order("name");
+    if (mosquesList) setMosques(mosquesList);
+
+    const { data: userProf } = await supabase
+      .from("profiles")
+      .select("mosque_id")
+      .eq("id", uid)
+      .maybeSingle();
+
+    const { data: affReq } = await supabase
+      .from("mosque_affiliation_requests")
+      .select("mosque_id")
+      .eq("user_id", uid)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const currentMosqueId = userProf?.mosque_id ?? affReq?.mosque_id ?? "";
+
     const { data: profile } = await supabase
       .from("marriage_profiles")
       .select("*")
@@ -223,6 +256,7 @@ function ProfilePage() {
       setStatus(profile.status);
       setRejectionReason(profile.rejection_reason ?? null);
       setForm({
+        mosque_id: currentMosqueId,
         display_name: profile.display_name ?? "",
         date_of_birth: profile.date_of_birth ?? "",
         marital_status: profile.marital_status ?? "",
@@ -264,6 +298,8 @@ function ProfilePage() {
           approval_preferences: waliRow.approval_preferences ?? "",
         });
       }
+    } else {
+      setForm((prev) => ({ ...prev, mosque_id: currentMosqueId }));
     }
     setLoading(false);
   }, []);
@@ -357,11 +393,33 @@ function ProfilePage() {
     setSavingKey(key);
     const patch: Record<string, unknown> = {};
     for (const f of fields) patch[f] = toDbValue(f, form);
+    delete patch["mosque_id"];
 
     const id = await ensureProfile(patch);
     if (!id) {
       setSavingKey(null);
       return;
+    }
+
+    if (key === "basics" && userId && form.mosque_id) {
+      await supabase.from("profiles").update({ mosque_id: form.mosque_id }).eq("id", userId);
+
+      const { data: existingAff } = await supabase
+        .from("mosque_affiliation_requests")
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (existingAff) {
+        await supabase
+          .from("mosque_affiliation_requests")
+          .update({ mosque_id: form.mosque_id, status: "pending" })
+          .eq("id", existingAff.id);
+      } else {
+        await supabase
+          .from("mosque_affiliation_requests")
+          .insert({ user_id: userId, mosque_id: form.mosque_id, status: "pending" });
+      }
     }
 
     const moved = nextStatusOnEdit(status);
@@ -569,6 +627,7 @@ function ProfilePage() {
       <div className="mt-4 space-y-6">
         <ProfileBasicInfoForm
           form={form}
+          mosques={mosques}
           locked={locked}
           savingKey={savingKey}
           savedKey={savedKey}
