@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Check, X as XIcon } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { getSiteOrigin } from "@/lib/config";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -83,7 +84,7 @@ function RegisterPage() {
       email: trimmedEmail,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/onboarding`,
+        emailRedirectTo: `${getSiteOrigin()}/onboarding`,
         data: { gender: null, role: null, phone: trimmedPhone },
       },
     });

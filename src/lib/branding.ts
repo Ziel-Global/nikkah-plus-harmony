@@ -137,7 +137,9 @@ export function brandingFrom(settings: Partial<BrandingColors> | null | undefine
 export async function fetchPlatformSettings(): Promise<PlatformSettings | null> {
   const { data, error } = await supabase
     .from("platform_settings")
-    .select("*")
+    .select(
+      "id, platform_name, primary_color, secondary_color, button_bg_color, button_hover_bg_color, button_active_bg_color, button_text_color, warning_color, error_color, success_color, logo_url, inactivity_threshold_days, dark_mode_default, updated_at",
+    )
     .eq("id", 1)
     .maybeSingle();
   if (error) return null;
