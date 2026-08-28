@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const MASAIL_URL = "https://masail.lovable.app";
+export const MASAIL_URL = "https://masail.vercel.app";
 
 export function ProjectsDropdown() {
   const [open, setOpen] = useState(false);

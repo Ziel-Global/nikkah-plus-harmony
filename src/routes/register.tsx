@@ -94,16 +94,15 @@ function RegisterPage() {
       const m =
         `${signUpError.message} ${(signUpError as { code?: string }).code ?? ""}`.toLowerCase();
       const phoneDuplicate =
-        m.includes("profiles_phone_unique") || (m.includes("phone") && m.includes("unique"));
+        m.includes("profiles_phone_unique") ||
+        (m.includes("phone") && (m.includes("unique") || m.includes("duplicate")));
       const emailDuplicate =
         !phoneDuplicate &&
         (m.includes("email") || m.includes("user already registered")) &&
         (m.includes("already") || m.includes("registered") || m.includes("unique"));
       const unclearDuplicate =
-        m.includes("duplicate") ||
-        m.includes("23505") ||
-        m.includes("already") ||
-        m.includes("database error");
+        (m.includes("duplicate key") || m.includes("23505")) &&
+        (m.includes("already") || m.includes("unique") || m.includes("constraint"));
 
       if (phoneDuplicate) {
         setError(DUPLICATE_PHONE_MESSAGE);
