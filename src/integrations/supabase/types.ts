@@ -773,7 +773,7 @@ export type Database = {
           mosque_id: string | null;
           phone: string | null;
           phone_verified_at: string | null;
-          role: Database["public"]["Enums"]["user_role"];
+          role: Database["public"]["Enums"]["user_role"] | null;
           terms_accepted_at: string | null;
           updated_at: string;
           verification_method: string | null;
@@ -788,7 +788,7 @@ export type Database = {
           mosque_id?: string | null;
           phone?: string | null;
           phone_verified_at?: string | null;
-          role?: Database["public"]["Enums"]["user_role"];
+          role?: Database["public"]["Enums"]["user_role"] | null;
           terms_accepted_at?: string | null;
           updated_at?: string;
           verification_method?: string | null;
@@ -803,7 +803,7 @@ export type Database = {
           mosque_id?: string | null;
           phone?: string | null;
           phone_verified_at?: string | null;
-          role?: Database["public"]["Enums"]["user_role"];
+          role?: Database["public"]["Enums"]["user_role"] | null;
           terms_accepted_at?: string | null;
           updated_at?: string;
           verification_method?: string | null;
