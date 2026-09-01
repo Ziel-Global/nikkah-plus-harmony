@@ -433,16 +433,16 @@ function GenderStep({ userId, onDone }: { userId: string; onDone: () => Promise<
     setBusy(true);
     setError(null);
 
-    // Call RPC function with explicit userId to set gender & role cleanly
+    // Call canonical RPC function with p_gender only (auth.uid() identifies user in DB)
     const { error: rpcError } = await supabase.rpc(
       "set_onboarding_gender" as never,
       {
-        p_user_id: userId,
         p_gender: gender,
       } as never,
     );
 
     if (rpcError) {
+      console.error("[Onboarding Gender Selection Error]:", rpcError);
       setBusy(false);
       setError(friendlyError(rpcError, "We couldn't save that just now. Please try again."));
       return;
