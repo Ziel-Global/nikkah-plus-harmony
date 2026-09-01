@@ -96,6 +96,14 @@ function OnboardingPage() {
 
   useEffect(() => {
     void load();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      void load();
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [load]);
 
   const emailConfirmed = Boolean(user?.email_confirmed_at);
