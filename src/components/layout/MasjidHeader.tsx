@@ -71,7 +71,12 @@ export function MasjidHeader() {
           </a>
 
           {/* Projects Dropdown Menu */}
-          <div className="relative" ref={dropdownRef}>
+          <div
+            className="relative"
+            ref={dropdownRef}
+            onMouseEnter={() => setProjectsOpen(true)}
+            onMouseLeave={() => setProjectsOpen(false)}
+          >
             <button
               type="button"
               onClick={() => setProjectsOpen((v) => !v)}
@@ -95,43 +100,45 @@ export function MasjidHeader() {
 
             {/* Dropdown Menu Overlay */}
             {projectsOpen && (
-              <div className="absolute left-0 mt-3 w-80 animate-in fade-in slide-in-from-top-2 duration-200 rounded-2xl border border-[#E2E8F0] bg-white p-3 shadow-2xl shadow-[#2563EB]/15 z-50">
-                <Link
-                  to="/marriage"
-                  onClick={() => setProjectsOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-[#DBEAFE]/60"
-                >
-                  <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
-                    <HeartHandshake className="size-5" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-[#0F172A]">Marriage Database</div>
-                    <p className="mt-0.5 text-xs leading-normal text-[#64748B]">
-                      Community-based matrimonial matching verified by your local imam.
-                    </p>
-                  </div>
-                </Link>
-
-                <a
-                  href={MASAIL_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setProjectsOpen(false)}
-                  className="mt-1 flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-[#DBEAFE]/60"
-                >
-                  <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#3B82F6] text-white shadow-sm">
-                    <BookOpen className="size-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5 font-bold text-[#0F172A]">
-                      <span>Masail Portal</span>
-                      <ExternalLink className="size-3.5 text-[#64748B]" />
+              <div className="absolute left-0 top-full pt-1.5 w-80 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                <div className="rounded-2xl border border-[#E2E8F0] bg-white p-3 shadow-2xl shadow-[#2563EB]/15">
+                  <Link
+                    to="/marriage"
+                    onClick={() => setProjectsOpen(false)}
+                    className="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-[#DBEAFE]/60"
+                  >
+                    <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
+                      <HeartHandshake className="size-5" />
                     </div>
-                    <p className="mt-0.5 text-xs leading-normal text-[#64748B]">
-                      Direct Islamic Q&A portal connecting congregants with verified scholars.
-                    </p>
-                  </div>
-                </a>
+                    <div>
+                      <div className="font-bold text-[#0F172A]">Marriage Database</div>
+                      <p className="mt-0.5 text-xs leading-normal text-[#64748B]">
+                        Community-based matrimonial matching verified by your local imam.
+                      </p>
+                    </div>
+                  </Link>
+
+                  <a
+                    href={MASAIL_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setProjectsOpen(false)}
+                    className="mt-1 flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-[#DBEAFE]/60"
+                  >
+                    <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#3B82F6] text-white shadow-sm">
+                      <BookOpen className="size-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 font-bold text-[#0F172A]">
+                        <span>Masail Portal</span>
+                        <ExternalLink className="size-3.5 text-[#64748B]" />
+                      </div>
+                      <p className="mt-0.5 text-xs leading-normal text-[#64748B]">
+                        Direct Islamic Q&A portal connecting congregants with verified scholars.
+                      </p>
+                    </div>
+                  </a>
+                </div>
               </div>
             )}
           </div>

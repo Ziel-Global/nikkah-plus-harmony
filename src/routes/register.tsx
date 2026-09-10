@@ -84,7 +84,7 @@ function RegisterPage() {
       email: trimmedEmail,
       password,
       options: {
-        emailRedirectTo: `${getSiteOrigin()}/onboarding`,
+        emailRedirectTo: `${getSiteOrigin()}/auth`,
         data: { gender: null, role: null, phone: trimmedPhone },
       },
     });
