@@ -36,6 +36,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { SUPER_META, formatDay, logActivity } from "@/lib/superadmin";
+import { sendMosqueAdminWelcomeEmail } from "@/lib/notifications";
 import { EditMosqueModal } from "@/components/superadmin/EditMosqueModal";
 import { ConfirmDeleteModal } from "@/components/superadmin/ConfirmDeleteModal";
 
@@ -168,13 +169,18 @@ function MosquesPage() {
         if (error || !inserted) throw error || new Error("Could not insert mosque record.");
 
         let adminUserId: string | null = null;
+        const portalUrl = `${getSiteOrigin()}/admin`;
 
         // Create or register Mosque Admin user account in Supabase Auth
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email: form.contact_email.trim(),
           password: form.admin_password,
           options: {
-            data: { role: "mosque_admin" },
+            emailRedirectTo: portalUrl,
+            data: {
+              role: "mosque_admin",
+              mosque_id: inserted.id,
+            },
           },
         });
 
@@ -191,19 +197,27 @@ function MosquesPage() {
         }
 
         if (adminUserId) {
-          // Ensure profile role is set to mosque_admin
-          await supabase
-            .from("profiles")
-            .update({ role: "mosque_admin", mosque_id: inserted.id })
-            .eq("id", adminUserId);
-
-          // Assign admin to mosque in mosque_admin_mosques
-          await supabase.from("mosque_admin_mosques").insert({
-            admin_id: adminUserId,
-            mosque_id: inserted.id,
-            assigned_by: auth.user?.id ?? null,
+          // Use SECURITY DEFINER RPC to assign mosque_admin role and link mosque_id cleanly
+          const { error: rpcError } = await supabase.rpc("assign_mosque_admin_role", {
+            p_user_id: adminUserId,
+            p_mosque_id: inserted.id,
           });
+          if (rpcError) {
+            console.error("Failed to assign mosque_admin role:", rpcError);
+          }
         }
+
+        // Dispatch branded welcome email with mosque details, credentials and direct /admin portal link
+        void sendMosqueAdminWelcomeEmail({
+          toEmail: form.contact_email.trim(),
+          mosqueName: form.name.trim(),
+          city: form.city.trim() || null,
+          country: form.country.trim() || null,
+          address: form.address.trim() || null,
+          phone: form.contact_phone.trim() || null,
+          tempPassword: form.admin_password,
+          portalUrl,
+        });
 
         await logActivity("mosque_created", "mosques", inserted.id);
       }

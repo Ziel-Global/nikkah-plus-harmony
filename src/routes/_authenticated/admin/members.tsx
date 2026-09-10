@@ -86,18 +86,22 @@ function MembersPage() {
         }
       }
 
-      // 2. Fetch profiles directly linked to mosque_id OR having an approved affiliation request
+      // 2. Fetch profiles directly linked to mosque_id OR having an approved affiliation request (excluding admin roles)
       const [{ data: profiles, error }, { data: marriage, error: mErr }] = await Promise.all([
         approvedUserIds.length > 0
           ? supabase
               .from("profiles")
               .select("id, email, phone, gender, role, account_status, created_at, last_login_at")
               .or(`mosque_id.in.(${mosqueIds.join(",")}),id.in.(${approvedUserIds.join(",")})`)
+              .neq("role", "mosque_admin")
+              .neq("role", "super_admin")
               .order("created_at", { ascending: false })
           : supabase
               .from("profiles")
               .select("id, email, phone, gender, role, account_status, created_at, last_login_at")
               .in("mosque_id", mosqueIds)
+              .neq("role", "mosque_admin")
+              .neq("role", "super_admin")
               .order("created_at", { ascending: false }),
         supabase
           .from("marriage_profiles")

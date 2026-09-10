@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { getSiteOrigin } from "@/lib/config";
@@ -38,6 +38,20 @@ function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      const search = window.location.search;
+      if (
+        hash.includes("type=signup") ||
+        hash.includes("type=email_confirmation") ||
+        search.includes("confirmed=true")
+      ) {
+        setNotice("Email confirmed successfully! Please sign in to continue.");
+      }
+    }
+  }, []);
 
   async function onSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -168,6 +182,11 @@ function AuthPage() {
             required
           />
         </div>
+        {notice ? (
+          <Alert>
+            <AlertDescription>{notice}</AlertDescription>
+          </Alert>
+        ) : null}
         {error ? (
           <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>

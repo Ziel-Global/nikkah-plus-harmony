@@ -970,6 +970,10 @@ export type Database = {
         Args: { p_accept: boolean; p_request_id: string };
         Returns: Database["public"]["Enums"]["request_status_enum"];
       };
+      assign_mosque_admin_role: {
+        Args: { p_mosque_id: string; p_user_id: string };
+        Returns: void;
+      };
       delete_user_profile: {
         Args: { target_user_id: string };
         Returns: void;

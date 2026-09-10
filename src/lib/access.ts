@@ -52,7 +52,21 @@ export async function fetchAccessState(): Promise<AccessState> {
     profile = retry.data;
   }
 
-  const role = (profile?.role as AppRole | undefined) ?? null;
+  let role = (profile?.role as AppRole | undefined) ?? null;
+
+  // Fallback resilience for Mosque Admins whose DB profile has not yet synchronized
+  const metaRole = user.user_metadata?.["role"] as string | undefined;
+  const metaMosqueId = user.user_metadata?.["mosque_id"] as string | undefined;
+
+  if (!role && metaRole === "mosque_admin") {
+    role = "mosque_admin";
+    if (metaMosqueId) {
+      void supabase.rpc("assign_mosque_admin_role", {
+        p_user_id: user.id,
+        p_mosque_id: metaMosqueId,
+      });
+    }
+  }
 
   if (role === "super_admin") {
     return { ...SIGNED_OUT, userId: user.id, role };
@@ -69,7 +83,7 @@ export async function fetchAccessState(): Promise<AccessState> {
       role,
       onboardingComplete: true,
       affiliationStatus: null,
-      hasMosqueAssignment: Boolean(link),
+      hasMosqueAssignment: Boolean(link || metaMosqueId),
     };
   }
 
