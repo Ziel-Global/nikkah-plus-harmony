@@ -81,7 +81,7 @@ type AffiliationRow = {
   rejection_reason: string | null;
   created_at: string;
   reviewed_at: string | null;
-  profiles: { email: string; phone: string | null; gender: string | null; role: string } | null;
+  profiles: { email: string; phone: string | null; gender: string | null; role: string; full_name: string | null } | null;
 };
 
 function AffiliationsPage() {
@@ -101,7 +101,7 @@ function AffiliationsPage() {
         supabase
           .from("mosque_affiliation_requests")
           .select(
-            "id, user_id, mosque_id, status, rejection_reason, created_at, reviewed_at, profiles:profiles!mosque_affiliation_requests_user_id_fkey(email, phone, gender, role)",
+            "id, user_id, mosque_id, status, rejection_reason, created_at, reviewed_at, profiles:profiles!mosque_affiliation_requests_user_id_fkey(email, phone, gender, role, full_name)",
           )
           .in("mosque_id", mosqueIds)
           .order("created_at", { ascending: false }),
@@ -185,7 +185,7 @@ function AffiliationsPage() {
         {list.map((row) => {
           const mProf = marriageMap.get(row.user_id);
           const location = [mProf?.area, mProf?.city, mProf?.country].filter(Boolean).join(", ");
-          const displayName = mProf?.display_name ?? row.profiles?.email ?? "Member";
+          const displayName = mProf?.display_name ?? row.profiles?.full_name ?? row.profiles?.email ?? "Member";
 
           return (
             <li key={row.id} className="surface-card rounded-xl border border-border p-5 shadow-xs">
@@ -330,7 +330,7 @@ function AffiliationsPage() {
         <SheetContent className="overflow-y-auto sm:max-w-lg">
           <SheetHeader>
             <SheetTitle>
-              {inspectedMarriage?.display_name ?? inspecting?.profiles?.email ?? "Member Details"}
+              {inspectedMarriage?.display_name ?? inspecting?.profiles?.full_name ?? inspecting?.profiles?.email ?? "Member Details"}
             </SheetTitle>
             <SheetDescription>
               Complete details submitted by the member for mosque affiliation verification.
