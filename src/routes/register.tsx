@@ -50,6 +50,8 @@ const DUPLICATE_UNCLEAR_MESSAGE =
 function RegisterPage() {
   const navigate = useNavigate();
   const ready = useRedirectIfSignedIn();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -60,6 +62,8 @@ function RegisterPage() {
   const [emailSent, setEmailSent] = useState(false);
 
   const errors = {
+    firstName: firstName.trim().length > 0 ? null : "First name is required.",
+    lastName: lastName.trim().length > 0 ? null : "Last name is required.",
     email: validateEmail(email),
     phone: validatePhone(phone),
     password: validatePassword(password),
@@ -72,12 +76,13 @@ function RegisterPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setTouched({ email: true, phone: true, password: true, confirm: true });
+    setTouched({ firstName: true, lastName: true, email: true, phone: true, password: true, confirm: true });
 
     if (!formValid) return;
 
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
+    const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
 
     setBusy(true);
     const { data, error: signUpError } = await supabase.auth.signUp({
@@ -85,7 +90,7 @@ function RegisterPage() {
       password,
       options: {
         emailRedirectTo: `${getSiteOrigin()}/auth`,
-        data: { gender: null, role: null, phone: trimmedPhone },
+        data: { gender: null, role: null, phone: trimmedPhone, full_name: fullName },
       },
     });
     setBusy(false);
@@ -188,6 +193,47 @@ function RegisterPage() {
       }
     >
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="firstName">First name</Label>
+            <Input
+              id="firstName"
+              autoComplete="given-name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              onBlur={blur("firstName")}
+              aria-invalid={show("firstName") ? true : undefined}
+              className={cn(show("firstName") && "border-destructive")}
+              required
+              maxLength={50}
+            />
+            {show("firstName") ? (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {show("firstName")}
+              </p>
+            ) : null}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="lastName">Last name</Label>
+            <Input
+              id="lastName"
+              autoComplete="family-name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              onBlur={blur("lastName")}
+              aria-invalid={show("lastName") ? true : undefined}
+              className={cn(show("lastName") && "border-destructive")}
+              required
+              maxLength={50}
+            />
+            {show("lastName") ? (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {show("lastName")}
+              </p>
+            ) : null}
+          </div>
+        </div>
+
         <div className="space-y-2">
           <Label htmlFor="email">Email address</Label>
           <Input
