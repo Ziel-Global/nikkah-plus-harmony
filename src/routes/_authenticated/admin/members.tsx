@@ -221,7 +221,7 @@ function MembersPage() {
 
       <Sheet open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
         <SheetContent className="overflow-y-auto">
-          <SheetHeader>
+          <SheetHeader className="mb-6">
             <SheetTitle>{selectedProfile?.display_name ?? selected?.full_name ?? selected?.email}</SheetTitle>
             <SheetDescription>
               Read-only record. Mosques verify and oversee — they never control who matches with
