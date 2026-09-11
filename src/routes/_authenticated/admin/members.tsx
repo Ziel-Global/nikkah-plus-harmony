@@ -39,6 +39,7 @@ type MemberRow = {
   account_status: string;
   created_at: string;
   last_login_at: string | null;
+  full_name: string | null;
 };
 
 type MarriageProfile = {
@@ -91,14 +92,14 @@ function MembersPage() {
         approvedUserIds.length > 0
           ? supabase
               .from("profiles")
-              .select("id, email, phone, gender, role, account_status, created_at, last_login_at")
+              .select("id, email, phone, gender, role, account_status, created_at, last_login_at, full_name")
               .or(`mosque_id.in.(${mosqueIds.join(",")}),id.in.(${approvedUserIds.join(",")})`)
               .neq("role", "mosque_admin")
               .neq("role", "super_admin")
               .order("created_at", { ascending: false })
           : supabase
               .from("profiles")
-              .select("id, email, phone, gender, role, account_status, created_at, last_login_at")
+              .select("id, email, phone, gender, role, account_status, created_at, last_login_at, full_name")
               .in("mosque_id", mosqueIds)
               .neq("role", "mosque_admin")
               .neq("role", "super_admin")
@@ -189,7 +190,7 @@ function MembersPage() {
               >
                 <div className="min-w-0">
                   <p className="font-semibold text-foreground">
-                    {profile?.display_name ?? member.email}
+                    {profile?.display_name ?? member.full_name ?? member.email}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {member.email} · joined {formatDay(member.created_at)}
@@ -221,7 +222,7 @@ function MembersPage() {
       <Sheet open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
         <SheetContent className="overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>{selectedProfile?.display_name ?? selected?.email}</SheetTitle>
+            <SheetTitle>{selectedProfile?.display_name ?? selected?.full_name ?? selected?.email}</SheetTitle>
             <SheetDescription>
               Read-only record. Mosques verify and oversee — they never control who matches with
               whom.
