@@ -84,9 +84,13 @@ function SidebarBody({
       <div className="border-t border-border p-3">
         <div className="min-w-0 px-2 pb-2">
           <p className="truncate text-sm font-semibold text-foreground">
-            {user?.email ?? "Signed in"}
+            {user?.user_metadata?.full_name || user?.email || "Signed in"}
           </p>
-          {roleLabel ? <p className="text-xs text-muted-foreground">{roleLabel}</p> : null}
+          <div className="mt-0.5 truncate text-xs text-muted-foreground">
+            {user?.user_metadata?.full_name && user?.email ? <span>{user.email}</span> : null}
+            {user?.user_metadata?.full_name && user?.email && roleLabel ? <span className="mx-1.5">•</span> : null}
+            {roleLabel ? <span>{roleLabel}</span> : null}
+          </div>
         </div>
         <button
           type="button"
