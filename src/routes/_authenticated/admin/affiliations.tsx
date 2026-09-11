@@ -36,13 +36,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+
 
 export const Route = createFileRoute("/_authenticated/admin/affiliations")({
   head: () =>
@@ -91,7 +85,7 @@ function AffiliationsPage() {
   const mosqueIds = mosques.map((m) => m.id);
   const queryClient = useQueryClient();
   const [rejecting, setRejecting] = useState<AffiliationRow | null>(null);
-  const [inspecting, setInspecting] = useState<AffiliationRow | null>(null);
+
   const [reason, setReason] = useState("");
 
   const { data, isLoading } = useQuery({
@@ -173,7 +167,7 @@ function AffiliationsPage() {
   const marriageMap = data?.marriageMap ?? new Map();
   const byStatus = (status: string) => rows.filter((r) => r.status === status);
 
-  const inspectedMarriage = inspecting ? marriageMap.get(inspecting.user_id) : undefined;
+
 
   const renderList = (list: AffiliationRow[], showActions: boolean) => {
     if (isLoading) return <Skeleton className="h-32 w-full" />;
@@ -264,15 +258,7 @@ function AffiliationsPage() {
                   <Badge variant={row.status === "approved" ? "default" : "secondary"}>
                     {row.status}
                   </Badge>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="gap-1.5 text-xs text-primary hover:text-primary"
-                    onClick={() => setInspecting(row)}
-                  >
-                    <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-                    Inspect details
-                  </Button>
+
                 </div>
               </div>
 
@@ -326,105 +312,7 @@ function AffiliationsPage() {
         </TabsContent>
       </Tabs>
 
-      <Sheet open={Boolean(inspecting)} onOpenChange={(open) => !open && setInspecting(null)}>
-        <SheetContent className="overflow-y-auto sm:max-w-lg">
-          <SheetHeader>
-            <SheetTitle>
-              {inspectedMarriage?.display_name ?? inspecting?.profiles?.full_name ?? inspecting?.profiles?.email ?? "Member Details"}
-            </SheetTitle>
-            <SheetDescription>
-              Complete details submitted by the member for mosque affiliation verification.
-            </SheetDescription>
-          </SheetHeader>
-          <dl className="space-y-3 px-1 py-4 text-sm">
-            <div className="pt-1 text-h3 text-foreground font-semibold">Account Information</div>
-            <DetailRow label="Email" value={inspecting?.profiles?.email} />
-            <DetailRow label="Phone" value={inspecting?.profiles?.phone ?? "Not provided"} />
-            <DetailRow label="Gender / Role" value={inspecting?.profiles?.gender ?? "Not stated"} />
-            <DetailRow
-              label="Requested At"
-              value={inspecting ? formatDateTime(inspecting.created_at) : "—"}
-            />
 
-            <div className="pt-3 text-h3 text-foreground font-semibold">
-              Marriage Profile Information
-            </div>
-            {inspectedMarriage ? (
-              <>
-                <DetailRow
-                  label="Profile Status"
-                  value={PROFILE_STATUS_LABEL[inspectedMarriage.status] ?? inspectedMarriage.status}
-                />
-                <DetailRow
-                  label="Location"
-                  value={
-                    [inspectedMarriage.area, inspectedMarriage.city, inspectedMarriage.country]
-                      .filter(Boolean)
-                      .join(", ") || "—"
-                  }
-                />
-                <DetailRow label="Profession" value={inspectedMarriage.profession ?? "—"} />
-                <DetailRow
-                  label="Education Level"
-                  value={inspectedMarriage.education_level ?? "—"}
-                />
-                <DetailRow label="Marital Status" value={inspectedMarriage.marital_status ?? "—"} />
-                <DetailRow
-                  label="Religious Practice"
-                  value={inspectedMarriage.religious_practice_level ?? "—"}
-                />
-                <DetailRow label="Family Origin" value={inspectedMarriage.family_origin ?? "—"} />
-                <DetailRow
-                  label="Household Background"
-                  value={inspectedMarriage.household_background ?? "—"}
-                />
-                <DetailRow label="Family Values" value={inspectedMarriage.family_values ?? "—"} />
-                {inspectedMarriage.personal_bio && (
-                  <div className="space-y-1 border-b border-border pb-2 pt-1">
-                    <dt className="text-muted-foreground font-medium">Personal Bio</dt>
-                    <dd className="text-foreground whitespace-pre-wrap">
-                      {inspectedMarriage.personal_bio}
-                    </dd>
-                  </div>
-                )}
-                <DetailRow label="Last Updated" value={formatDay(inspectedMarriage.updated_at)} />
-              </>
-            ) : (
-              <p className="text-muted-foreground">
-                This member has not filled out a marriage profile yet.
-              </p>
-            )}
-          </dl>
-
-          {inspecting?.status === "pending" && (
-            <div className="mt-6 flex flex-wrap gap-3 border-t border-border pt-4">
-              <Button
-                className="flex-1 min-h-11"
-                disabled={review.isPending}
-                onClick={() => {
-                  const target = inspecting;
-                  setInspecting(null);
-                  review.mutate({ row: target, approve: true });
-                }}
-              >
-                Verify affiliation
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1 min-h-11"
-                onClick={() => {
-                  const target = inspecting;
-                  setInspecting(null);
-                  setRejecting(target);
-                  setReason("");
-                }}
-              >
-                Reject
-              </Button>
-            </div>
-          )}
-        </SheetContent>
-      </Sheet>
 
       <Dialog open={Boolean(rejecting)} onOpenChange={(open) => !open && setRejecting(null)}>
         <DialogContent>
