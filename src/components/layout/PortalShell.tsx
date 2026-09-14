@@ -1,6 +1,8 @@
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, LogOut } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/brand/Logo";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { signOutAndRedirect, useSession } from "@/hooks/useSession";
@@ -60,6 +62,18 @@ function SidebarBody({
   onNavigate?: (() => void) | undefined;
 }) {
   const { user } = useSession();
+  
+  const { data: dbFullName } = useQuery({
+    queryKey: ["current-user-full-name", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
+      return data?.full_name ?? null;
+    },
+    enabled: !!user,
+  });
+
+  const displayName = dbFullName || user?.user_metadata?.full_name;
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-background">
@@ -84,11 +98,11 @@ function SidebarBody({
       <div className="border-t border-border p-3">
         <div className="min-w-0 px-2 pb-2">
           <p className="truncate text-sm font-semibold text-foreground">
-            {user?.user_metadata?.full_name || user?.email || "Signed in"}
+            {displayName || user?.email || "Signed in"}
           </p>
           <div className="mt-0.5 truncate text-xs text-muted-foreground">
-            {user?.user_metadata?.full_name && user?.email ? <span>{user.email}</span> : null}
-            {user?.user_metadata?.full_name && user?.email && roleLabel ? <span className="mx-1.5">•</span> : null}
+            {displayName && user?.email ? <span>{user.email}</span> : null}
+            {displayName && user?.email && roleLabel ? <span className="mx-1.5">•</span> : null}
             {roleLabel ? <span>{roleLabel}</span> : null}
           </div>
         </div>
