@@ -105,7 +105,7 @@ function MembersPage() {
               .neq("role", "mosque_admin")
               .neq("role", "super_admin")
               .order("created_at", { ascending: false }),
-        supabase
+        (supabase as any)
           .from("marriage_profiles")
           .select(`
             *,
@@ -117,7 +117,7 @@ function MembersPage() {
       if (error) throw error;
       if (mErr) throw mErr;
       return {
-        members: (profiles ?? []) as MemberRow[],
+        members: (profiles ?? []) as unknown as MemberRow[],
         profilesByUser: new Map(((marriage ?? []) as MarriageProfile[]).map((p) => [p.user_id, p])),
       };
     },
@@ -200,7 +200,7 @@ function MembersPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant="secondary">
+                  <Badge variant={profile?.status === "approved" ? "default" : "secondary"}>
                     {profile
                       ? (PROFILE_STATUS_LABEL[profile.status] ?? profile.status)
                       : "No profile yet"}
