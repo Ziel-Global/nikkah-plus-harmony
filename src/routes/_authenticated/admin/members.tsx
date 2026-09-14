@@ -200,7 +200,7 @@ function MembersPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant={profile?.status === "approved" ? "default" : "secondary"}>
+                  <Badge variant={profile?.status === "approved" ? "success" : "secondary" as any}>
                     {profile
                       ? (PROFILE_STATUS_LABEL[profile.status] ?? profile.status)
                       : "No profile yet"}

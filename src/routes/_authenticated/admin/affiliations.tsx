@@ -255,7 +255,7 @@ function AffiliationsPage() {
                 </div>
 
                 <div className="flex flex-col items-end gap-2">
-                  <Badge variant={row.status === "approved" ? "default" : "secondary"}>
+                  <Badge variant={row.status === "approved" ? "success" : ("secondary" as any)}>
                     {row.status}
                   </Badge>
 

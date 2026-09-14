@@ -175,7 +175,7 @@ export function ProfileReviewModal({ isOpen, onClose, member, profile }: Profile
             <DialogTitle className="text-2xl flex items-center gap-3">
               {member?.full_name ?? member?.email}
               {profile?.status && (
-                <Badge variant={profile.status === "approved" ? "default" : "secondary"}>
+                <Badge variant={profile.status === "approved" ? "success" : ("secondary" as any)}>
                   {PROFILE_STATUS_LABEL[profile.status] ?? profile.status}
                 </Badge>
               )}
