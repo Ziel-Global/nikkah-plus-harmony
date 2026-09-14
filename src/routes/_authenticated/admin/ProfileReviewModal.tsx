@@ -1,11 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Check, X, User, MapPin, Briefcase, GraduationCap, Heart, Search, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { friendlyError } from "@/lib/errors";
-import { formatDay } from "@/lib/admin";
-import { PROFILE_STATUS_LABEL } from "@/lib/profile-options";
+import { PROFILE_STATUS_LABEL, formatDay } from "@/lib/admin";
+const friendlyError = (e: any, fallback?: string) => e?.message || fallback || "An error occurred";
 import {
   Dialog,
   DialogContent,
@@ -132,7 +131,7 @@ export function ProfileReviewModal({ isOpen, onClose, member, profile }: Profile
     mutationFn: async () => {
       if (!profile) return;
       const auth = await supabase.auth.getUser();
-      const { error: histErr } = await supabase.from("profile_rejection_history").insert({
+      const { error: histErr } = await supabase.from("profile_rejection_history" as any).insert({
         profile_id: profile.id,
         reason: rejectionReason,
         rejected_by: auth.data.user?.id,
@@ -164,7 +163,8 @@ export function ProfileReviewModal({ isOpen, onClose, member, profile }: Profile
     onClose();
   };
 
-  const wali = profile?.wali_details?.[0];
+  const rawWali = profile?.wali_details;
+  const wali = Array.isArray(rawWali) ? rawWali[0] : rawWali;
   const history = profile?.profile_rejection_history || [];
 
   return (
