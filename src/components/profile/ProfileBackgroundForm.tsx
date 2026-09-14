@@ -138,6 +138,7 @@ export function ProfileBackgroundForm({
         <TextAreaField
           id="family_values"
           label="Family values"
+          hint="The principles, traditions, and beliefs your family follows."
           value={form.family_values}
           readOnly={locked}
           limit={400}
