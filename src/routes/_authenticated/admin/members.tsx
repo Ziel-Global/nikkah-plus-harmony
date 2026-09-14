@@ -190,7 +190,7 @@ function MembersPage() {
               >
                 <div className="min-w-0">
                   <p className="font-semibold text-foreground">
-                    {profile?.display_name ?? member.full_name ?? member.email}
+                    {member.full_name ?? profile?.display_name ?? member.email}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {member.email} · joined {formatDay(member.created_at)}
@@ -222,7 +222,7 @@ function MembersPage() {
       <Sheet open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
         <SheetContent className="overflow-y-auto">
           <SheetHeader className="mb-6">
-            <SheetTitle>{selectedProfile?.display_name ?? selected?.full_name ?? selected?.email}</SheetTitle>
+            <SheetTitle>{selected?.full_name ?? selectedProfile?.display_name ?? selected?.email}</SheetTitle>
             <SheetDescription>
               Read-only record. Mosques verify and oversee — they never control who matches with
               whom.
