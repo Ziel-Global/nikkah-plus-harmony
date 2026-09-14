@@ -172,7 +172,7 @@ export function TextAreaField({
 }) {
   const overLimit = limit ? value.length > limit : false;
   return (
-    <Field label={label} hint={hint} htmlFor={id} error={error}>
+    <Field label={label} htmlFor={id} error={error} hint={readOnly ? hint : undefined}>
       {readOnly ? (
         <ReadOnlyValue value={value} />
       ) : (
@@ -187,15 +187,22 @@ export function TextAreaField({
             onChange={(e) => onChange(e.target.value)}
             className={cn((error || overLimit) && "border-destructive")}
           />
-          {limit ? (
-            <p
-              className={cn(
-                "text-caption text-right",
-                value.length >= limit && "font-semibold text-destructive",
-              )}
-            >
-              {value.length} / {limit}
-            </p>
+          {limit || hint ? (
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                {hint ? <p className="text-caption">{hint}</p> : null}
+              </div>
+              {limit ? (
+                <p
+                  className={cn(
+                    "text-caption shrink-0 text-right",
+                    value.length >= limit && "font-semibold text-destructive",
+                  )}
+                >
+                  {value.length} / {limit}
+                </p>
+              ) : null}
+            </div>
           ) : null}
         </>
       )}
