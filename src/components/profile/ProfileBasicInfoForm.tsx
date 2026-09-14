@@ -41,10 +41,10 @@ export function ProfileBasicInfoForm({
   onChange,
   onSaveSection,
 }: ProfileBasicInfoFormProps) {
-  const mosqueOptions = mosques.map((m) => ({
-    value: m.id,
-    label: `${m.name}${m.city ? ` (${m.city})` : ""}`,
-  }));
+  const currentMosque = mosques.find((m) => m.id === form.mosque_id);
+  const mosqueDisplay = currentMosque
+    ? `${currentMosque.name}${currentMosque.city ? ` (${currentMosque.city})` : ""}`
+    : "Not affiliated";
 
   return (
     <>
@@ -57,14 +57,13 @@ export function ProfileBasicInfoForm({
         saved={savedKey === "basics"}
         onSave={() => onSaveSection("basics")}
       >
-        <SelectField
+        <TextField
           id="mosque_id"
           label="Affiliated Mosque"
           hint="The mosque that verifies and oversees your profile."
-          value={form.mosque_id ?? ""}
-          options={mosqueOptions}
-          readOnly={locked}
-          onChange={(v) => onChange({ mosque_id: v })}
+          value={mosqueDisplay}
+          readOnly={true}
+          onChange={() => {}}
         />
         <TextField
           id="display_name"
