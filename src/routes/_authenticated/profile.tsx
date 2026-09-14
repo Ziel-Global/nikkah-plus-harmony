@@ -248,7 +248,7 @@ function ProfilePage() {
     const { data: profile } = await supabase
       .from("marriage_profiles")
       .select(
-        "id, status, rejection_reason, display_name, date_of_birth, marital_status, nationality, ethnicity, country, city, area, height_cm, appearance_description, education_level, profession, employment_status, religious_practice_level, sect_or_school_of_thought, languages_spoken, family_origin, family_values, household_background, preferred_spouse_criteria, willingness_to_relocate, expected_marriage_timeline, personal_bio, privacy_settings",
+        "id, status, display_name, date_of_birth, marital_status, nationality, ethnicity, country, city, area, height_cm, appearance_description, education_level, profession, employment_status, religious_practice_level, sect_or_school_of_thought, languages_spoken, family_origin, family_values, household_background, preferred_spouse_criteria, willingness_to_relocate, expected_marriage_timeline, personal_bio, privacy_settings, profile_rejection_history(reason, rejected_at)",
       )
       .eq("user_id", uid)
       .maybeSingle();
@@ -256,7 +256,11 @@ function ProfilePage() {
     if (profile) {
       setProfileId(profile.id);
       setStatus(profile.status);
-      setRejectionReason(profile.rejection_reason ?? null);
+      
+      const history = (profile.profile_rejection_history as any[])?.sort(
+        (a, b) => new Date(b.rejected_at).getTime() - new Date(a.rejected_at).getTime()
+      );
+      setRejectionReason(history?.[0]?.reason ?? null);
       setForm({
         mosque_id: currentMosqueId,
         display_name: profile.display_name ?? "",

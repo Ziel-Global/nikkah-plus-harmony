@@ -66,7 +66,7 @@ function ProfilesPage() {
       const { data, error } = await supabase
         .from("marriage_profiles")
         .select(
-          "id, user_id, display_name, date_of_birth, city, country, profession, personal_bio, status, rejection_reason, created_at, updated_at, profiles!marriage_profiles_user_id_fkey(email, gender, mosques!profiles_mosque_id_fkey(name))",
+          "id, user_id, display_name, date_of_birth, city, country, profession, personal_bio, status, created_at, updated_at, profiles!marriage_profiles_user_id_fkey(email, gender, mosques!profiles_mosque_id_fkey(name)), profile_rejection_history(reason, rejected_at)",
         )
         .order("updated_at", { ascending: false })
         .limit(1000);
@@ -105,13 +105,20 @@ function ProfilesPage() {
       rejectionReason?: string;
     }) => {
       const { data: auth } = await supabase.auth.getUser();
+
+      if (!approve && rejectionReason) {
+        const { error: histErr } = await supabase.from("profile_rejection_history").insert({
+          profile_id: row.id,
+          reason: rejectionReason,
+          rejected_by: auth.user?.id,
+        });
+        if (histErr) throw histErr;
+      }
+
       const { error } = await supabase
         .from("marriage_profiles")
         .update({
           status: (approve ? "approved" : "rejected") as never,
-          rejection_reason: approve ? null : (rejectionReason ?? null),
-          reviewed_by: auth.user?.id ?? null,
-          reviewed_at: new Date().toISOString(),
         })
         .eq("id", row.id);
       if (error) throw error;

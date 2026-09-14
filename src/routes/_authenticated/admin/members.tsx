@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { ADMIN_META, formatDay, PROFILE_STATUS_LABEL, type AdminMosque } from "@/lib/admin";
+import { ADMIN_META, formatDay, PROFILE_STATUS_LABEL, type AdminMosque, OVERSIGHT_NOTE } from "@/lib/admin";
+import { ProfileReviewModal } from "./ProfileReviewModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,9 +107,11 @@ function MembersPage() {
               .order("created_at", { ascending: false }),
         supabase
           .from("marriage_profiles")
-          .select(
-            "id, user_id, display_name, status, city, country, profession, education_level, marital_status, religious_practice_level, updated_at, rejection_reason",
-          ),
+          .select(`
+            *,
+            wali_details (*),
+            profile_rejection_history (*)
+          `),
       ]);
 
       if (error) throw error;
@@ -219,50 +222,12 @@ function MembersPage() {
         </ul>
       )}
 
-      <Sheet open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
-        <SheetContent className="overflow-y-auto">
-          <SheetHeader className="mb-6">
-            <SheetTitle>{selected?.full_name ?? selectedProfile?.display_name ?? selected?.email}</SheetTitle>
-            <SheetDescription>
-              Read-only record. Mosques verify and oversee — they never control who matches with
-              whom.
-            </SheetDescription>
-          </SheetHeader>
-          <dl className="space-y-3 px-4 pb-6 text-sm">
-            <Row label="Email" value={selected?.email} />
-            <Row label="Phone" value={selected?.phone ?? "Not provided"} />
-            <Row label="Registered as" value={selected?.gender ?? "Not stated"} />
-            <Row label="Account status" value={selected?.account_status} />
-            <Row label="Last signed in" value={formatDay(selected?.last_login_at ?? null)} />
-            <div className="pt-2 text-h3 text-foreground">Marriage profile</div>
-            {selectedProfile ? (
-              <>
-                <Row
-                  label="Status"
-                  value={PROFILE_STATUS_LABEL[selectedProfile.status] ?? selectedProfile.status}
-                />
-                <Row
-                  label="Location"
-                  value={
-                    [selectedProfile.city, selectedProfile.country].filter(Boolean).join(", ") ||
-                    "—"
-                  }
-                />
-                <Row label="Profession" value={selectedProfile.profession ?? "—"} />
-                <Row label="Education" value={selectedProfile.education_level ?? "—"} />
-                <Row label="Marital status" value={selectedProfile.marital_status ?? "—"} />
-                <Row label="Practice" value={selectedProfile.religious_practice_level ?? "—"} />
-                <Row label="Last updated" value={formatDay(selectedProfile.updated_at)} />
-                {selectedProfile.rejection_reason && (
-                  <Row label="Review note" value={selectedProfile.rejection_reason} />
-                )}
-              </>
-            ) : (
-              <p className="text-muted-foreground">This member has not started a profile yet.</p>
-            )}
-          </dl>
-        </SheetContent>
-      </Sheet>
+      <ProfileReviewModal 
+        isOpen={Boolean(selected)} 
+        onClose={() => setSelected(null)} 
+        member={selected} 
+        profile={selectedProfile as any} 
+      />
     </AdminShell>
   );
 }
