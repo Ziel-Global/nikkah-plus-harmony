@@ -63,11 +63,12 @@ function SidebarBody({
 }) {
   const { user } = useSession();
   
-  const { data } = useQuery({
-    queryKey: ["current-user-full-name-v2", user?.id],
+  const { data, error } = useQuery({
+    queryKey: ["current-user-full-name-v3", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data } = await supabase.from("profiles").select("*, full_name, mosques(name)").eq("id", user.id).single();
+      const { data, error } = await supabase.from("profiles").select("*, full_name, mosques(name)").eq("id", user.id).single();
+      if (error) throw error;
       return data;
     },
     enabled: !!user,
@@ -99,7 +100,7 @@ function SidebarBody({
 
       <div className="border-t border-border p-3">
         <div className="min-w-0 px-2 pb-2">
-          <p className="text-[10px] text-red-500 break-all">{JSON.stringify(prof || "no data")}</p>
+          <p className="text-[10px] text-red-500 break-all">{error ? `Error: ${error.message}` : (prof ? "Data OK" : "Loading")}</p>
           <p className="truncate text-sm font-semibold text-foreground">
             {displayName || user?.email || "Signed in"}
           </p>
