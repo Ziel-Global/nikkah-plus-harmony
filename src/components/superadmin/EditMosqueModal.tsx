@@ -52,7 +52,6 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
     contact_email: "",
     contact_phone: "",
     description: "",
-    status: "approved",
   });
 
   useEffect(() => {
@@ -65,7 +64,6 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
         contact_email: mosque.contact_email ?? "",
         contact_phone: mosque.contact_phone ?? "",
         description: mosque.description ?? "",
-        status: mosque.status ?? "approved",
       });
     }
   }, [mosque]);
@@ -91,7 +89,6 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
         contact_email: form.contact_email?.trim() || null,
         contact_phone: form.contact_phone?.trim() || null,
         description: form.description?.trim() || null,
-        status: form.status as "suspended" | "pending" | "active",
       };
 
       const { error } = await supabase.from("mosques").update(payload).eq("id", mosque.id);
@@ -199,22 +196,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="edit-status">Affiliation Status</Label>
-            <Select
-              value={form.status}
-              onValueChange={(val) => setForm((f) => ({ ...f, status: val }))}
-            >
-              <SelectTrigger id="edit-status" className="mt-1">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="pending">Pending review</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+
 
           <div>
             <Label htmlFor="edit-description">Description / Notes</Label>

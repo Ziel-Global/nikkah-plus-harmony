@@ -77,9 +77,7 @@ export async function fetchPlatformKpis() {
         .eq("status", "inactive"),
     ),
     count(() => supabase.from("mosques").select("id", { count: "exact", head: true })),
-    count(() =>
-      supabase.from("mosques").select("id", { count: "exact", head: true }).eq("status", "active"),
-    ),
+    Promise.resolve(0),
     count(() =>
       supabase
         .from("conduct_reports")
@@ -168,7 +166,7 @@ function SuperDashboard() {
           <StatCard label="Approved & visible" value={data.approvedProfiles} />
           <StatCard label="Awaiting review" value={data.submittedProfiles} />
           <StatCard label="Inactive" value={data.inactiveProfiles} />
-          <StatCard label="Mosques" value={data.mosques} hint={`${data.activeMosques} active`} />
+          <StatCard label="Mosques" value={data.mosques} />
         </div>
       </section>
 

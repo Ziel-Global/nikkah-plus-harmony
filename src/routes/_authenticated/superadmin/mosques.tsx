@@ -164,7 +164,7 @@ function MosquesPage() {
         const { data: auth } = await supabase.auth.getUser();
         const { data: inserted, error } = await supabase
           .from("mosques")
-          .insert({ ...payload, status: "active" as never, created_by: auth.user?.id ?? null })
+          .insert({ ...payload, created_by: auth.user?.id ?? null })
           .select("id")
           .single();
         if (error || !inserted) throw error || new Error("Could not insert mosque record.");
@@ -241,21 +241,7 @@ function MosquesPage() {
     onError: (error: Error) => toast.error(friendlyError(error)),
   });
 
-  const setStatus = useMutation({
-    mutationFn: async ({ mosque, status }: { mosque: Mosque; status: string }) => {
-      const { error } = await supabase
-        .from("mosques")
-        .update({ status: status as never })
-        .eq("id", mosque.id);
-      if (error) throw error;
-      await logActivity("mosque_status_changed", "mosques", mosque.id, { to: status });
-    },
-    onSuccess: () => {
-      toast.success("Mosque status updated.");
-      void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
-    },
-    onError: (error: Error) => toast.error(friendlyError(error)),
-  });
+
 
   const handleCopyCredentials = (mosque: Mosque) => {
     const portalUrl = `${getSiteOrigin()}/admin`;
@@ -350,25 +336,7 @@ function MosquesPage() {
                           <Eye className="size-4" />
                         </Button>
 
-                        {m.status !== "active" ? (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-8 text-xs"
-                            onClick={() => setStatus.mutate({ mosque: m, status: "active" })}
-                          >
-                            Approve
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-8 text-xs"
-                            onClick={() => setStatus.mutate({ mosque: m, status: "suspended" })}
-                          >
-                            Suspend
-                          </Button>
-                        )}
+
 
                         <Button
                           variant="ghost"
