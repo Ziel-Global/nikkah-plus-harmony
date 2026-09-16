@@ -99,6 +99,7 @@ function SidebarBody({
 
       <div className="border-t border-border p-3">
         <div className="min-w-0 px-2 pb-2">
+          <p className="text-[10px] text-red-500 break-all">{JSON.stringify(prof || "no data")}</p>
           <p className="truncate text-sm font-semibold text-foreground">
             {displayName || user?.email || "Signed in"}
           </p>
