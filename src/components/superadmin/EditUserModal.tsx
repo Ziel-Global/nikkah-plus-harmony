@@ -125,7 +125,7 @@ export function EditUserModal({ user, onOpenChange }: Props) {
 
           <div>
             <Label htmlFor="edit-user-role">Platform Role</Label>
-            <Select value={role} onValueChange={setRole}>
+            <Select value={role} onValueChange={setRole} disabled>
               <SelectTrigger id="edit-user-role" className="mt-1">
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
