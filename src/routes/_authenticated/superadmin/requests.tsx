@@ -33,8 +33,8 @@ type RequestRow = {
   responded_at: string | null;
   requester_mosque_id: string | null;
   target_mosque_id: string | null;
-  requester: { email: string } | null;
-  target: { email: string } | null;
+  requester: { email: string; full_name: string | null } | null;
+  target: { email: string; full_name: string | null } | null;
 };
 
 function RequestsMonitor() {
@@ -57,7 +57,7 @@ function RequestsMonitor() {
       const { data, error } = await supabase
         .from("interest_requests")
         .select(
-          "id, status, message, created_at, responded_at, requester_mosque_id, target_mosque_id, requester:profiles!interest_requests_requester_id_fkey(email), target:profiles!interest_requests_target_id_fkey(email)",
+          "id, status, message, created_at, responded_at, requester_mosque_id, target_mosque_id, requester:profiles!interest_requests_requester_id_fkey(email, full_name), target:profiles!interest_requests_target_id_fkey(email, full_name)",
         )
         .order("created_at", { ascending: false })
         .limit(1000);
@@ -78,7 +78,15 @@ function RequestsMonitor() {
       )
       .filter((r) =>
         term
-          ? [r.requester?.email ?? "", r.target?.email ?? ""].join(" ").toLowerCase().includes(term)
+          ? [
+              r.requester?.full_name ?? "",
+              r.requester?.email ?? "",
+              r.target?.full_name ?? "",
+              r.target?.email ?? "",
+            ]
+              .join(" ")
+              .toLowerCase()
+              .includes(term)
           : true,
       );
   }, [data, status, mosque, search]);
@@ -127,7 +135,7 @@ function RequestsMonitor() {
             id="request-search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Email"
+            placeholder="Name or Email"
             className="mt-1"
           />
         </div>
@@ -144,7 +152,7 @@ function RequestsMonitor() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="font-semibold text-foreground">
-                    {row.requester?.email ?? "Member"} → {row.target?.email ?? "Member"}
+                    {row.requester?.full_name || row.requester?.email || "Member"} → {row.target?.full_name || row.target?.email || "Member"}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {mosqueName(row.requester_mosque_id)} · {mosqueName(row.target_mosque_id)}
