@@ -48,8 +48,7 @@ function ProfilesPage() {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState("submitted");
   const [search, setSearch] = useState("");
-  const [rejecting, setRejecting] = useState<ProfileRow | null>(null);
-  const [reason, setReason] = useState("");
+
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["superadmin", "profiles"],
@@ -85,49 +84,6 @@ function ProfilesPage() {
       );
   }, [data, tab, search]);
 
-  const review = useMutation({
-    mutationFn: async ({
-      row,
-      approve,
-      rejectionReason,
-    }: {
-      row: ProfileRow;
-      approve: boolean;
-      rejectionReason?: string;
-    }) => {
-      const { data: auth } = await supabase.auth.getUser();
-
-      if (!approve && rejectionReason) {
-        const { error: histErr } = await (supabase as any).from("profile_rejection_history").insert({
-          profile_id: row.id,
-          reason: rejectionReason,
-          rejected_by: auth.user?.id,
-        });
-        if (histErr) throw histErr;
-      }
-
-      const { error } = await supabase
-        .from("marriage_profiles")
-        .update({
-          status: (approve ? "approved" : "rejected") as never,
-        })
-        .eq("id", row.id);
-      if (error) throw error;
-      await logActivity(
-        approve ? "profile_approved" : "profile_rejected",
-        "marriage_profiles",
-        row.id,
-      );
-    },
-    onSuccess: (_d, vars) => {
-      toast.success(vars.approve ? "Profile approved." : "Profile returned for changes.");
-      setRejecting(null);
-      setReason("");
-      void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
-    },
-    onError: (error: Error) => toast.error(friendlyError(error)),
-  });
-
   return (
     <SuperAdminShell
       title="Profiles"
@@ -146,7 +102,7 @@ function ProfilesPage() {
 
       <Tabs value={tab} onValueChange={setTab} className="mt-6">
         <TabsList className="flex-wrap">
-          {["submitted", "approved", "rejected", "draft", "all"].map((t) => (
+          {["submitted", "approved", "all"].map((t) => (
             <TabsTrigger key={t} value={t}>
               {t === "all" ? "All" : (PROFILE_STATUS_LABEL[t] ?? t)}
             </TabsTrigger>
@@ -192,62 +148,14 @@ function ProfilesPage() {
                     {PROFILE_STATUS_LABEL[row.status] ?? row.status}
                   </Badge>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {row.status !== "approved" ? (
-                    <Button size="sm" onClick={() => review.mutate({ row, approve: true })}>
-                      Approve
-                    </Button>
-                  ) : null}
-                  <Button size="sm" variant="outline" onClick={() => setRejecting(row)}>
-                    Return for changes
-                  </Button>
-                </div>
+
               </div>
             ))
           )}
         </TabsContent>
       </Tabs>
 
-      <Dialog open={Boolean(rejecting)} onOpenChange={(open) => !open && setRejecting(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Return this profile</DialogTitle>
-            <DialogDescription>
-              Explain kindly what needs changing. The member will see this note.
-            </DialogDescription>
-          </DialogHeader>
-          <Textarea
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            rows={4}
-            maxLength={1000}
-            aria-invalid={reason.trim().length > 0 && reason.trim().length < 5 ? true : undefined}
-            placeholder="Explain what needs changing so the member knows what to do next."
-          />
-          <div className="flex items-start justify-between gap-3">
-            <p className="text-sm font-medium text-destructive">
-              {reason.trim().length > 0 && reason.trim().length < 5
-                ? "Please give a little more detail."
-                : ""}
-            </p>
-            <p className="shrink-0 text-xs text-muted-foreground">{reason.length} / 1000</p>
-          </div>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setRejecting(null)}>
-              Cancel
-            </Button>
-            <Button
-              disabled={reason.trim().length < 5 || review.isPending}
-              onClick={() =>
-                rejecting &&
-                review.mutate({ row: rejecting, approve: false, rejectionReason: reason })
-              }
-            >
-              Return profile
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+
 
     </SuperAdminShell>
   );

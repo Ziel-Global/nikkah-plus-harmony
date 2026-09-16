@@ -59,7 +59,6 @@ export const ACCOUNT_STATUS_LABEL: Record<string, string> = {
 };
 
 export const PROFILE_STATUS_LABEL: Record<string, string> = {
-  draft: "Draft",
   submitted: "Submitted for review",
   mosque_verified: "Verified by mosque",
   approved: "Approved",
