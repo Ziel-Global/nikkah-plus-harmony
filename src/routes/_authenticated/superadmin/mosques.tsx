@@ -68,6 +68,7 @@ const EMPTY = {
   contact_phone: "",
   description: "",
   admin_password: "",
+  admin_name: "",
 };
 
 function MosquesPage() {
@@ -204,6 +205,13 @@ function MosquesPage() {
           });
           if (rpcError) {
             console.error("Failed to assign mosque_admin role:", rpcError);
+          }
+
+          if (form.admin_name.trim()) {
+            await supabase
+              .from("profiles")
+              .update({ full_name: form.admin_name.trim() })
+              .eq("id", adminUserId);
           }
         }
 
@@ -510,112 +518,124 @@ function MosquesPage() {
             </DialogDescription>
           </DialogHeader>
           {form ? (
-            <div className="space-y-3">
-              <div>
-                <Label htmlFor="mosque-name">Mosque name *</Label>
-                <Input
-                  id="mosque-name"
-                  value={form.name}
-                  aria-invalid={nameError ? true : undefined}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="mt-1"
-                />
-                {nameError ? (
-                  <p className="mt-1 text-sm font-medium text-destructive">{nameError}</p>
-                ) : null}
-              </div>
-
-              <div>
-                <Label htmlFor="mosque-contact_email">Contact Email (Admin Username) *</Label>
-                <Input
-                  id="mosque-contact_email"
-                  type="email"
-                  value={form.contact_email}
-                  aria-invalid={emailError ? true : undefined}
-                  onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
-                  placeholder="admin@mosque.org"
-                  className="mt-1"
-                />
-                {emailError ? (
-                  <p className="mt-1 text-sm font-medium text-destructive">{emailError}</p>
-                ) : null}
-              </div>
-
-              <div>
-                <Label htmlFor="mosque-admin_password">Admin Password *</Label>
-                <PasswordInput
-                  id="mosque-admin_password"
-                  value={form.admin_password}
-                  aria-invalid={passwordError ? true : undefined}
-                  onChange={(e) => setForm({ ...form, admin_password: e.target.value })}
-                  placeholder="Minimum 8 characters"
-                  className="mt-1"
-                />
-                {passwordError ? (
-                  <p className="mt-1 text-sm font-medium text-destructive">{passwordError}</p>
-                ) : null}
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground">Mosque Details</h3>
                 <div>
-                  <Label htmlFor="mosque-city">City</Label>
+                  <Label htmlFor="mosque-name">Mosque name *</Label>
                   <Input
-                    id="mosque-city"
-                    value={form.city}
-                    onChange={(e) => setForm({ ...form, city: e.target.value })}
+                    id="mosque-name"
+                    value={form.name}
+                    aria-invalid={nameError ? true : undefined}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="mt-1"
+                  />
+                  {nameError ? (
+                    <p className="mt-1 text-sm font-medium text-destructive">{nameError}</p>
+                  ) : null}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label htmlFor="mosque-city">City</Label>
+                    <Input
+                      id="mosque-city"
+                      value={form.city}
+                      onChange={(e) => setForm({ ...form, city: e.target.value })}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="mosque-country">Country</Label>
+                    <Input
+                      id="mosque-country"
+                      value={form.country}
+                      onChange={(e) => setForm({ ...form, country: e.target.value })}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="mosque-address">Address</Label>
+                  <Input
+                    id="mosque-address"
+                    value={form.address}
+                    onChange={(e) => setForm({ ...form, address: e.target.value })}
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="mosque-country">Country</Label>
-                  <Input
-                    id="mosque-country"
-                    value={form.country}
-                    onChange={(e) => setForm({ ...form, country: e.target.value })}
+                  <Label htmlFor="mosque-description">Description</Label>
+                  <Textarea
+                    id="mosque-description"
+                    rows={3}
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
                     className="mt-1"
                   />
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="mosque-address">Address</Label>
-                <Input
-                  id="mosque-address"
-                  value={form.address}
-                  onChange={(e) => setForm({ ...form, address: e.target.value })}
-                  className="mt-1"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="mosque-contact_phone">Contact Phone</Label>
-                <Input
-                  id="mosque-contact_phone"
-                  value={form.contact_phone}
-                  aria-invalid={phoneError ? true : undefined}
-                  onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
-                  className="mt-1"
-                />
-                {phoneError ? (
-                  <p className="mt-1 text-sm font-medium text-destructive">{phoneError}</p>
+                {duplicateWarning ? (
+                  <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
+                    {duplicateWarning}
+                  </p>
                 ) : null}
               </div>
 
-              {duplicateWarning ? (
-                <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
-                  {duplicateWarning}
-                </p>
-              ) : null}
-
-              <div>
-                <Label htmlFor="mosque-description">Description</Label>
-                <Textarea
-                  id="mosque-description"
-                  rows={3}
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  className="mt-1"
-                />
+              <div className="space-y-3 pt-2">
+                <h3 className="border-t border-border/40 pt-4 text-sm font-semibold text-foreground">
+                  Mosque Admin Details
+                </h3>
+                <div>
+                  <Label htmlFor="mosque-admin_name">Admin Name</Label>
+                  <Input
+                    id="mosque-admin_name"
+                    value={form.admin_name}
+                    onChange={(e) => setForm({ ...form, admin_name: e.target.value })}
+                    placeholder="E.g., Brother Ahmed"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="mosque-contact_email">Contact Email (Admin Username) *</Label>
+                  <Input
+                    id="mosque-contact_email"
+                    type="email"
+                    value={form.contact_email}
+                    aria-invalid={emailError ? true : undefined}
+                    onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
+                    placeholder="admin@mosque.org"
+                    className="mt-1"
+                  />
+                  {emailError ? (
+                    <p className="mt-1 text-sm font-medium text-destructive">{emailError}</p>
+                  ) : null}
+                </div>
+                <div>
+                  <Label htmlFor="mosque-admin_password">Admin Password *</Label>
+                  <PasswordInput
+                    id="mosque-admin_password"
+                    value={form.admin_password}
+                    aria-invalid={passwordError ? true : undefined}
+                    onChange={(e) => setForm({ ...form, admin_password: e.target.value })}
+                    placeholder="Minimum 8 characters"
+                    className="mt-1"
+                  />
+                  {passwordError ? (
+                    <p className="mt-1 text-sm font-medium text-destructive">{passwordError}</p>
+                  ) : null}
+                </div>
+                <div>
+                  <Label htmlFor="mosque-contact_phone">Contact Phone</Label>
+                  <Input
+                    id="mosque-contact_phone"
+                    value={form.contact_phone}
+                    aria-invalid={phoneError ? true : undefined}
+                    onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
+                    className="mt-1"
+                  />
+                  {phoneError ? (
+                    <p className="mt-1 text-sm font-medium text-destructive">{phoneError}</p>
+                  ) : null}
+                </div>
               </div>
             </div>
           ) : null}
