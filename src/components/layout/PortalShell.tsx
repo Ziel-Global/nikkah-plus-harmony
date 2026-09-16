@@ -64,10 +64,10 @@ function SidebarBody({
   const { user } = useSession();
   
   const { data } = useQuery({
-    queryKey: ["current-user-full-name", user?.id],
+    queryKey: ["current-user-full-name-v2", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data } = await supabase.from("profiles").select("*, mosques(name)").eq("id", user.id).single();
+      const { data } = await supabase.from("profiles").select("*, full_name, mosques(name)").eq("id", user.id).single();
       return data;
     },
     enabled: !!user,
