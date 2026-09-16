@@ -102,13 +102,12 @@ function MosqueAdminsPage() {
 
   const alreadyAssigned =
     Boolean(adminId) &&
-    Boolean(mosqueId) &&
-    (assignments.data ?? []).some((a) => a.admin_id === adminId && a.mosque_id === mosqueId);
+    (assignments.data ?? []).some((a) => a.admin_id === adminId);
 
   const assign = useMutation({
     mutationFn: async () => {
       if (alreadyAssigned) {
-        throw new Error("This admin is already linked to that mosque.");
+        throw new Error("This admin is already assigned to a mosque.");
       }
       const { data: auth } = await supabase.auth.getUser();
       const { error } = await supabase
