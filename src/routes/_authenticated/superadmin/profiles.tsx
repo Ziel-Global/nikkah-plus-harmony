@@ -44,26 +44,17 @@ type ProfileRow = {
   profiles: { email: string; gender: string | null; mosques: { name: string } | null } | null;
 };
 
-const EDITABLE = [
-  { key: "display_name", label: "Display name" },
-  { key: "city", label: "City" },
-  { key: "country", label: "Country" },
-  { key: "profession", label: "Profession" },
-] as const;
-
 function ProfilesPage() {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState("submitted");
   const [search, setSearch] = useState("");
-  const [editing, setEditing] = useState<ProfileRow | null>(null);
-  const [draft, setDraft] = useState<Record<string, string>>({});
   const [rejecting, setRejecting] = useState<ProfileRow | null>(null);
   const [reason, setReason] = useState("");
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["superadmin", "profiles"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("marriage_profiles")
         .select(
           "id, user_id, display_name, date_of_birth, city, country, profession, personal_bio, status, created_at, updated_at, profiles!marriage_profiles_user_id_fkey(email, gender, mosques!profiles_mosque_id_fkey(name)), profile_rejection_history(reason, rejected_at)",
@@ -107,7 +98,7 @@ function ProfilesPage() {
       const { data: auth } = await supabase.auth.getUser();
 
       if (!approve && rejectionReason) {
-        const { error: histErr } = await supabase.from("profile_rejection_history").insert({
+        const { error: histErr } = await (supabase as any).from("profile_rejection_history").insert({
           profile_id: row.id,
           reason: rejectionReason,
           rejected_by: auth.user?.id,
@@ -136,34 +127,6 @@ function ProfilesPage() {
     },
     onError: (error: Error) => toast.error(friendlyError(error)),
   });
-
-  const saveEdit = useMutation({
-    mutationFn: async (row: ProfileRow) => {
-      const { error } = await supabase
-        .from("marriage_profiles")
-        .update(draft as never)
-        .eq("id", row.id);
-      if (error) throw error;
-      await logActivity("profile_edited_by_platform_admin", "marriage_profiles", row.id, draft);
-    },
-    onSuccess: () => {
-      toast.success("Profile updated.");
-      setEditing(null);
-      void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
-    },
-    onError: (error: Error) => toast.error(friendlyError(error)),
-  });
-
-  function openEdit(row: ProfileRow) {
-    setEditing(row);
-    setDraft({
-      display_name: row.display_name ?? "",
-      city: row.city ?? "",
-      country: row.country ?? "",
-      profession: row.profession ?? "",
-      personal_bio: row.personal_bio ?? "",
-    });
-  }
 
   return (
     <SuperAdminShell
@@ -238,9 +201,6 @@ function ProfilesPage() {
                   <Button size="sm" variant="outline" onClick={() => setRejecting(row)}>
                     Return for changes
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => openEdit(row)}>
-                    Edit override
-                  </Button>
                 </div>
               </div>
             ))
@@ -289,50 +249,6 @@ function ProfilesPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={Boolean(editing)} onOpenChange={(open) => !open && setEditing(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit override</DialogTitle>
-            <DialogDescription>
-              Use sparingly — corrections are recorded in the audit log.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3">
-            {EDITABLE.map((field) => (
-              <div key={field.key}>
-                <Label htmlFor={`edit-${field.key}`}>{field.label}</Label>
-                <Input
-                  id={`edit-${field.key}`}
-                  value={draft[field.key] ?? ""}
-                  onChange={(e) => setDraft((d) => ({ ...d, [field.key]: e.target.value }))}
-                  className="mt-1"
-                />
-              </div>
-            ))}
-            <div>
-              <Label htmlFor="edit-bio">Personal introduction</Label>
-              <Textarea
-                id="edit-bio"
-                rows={4}
-                value={draft["personal_bio"] ?? ""}
-                onChange={(e) => setDraft((d) => ({ ...d, personal_bio: e.target.value }))}
-                className="mt-1"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setEditing(null)}>
-              Cancel
-            </Button>
-            <Button
-              disabled={saveEdit.isPending}
-              onClick={() => editing && saveEdit.mutate(editing)}
-            >
-              Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </SuperAdminShell>
   );
 }

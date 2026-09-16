@@ -63,17 +63,19 @@ function SidebarBody({
 }) {
   const { user } = useSession();
   
-  const { data: dbFullName } = useQuery({
+  const { data } = useQuery({
     queryKey: ["current-user-full-name", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
-      return data?.full_name ?? null;
+      const { data } = await supabase.from("profiles").select("*, mosques(name)").eq("id", user.id).single();
+      return data;
     },
     enabled: !!user,
   });
 
-  const displayName = dbFullName || user?.user_metadata?.full_name;
+  const prof = data as any;
+  const displayName = prof?.full_name ?? user?.email ?? "User";
+  const mosque = prof?.mosques?.name ?? "No affiliated mosque";
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-background">

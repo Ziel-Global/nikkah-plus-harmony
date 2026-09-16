@@ -245,7 +245,7 @@ function ProfilePage() {
 
     const currentMosqueId = userProf?.mosque_id ?? affReq?.mosque_id ?? "";
 
-    const { data: profile } = await supabase
+    const { data: profile } = await (supabase as any)
       .from("marriage_profiles")
       .select(
         "id, status, display_name, date_of_birth, marital_status, nationality, ethnicity, country, city, area, height_cm, appearance_description, education_level, profession, employment_status, religious_practice_level, sect_or_school_of_thought, languages_spoken, family_origin, family_values, household_background, preferred_spouse_criteria, willingness_to_relocate, expected_marriage_timeline, personal_bio, privacy_settings, profile_rejection_history(reason, rejected_at)",
