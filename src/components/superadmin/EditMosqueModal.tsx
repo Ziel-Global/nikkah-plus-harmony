@@ -33,7 +33,6 @@ export type Mosque = {
   contact_email: string | null;
   contact_phone: string | null;
   description: string | null;
-  status: string;
   created_at?: string;
 };
 

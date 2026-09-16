@@ -100,7 +100,7 @@ function MosquesPage() {
       const { data, error } = await supabase
         .from("mosques")
         .select(
-          "id, name, address, city, country, contact_email, contact_phone, description, status, created_at",
+          "id, name, address, city, country, contact_email, contact_phone, description, created_at",
         )
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -300,7 +300,6 @@ function MosquesPage() {
                   <TableHead>Mosque Name</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Contact Email</TableHead>
-                  <TableHead>Status</TableHead>
                   <TableHead>Added Date</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -314,11 +313,6 @@ function MosquesPage() {
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {m.contact_email ?? "—"}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={m.status === "active" ? "secondary" : "outline"}>
-                        {m.status}
-                      </Badge>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       {formatDay(m.created_at)}
@@ -399,14 +393,6 @@ function MosquesPage() {
           {viewTarget && (
             <div className="space-y-3 pt-2 text-sm">
               <div className="grid grid-cols-2 gap-2 border-b border-border/60 pb-2">
-                <div>
-                  <span className="text-xs text-muted-foreground">Status</span>
-                  <p className="mt-0.5">
-                    <Badge variant={viewTarget.status === "active" ? "secondary" : "outline"}>
-                      {viewTarget.status}
-                    </Badge>
-                  </p>
-                </div>
                 <div>
                   <span className="text-xs text-muted-foreground">Added Date</span>
                   <p className="mt-0.5 font-medium text-foreground">
