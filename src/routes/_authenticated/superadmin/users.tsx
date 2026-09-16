@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { friendlyError } from "@/lib/validation";
 import { SuperAdminShell } from "@/components/superadmin/SuperAdminShell";
@@ -34,7 +34,7 @@ import {
   logActivity,
   type PlatformProfile,
 } from "@/lib/superadmin";
-import { EditUserModal } from "@/components/superadmin/EditUserModal";
+
 import { ConfirmDeleteModal } from "@/components/superadmin/ConfirmDeleteModal";
 
 export const Route = createFileRoute("/_authenticated/superadmin/users")({
@@ -59,7 +59,6 @@ function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<UserTypeFilter>("all");
   const [selected, setSelected] = useState<Row | null>(null);
   const [pending, setPending] = useState<{ row: Row; status: string } | null>(null);
-  const [editingUser, setEditingUser] = useState<Row | null>(null);
   const [deleteTargetUser, setDeleteTargetUser] = useState<Row | null>(null);
 
   const deleteUserMutation = useMutation({
@@ -280,16 +279,6 @@ function UsersPage() {
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    title="Edit user profile"
-                    aria-label="Edit user profile"
-                    className="text-muted-foreground hover:text-foreground"
-                    onClick={() => setEditingUser(row)}
-                  >
-                    <Pencil className="size-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
                     title="Delete user profile"
                     aria-label="Delete user profile"
                     className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
@@ -303,9 +292,6 @@ function UsersPage() {
           ))
         )}
       </div>
-
-      {/* Edit User Modal */}
-      <EditUserModal user={editingUser} onOpenChange={(open) => !open && setEditingUser(null)} />
 
       {/* Confirm Delete User Modal */}
       <ConfirmDeleteModal
