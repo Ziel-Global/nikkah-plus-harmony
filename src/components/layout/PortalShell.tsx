@@ -67,7 +67,7 @@ function SidebarBody({
     queryKey: ["current-user-full-name-v3", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data, error } = await supabase.from("profiles").select("*, full_name, mosques(name)").eq("id", user.id).single();
+      const { data, error } = await supabase.from("profiles").select("*, full_name, mosques!profiles_mosque_id_fkey(name)").eq("id", user.id).single();
       if (error) throw error;
       return data;
     },
@@ -100,7 +100,6 @@ function SidebarBody({
 
       <div className="border-t border-border p-3">
         <div className="min-w-0 px-2 pb-2">
-          <p className="text-[10px] text-red-500 break-all">{error ? `Error: ${error.message}` : (prof ? "Data OK" : "Loading")}</p>
           <p className="truncate text-sm font-semibold text-foreground">
             {displayName || user?.email || "Signed in"}
           </p>
