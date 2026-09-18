@@ -219,6 +219,12 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
             />
           </div>
 
+          {isFormIncomplete ? (
+            <p className="text-sm text-muted-foreground text-right mt-2">
+              Please fill out all required fields to save your changes.
+            </p>
+          ) : null}
+
           <DialogFooter className="pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel

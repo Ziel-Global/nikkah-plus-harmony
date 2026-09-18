@@ -567,7 +567,12 @@ function MosquesPage() {
               </div>
             </div>
           ) : null}
-          <DialogFooter className="mt-4">
+          {isFormIncomplete ? (
+            <p className="mt-2 text-sm text-muted-foreground text-right">
+              Please fill out all required fields to submit.
+            </p>
+          ) : null}
+          <DialogFooter className="mt-2">
             <Button variant="ghost" onClick={() => setForm(null)}>
               Cancel
             </Button>
