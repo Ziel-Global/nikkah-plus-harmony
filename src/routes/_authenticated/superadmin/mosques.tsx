@@ -502,7 +502,7 @@ function MosquesPage() {
                   />
                 </div>
                 {duplicateWarning ? (
-                  <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
+                  <p className="rounded-lg bg-destructive/10 p-3 text-sm font-medium text-destructive">
                     {duplicateWarning}
                   </p>
                 ) : null}
@@ -578,7 +578,7 @@ function MosquesPage() {
             </Button>
             <Button
               disabled={
-                Boolean(nameError || emailError || passwordError || phoneError) || isFormIncomplete || save.isPending
+                Boolean(nameError || emailError || passwordError || phoneError || duplicateWarning) || isFormIncomplete || save.isPending
               }
               onClick={() => save.mutate()}
             >
