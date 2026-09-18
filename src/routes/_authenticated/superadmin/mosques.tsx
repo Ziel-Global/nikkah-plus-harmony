@@ -104,8 +104,8 @@ function MosquesPage() {
   }, [data, search]);
 
   const nameError = form
-    ? form.name.trim().length < 2
-      ? "Please enter the mosque's name."
+    ? form.name.trim().length > 0 && form.name.trim().length < 2
+      ? "Mosque name is too short."
       : null
     : null;
   const emailError = form
@@ -461,9 +461,6 @@ function MosquesPage() {
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="mt-1"
                   />
-                  {nameError ? (
-                    <p className="mt-1 text-sm font-medium text-destructive">{nameError}</p>
-                  ) : null}
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
