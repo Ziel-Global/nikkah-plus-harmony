@@ -127,6 +127,20 @@ function MosquesPage() {
         : null
       : null;
 
+  const isFormIncomplete = Boolean(
+    form && (
+      !form.name.trim() ||
+      !form.city.trim() ||
+      !form.country.trim() ||
+      !form.address.trim() ||
+      !form.description.trim() ||
+      !form.admin_name.trim() ||
+      !form.contact_email.trim() ||
+      !form.admin_password.trim() ||
+      !form.contact_phone.trim()
+    )
+  );
+
   const save = useMutation({
     mutationFn: async () => {
       if (!form) return;
@@ -453,7 +467,7 @@ function MosquesPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <Label htmlFor="mosque-city">City</Label>
+                    <Label htmlFor="mosque-city">City *</Label>
                     <Input
                       id="mosque-city"
                       value={form.city}
@@ -462,7 +476,7 @@ function MosquesPage() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="mosque-country">Country</Label>
+                    <Label htmlFor="mosque-country">Country *</Label>
                     <Input
                       id="mosque-country"
                       value={form.country}
@@ -472,7 +486,7 @@ function MosquesPage() {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="mosque-address">Address</Label>
+                  <Label htmlFor="mosque-address">Address *</Label>
                   <Input
                     id="mosque-address"
                     value={form.address}
@@ -481,7 +495,7 @@ function MosquesPage() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="mosque-description">Description</Label>
+                  <Label htmlFor="mosque-description">Description *</Label>
                   <Textarea
                     id="mosque-description"
                     rows={3}
@@ -502,7 +516,7 @@ function MosquesPage() {
                   Mosque Admin Details
                 </h3>
                 <div>
-                  <Label htmlFor="mosque-admin_name">Admin Name</Label>
+                  <Label htmlFor="mosque-admin_name">Admin Name *</Label>
                   <Input
                     id="mosque-admin_name"
                     value={form.admin_name}
@@ -541,7 +555,7 @@ function MosquesPage() {
                   ) : null}
                 </div>
                 <div>
-                  <Label htmlFor="mosque-contact_phone">Contact Phone</Label>
+                  <Label htmlFor="mosque-contact_phone">Contact Phone *</Label>
                   <Input
                     id="mosque-contact_phone"
                     value={form.contact_phone}
@@ -562,7 +576,7 @@ function MosquesPage() {
             </Button>
             <Button
               disabled={
-                Boolean(nameError || emailError || passwordError || phoneError) || save.isPending
+                Boolean(nameError || emailError || passwordError || phoneError) || isFormIncomplete || save.isPending
               }
               onClick={() => save.mutate()}
             >
