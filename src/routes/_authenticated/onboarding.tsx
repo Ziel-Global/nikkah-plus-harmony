@@ -513,7 +513,6 @@ function MosqueStep({ userId, onDone }: { userId: string; onDone: () => Promise<
       let builder = supabase
         .from("mosques")
         .select("id, name, city, country")
-        .eq("status", "active")
         .order("name")
         .limit(25);
       if (query.trim()) builder = builder.ilike("name", `%${query.trim()}%`);
