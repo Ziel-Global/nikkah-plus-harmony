@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Check, Copy, Eye, Pencil, Trash2 } from "lucide-react";
+import { Check, Copy, Eye, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSiteOrigin } from "@/lib/config";
 import {
@@ -38,7 +38,6 @@ import {
 import { SUPER_META, formatDay, logActivity } from "@/lib/superadmin";
 import { sendMosqueAdminWelcomeEmail } from "@/lib/notifications";
 import { EditMosqueModal } from "@/components/superadmin/EditMosqueModal";
-import { ConfirmDeleteModal } from "@/components/superadmin/ConfirmDeleteModal";
 
 export const Route = createFileRoute("/_authenticated/superadmin/mosques")({
   head: () =>
@@ -77,22 +76,7 @@ function MosquesPage() {
   const [form, setForm] = useState<typeof EMPTY | null>(null);
   const [editing, setEditing] = useState<Mosque | null>(null);
   const [viewTarget, setViewTarget] = useState<Mosque | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<Mosque | null>(null);
   const [copied, setCopied] = useState(false);
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("mosques").delete().eq("id", id);
-      if (error) throw error;
-      await logActivity("delete_mosque", "mosques", id, {});
-    },
-    onSuccess: () => {
-      toast.success("Mosque deleted successfully.");
-      setDeleteTarget(null);
-      void queryClient.invalidateQueries({ queryKey: ["superadmin"] });
-    },
-    onError: (err: Error) => toast.error(err.message),
-  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["superadmin", "mosques"],
@@ -337,21 +321,10 @@ function MosquesPage() {
                           size="icon-sm"
                           title="Edit mosque details"
                           aria-label="Edit mosque details"
-                          className="text-muted-foreground hover:text-foreground"
+                          className="text-muted-foreground hover:bg-primary/10 hover:text-primary"
                           onClick={() => setEditing(m)}
                         >
                           <Pencil className="size-4" />
-                        </Button>
-
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          title="Delete mosque"
-                          aria-label="Delete mosque"
-                          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                          onClick={() => setDeleteTarget(m)}
-                        >
-                          <Trash2 className="size-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -451,16 +424,6 @@ function MosquesPage() {
 
       {/* Edit Mosque Modal */}
       <EditMosqueModal mosque={editing} onOpenChange={(open) => !open && setEditing(null)} />
-
-      {/* Confirm Delete Modal */}
-      <ConfirmDeleteModal
-        open={Boolean(deleteTarget)}
-        onOpenChange={(open) => !open && setDeleteTarget(null)}
-        title={`Delete "${deleteTarget?.name}"?`}
-        description="Are you sure you want to delete this mosque? This action cannot be undone and may affect members affiliated with this mosque."
-        loading={deleteMutation.isPending}
-        onConfirm={() => deleteTarget && deleteMutation.mutate(deleteTarget.id)}
-      />
 
       {/* Add Mosque Modal */}
       <Dialog open={Boolean(form)} onOpenChange={(open) => !open && setForm(null)}>

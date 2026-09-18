@@ -22,12 +22,14 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedBrowseRouteImport } from './routes/_authenticated/browse'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDeactivatedRouteImport } from './routes/_authenticated/deactivated'
 import { Route as AuthenticatedMatchRouteImport } from './routes/_authenticated/match'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedPendingRouteImport } from './routes/_authenticated/pending'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedSuperadminRouteRouteImport } from './routes/_authenticated/superadmin/route'
+import { Route as AuthenticatedSuspendedRouteImport } from './routes/_authenticated/suspended'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminAffiliationsRouteImport } from './routes/_authenticated/admin/affiliations'
 import { Route as AuthenticatedAdminConductRouteImport } from './routes/_authenticated/admin/conduct'
@@ -117,6 +119,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDeactivatedRoute =
+  AuthenticatedDeactivatedRouteImport.update({
+    id: '/deactivated',
+    path: '/deactivated',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMatchRoute = AuthenticatedMatchRouteImport.update({
   id: '/match',
   path: '/match',
@@ -148,6 +156,11 @@ const AuthenticatedSuperadminRouteRoute =
     path: '/superadmin',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSuspendedRoute = AuthenticatedSuspendedRouteImport.update({
+  id: '/suspended',
+  path: '/suspended',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -306,11 +319,13 @@ export interface FileRoutesByFullPath {
   '/superadmin': typeof AuthenticatedSuperadminRouteRouteWithChildren
   '/browse': typeof AuthenticatedBrowseRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/deactivated': typeof AuthenticatedDeactivatedRoute
   '/match': typeof AuthenticatedMatchRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/pending': typeof AuthenticatedPendingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/requests': typeof AuthenticatedRequestsRoute
+  '/suspended': typeof AuthenticatedSuspendedRoute
   '/superadmin/settings': typeof AuthenticatedSuperadminSettingsRouteRouteWithChildren
   '/admin/affiliations': typeof AuthenticatedAdminAffiliationsRoute
   '/admin/conduct': typeof AuthenticatedAdminConductRoute
@@ -348,11 +363,13 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/browse': typeof AuthenticatedBrowseRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/deactivated': typeof AuthenticatedDeactivatedRoute
   '/match': typeof AuthenticatedMatchRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/pending': typeof AuthenticatedPendingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/requests': typeof AuthenticatedRequestsRoute
+  '/suspended': typeof AuthenticatedSuspendedRoute
   '/admin/affiliations': typeof AuthenticatedAdminAffiliationsRoute
   '/admin/conduct': typeof AuthenticatedAdminConductRoute
   '/admin/escalations': typeof AuthenticatedAdminEscalationsRoute
@@ -393,11 +410,13 @@ export interface FileRoutesById {
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRouteRouteWithChildren
   '/_authenticated/browse': typeof AuthenticatedBrowseRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/deactivated': typeof AuthenticatedDeactivatedRoute
   '/_authenticated/match': typeof AuthenticatedMatchRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/pending': typeof AuthenticatedPendingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
+  '/_authenticated/suspended': typeof AuthenticatedSuspendedRoute
   '/_authenticated/superadmin/settings': typeof AuthenticatedSuperadminSettingsRouteRouteWithChildren
   '/_authenticated/admin/affiliations': typeof AuthenticatedAdminAffiliationsRoute
   '/_authenticated/admin/conduct': typeof AuthenticatedAdminConductRoute
@@ -439,11 +458,13 @@ export interface FileRouteTypes {
     | '/superadmin'
     | '/browse'
     | '/dashboard'
+    | '/deactivated'
     | '/match'
     | '/onboarding'
     | '/pending'
     | '/profile'
     | '/requests'
+    | '/suspended'
     | '/superadmin/settings'
     | '/admin/affiliations'
     | '/admin/conduct'
@@ -481,11 +502,13 @@ export interface FileRouteTypes {
     | '/terms'
     | '/browse'
     | '/dashboard'
+    | '/deactivated'
     | '/match'
     | '/onboarding'
     | '/pending'
     | '/profile'
     | '/requests'
+    | '/suspended'
     | '/admin/affiliations'
     | '/admin/conduct'
     | '/admin/escalations'
@@ -525,11 +548,13 @@ export interface FileRouteTypes {
     | '/_authenticated/superadmin'
     | '/_authenticated/browse'
     | '/_authenticated/dashboard'
+    | '/_authenticated/deactivated'
     | '/_authenticated/match'
     | '/_authenticated/onboarding'
     | '/_authenticated/pending'
     | '/_authenticated/profile'
     | '/_authenticated/requests'
+    | '/_authenticated/suspended'
     | '/_authenticated/superadmin/settings'
     | '/_authenticated/admin/affiliations'
     | '/_authenticated/admin/conduct'
@@ -662,6 +687,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/deactivated': {
+      id: '/_authenticated/deactivated'
+      path: '/deactivated'
+      fullPath: '/deactivated'
+      preLoaderRoute: typeof AuthenticatedDeactivatedRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/match': {
       id: '/_authenticated/match'
       path: '/match'
@@ -702,6 +734,13 @@ declare module '@tanstack/react-router' {
       path: '/superadmin'
       fullPath: '/superadmin'
       preLoaderRoute: typeof AuthenticatedSuperadminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/suspended': {
+      id: '/_authenticated/suspended'
+      path: '/suspended'
+      fullPath: '/suspended'
+      preLoaderRoute: typeof AuthenticatedSuspendedRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/': {
@@ -970,11 +1009,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSuperadminRouteRoute: typeof AuthenticatedSuperadminRouteRouteWithChildren
   AuthenticatedBrowseRoute: typeof AuthenticatedBrowseRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDeactivatedRoute: typeof AuthenticatedDeactivatedRoute
   AuthenticatedMatchRoute: typeof AuthenticatedMatchRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPendingRoute: typeof AuthenticatedPendingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
+  AuthenticatedSuspendedRoute: typeof AuthenticatedSuspendedRoute
   AuthenticatedMemberProfileIdRoute: typeof AuthenticatedMemberProfileIdRoute
 }
 
@@ -984,11 +1025,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedSuperadminRouteRouteWithChildren,
   AuthenticatedBrowseRoute: AuthenticatedBrowseRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDeactivatedRoute: AuthenticatedDeactivatedRoute,
   AuthenticatedMatchRoute: AuthenticatedMatchRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPendingRoute: AuthenticatedPendingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
+  AuthenticatedSuspendedRoute: AuthenticatedSuspendedRoute,
   AuthenticatedMemberProfileIdRoute: AuthenticatedMemberProfileIdRoute,
 }
 
@@ -1010,13 +1053,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
