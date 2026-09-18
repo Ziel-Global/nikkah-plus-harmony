@@ -94,19 +94,6 @@ function BrowsePage() {
     setSheetOpen(false);
   };
 
-  const mosquesQuery = useQuery({
-    queryKey: ["mosques", "active"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("mosques")
-        .select("id, name")
-        .eq("status", "active")
-        .order("name");
-      if (error) throw error;
-      return data ?? [];
-    },
-  });
-
   const matchQuery = useQuery({
     queryKey: ["has-active-match"],
     queryFn: async () => {
@@ -153,7 +140,6 @@ function BrowsePage() {
   const filterPanel = (
     <FilterPanel
       filters={filters}
-      mosques={mosquesQuery.data ?? []}
       onApply={applyFilters}
       onReset={() => applyFilters(DEFAULT_FILTERS)}
     />

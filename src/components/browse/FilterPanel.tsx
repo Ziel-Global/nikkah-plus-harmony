@@ -13,18 +13,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Mosque = { id: string; name: string };
-
 type Props = {
   filters: BrowseFilters;
-  mosques: Mosque[];
   onApply: (next: BrowseFilters) => void;
   onReset: () => void;
 };
 
 const ANY = "__any";
 
-export function FilterPanel({ filters, mosques, onApply, onReset }: Props) {
+export function FilterPanel({ filters, onApply, onReset }: Props) {
   const [draft, setDraft] = useState<BrowseFilters>(filters);
 
   useEffect(() => {
@@ -36,7 +33,7 @@ export function FilterPanel({ filters, mosques, onApply, onReset }: Props) {
 
   const selectField = (
     label: string,
-    key: "education" | "marital" | "practice" | "mosque" | "relocate",
+    key: "education" | "marital" | "practice" | "relocate",
     options: { value: string; label: string }[],
   ) => (
     <div className="space-y-1.5">
@@ -150,11 +147,6 @@ export function FilterPanel({ filters, mosques, onApply, onReset }: Props) {
         { value: "yes", label: "Yes" },
         { value: "no", label: "No" },
       ])}
-      {selectField(
-        "Mosque",
-        "mosque",
-        mosques.map((m) => ({ value: m.id, label: m.name })),
-      )}
       {textField("Profession", "profession", "e.g. Teacher")}
       {textField("Family background", "family", "Keyword, e.g. Gujarati")}
 

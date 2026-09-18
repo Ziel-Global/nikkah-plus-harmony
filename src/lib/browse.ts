@@ -13,7 +13,7 @@ export type BrowseFilters = {
   practice: string;
   languages: string;
   relocate: string;
-  mosque: string;
+
   profession: string;
   family: string;
   page: number;
@@ -30,7 +30,7 @@ export const DEFAULT_FILTERS: BrowseFilters = {
   practice: "",
   languages: "",
   relocate: "",
-  mosque: "",
+
   profession: "",
   family: "",
   page: 1,
@@ -66,7 +66,7 @@ export function toRpcArgs(filters: BrowseFilters): RpcArgs {
     ["p_education", filters.education],
     ["p_marital", filters.marital],
     ["p_practice", filters.practice],
-    ["p_mosque", filters.mosque],
+
     ["p_profession", filters.profession],
     ["p_family_keyword", filters.family],
   ];
@@ -94,7 +94,7 @@ export function activeFilterCount(filters: BrowseFilters) {
     "practice",
     "languages",
     "relocate",
-    "mosque",
+
     "profession",
     "family",
   ] as const) {
