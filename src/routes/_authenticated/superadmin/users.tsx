@@ -316,7 +316,7 @@ function UsersPage() {
                 ["Gender", selected.gender ?? "—"],
                 ["Phone", selected.phone ?? "—"],
                 ["Mosque", selected.mosques?.name ?? "—"],
-                ["Verification", selected.verification_method ?? "—"],
+                ["Verification", selected.verification_method || "email"],
                 ["Terms accepted", formatDateTime(selected.terms_accepted_at)],
                 ["Last sign-in", formatDateTime(selected.last_login_at)],
                 [

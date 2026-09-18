@@ -19,6 +19,7 @@ export type AccessState = {
   affiliationStatus: AffiliationStatus;
   /** mosque admins only: linked to at least one mosque */
   hasMosqueAssignment: boolean;
+  accountStatus: "active" | "suspended" | "deactivated" | null;
 };
 
 export const SIGNED_OUT: AccessState = {
@@ -27,6 +28,7 @@ export const SIGNED_OUT: AccessState = {
   onboardingComplete: false,
   affiliationStatus: null,
   hasMosqueAssignment: false,
+  accountStatus: null,
 };
 
 /** Reads everything the guard needs in as few round-trips as possible. */
@@ -37,7 +39,7 @@ export async function fetchAccessState(): Promise<AccessState> {
 
   let { data: profile } = await supabase
     .from("profiles")
-    .select("role, gender, terms_accepted_at")
+    .select("role, gender, terms_accepted_at, account_status")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -46,13 +48,14 @@ export async function fetchAccessState(): Promise<AccessState> {
     await new Promise((res) => setTimeout(res, 500));
     const retry = await supabase
       .from("profiles")
-      .select("role, gender, terms_accepted_at")
+      .select("role, gender, terms_accepted_at, account_status")
       .eq("id", user.id)
       .maybeSingle();
     profile = retry.data;
   }
 
   let role = (profile?.role as AppRole | undefined) ?? null;
+  const accountStatus = (profile?.account_status as "active" | "suspended" | "deactivated" | undefined) ?? null;
 
   // Fallback resilience for Mosque Admins whose DB profile has not yet synchronized
   const metaRole = user.user_metadata?.["role"] as string | undefined;
@@ -69,7 +72,7 @@ export async function fetchAccessState(): Promise<AccessState> {
   }
 
   if (role === "super_admin") {
-    return { ...SIGNED_OUT, userId: user.id, role };
+    return { ...SIGNED_OUT, userId: user.id, role, accountStatus };
   }
 
   if (role === "mosque_admin") {
@@ -84,6 +87,7 @@ export async function fetchAccessState(): Promise<AccessState> {
       onboardingComplete: true,
       affiliationStatus: null,
       hasMosqueAssignment: Boolean(link || metaMosqueId),
+      accountStatus,
     };
   }
 
@@ -102,14 +106,17 @@ export async function fetchAccessState(): Promise<AccessState> {
     onboardingComplete: Boolean(profile?.gender && profile?.terms_accepted_at && affiliationStatus),
     affiliationStatus,
     hasMosqueAssignment: false,
+    accountStatus,
   };
 }
 
 const MEMBER_PREFIXES = ["/dashboard", "/browse", "/profile", "/requests", "/match", "/member"];
 
-type Area = "onboarding" | "pending" | "member" | "admin" | "superadmin" | "other";
+type Area = "onboarding" | "pending" | "member" | "admin" | "superadmin" | "suspended" | "deactivated" | "other";
 
 export function areaFor(pathname: string): Area {
+  if (pathname.startsWith("/suspended")) return "suspended";
+  if (pathname.startsWith("/deactivated")) return "deactivated";
   if (pathname.startsWith("/onboarding")) return "onboarding";
   if (pathname.startsWith("/pending")) return "pending";
   if (pathname.startsWith("/superadmin")) return "superadmin";
@@ -120,6 +127,8 @@ export function areaFor(pathname: string): Area {
 
 /** Where a signed-in user belongs when they have no specific destination. */
 export function landingPath(state: AccessState): string {
+  if (state.accountStatus === "suspended") return "/suspended";
+  if (state.accountStatus === "deactivated") return "/deactivated";
   if (state.role === "super_admin") return "/superadmin";
   if (state.role === "mosque_admin") return "/admin";
   if (!state.onboardingComplete) return "/onboarding";
@@ -135,6 +144,15 @@ export function resolveRedirect(state: AccessState, pathname: string): string | 
   if (!state.userId) return "/auth";
 
   const area = areaFor(pathname);
+  
+  if (state.accountStatus === "suspended") {
+    return area === "suspended" ? null : "/suspended";
+  }
+  
+  if (state.accountStatus === "deactivated") {
+    return area === "deactivated" ? null : "/deactivated";
+  }
+
   const home = landingPath(state);
 
   if (state.role === "super_admin") {
@@ -146,7 +164,7 @@ export function resolveRedirect(state: AccessState, pathname: string): string | 
   }
 
   // Members (male_user / female_user) and any unknown role.
-  if (area === "admin" || area === "superadmin") return home;
+  if (area === "admin" || area === "superadmin" || area === "suspended" || area === "deactivated") return home;
 
   if (!state.onboardingComplete) {
     return area === "onboarding" ? null : "/onboarding";
