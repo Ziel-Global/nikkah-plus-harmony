@@ -74,7 +74,17 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
       ? validatePhone(form.contact_phone)
       : null;
 
-  const isValid = !nameError && !emailError && !phoneError;
+  const isFormIncomplete = Boolean(
+    !form.name.trim() ||
+    !(form.city || "").trim() ||
+    !(form.country || "").trim() ||
+    !(form.address || "").trim() ||
+    !(form.contact_email || "").trim() ||
+    !(form.contact_phone || "").trim() ||
+    !(form.description || "").trim()
+  );
+
+  const isValid = !nameError && !emailError && !phoneError && !isFormIncomplete;
 
   const updateMutation = useMutation({
     mutationFn: async () => {
@@ -137,7 +147,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="edit-city">City</Label>
+              <Label htmlFor="edit-city">City *</Label>
               <Input
                 id="edit-city"
                 value={form.city ?? ""}
@@ -147,7 +157,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
               />
             </div>
             <div>
-              <Label htmlFor="edit-country">Country</Label>
+              <Label htmlFor="edit-country">Country *</Label>
               <Input
                 id="edit-country"
                 value={form.country ?? ""}
@@ -159,7 +169,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
           </div>
 
           <div>
-            <Label htmlFor="edit-address">Street address</Label>
+            <Label htmlFor="edit-address">Street address *</Label>
             <Input
               id="edit-address"
               value={form.address ?? ""}
@@ -171,7 +181,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="edit-email">Contact email</Label>
+              <Label htmlFor="edit-email">Contact email *</Label>
               <Input
                 id="edit-email"
                 type="email"
@@ -183,7 +193,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
               {emailError ? <p className="mt-1 text-xs text-destructive">{emailError}</p> : null}
             </div>
             <div>
-              <Label htmlFor="edit-phone">Contact phone</Label>
+              <Label htmlFor="edit-phone">Contact phone *</Label>
               <Input
                 id="edit-phone"
                 value={form.contact_phone ?? ""}
@@ -198,7 +208,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
 
 
           <div>
-            <Label htmlFor="edit-description">Description / Notes</Label>
+            <Label htmlFor="edit-description">Description / Notes *</Label>
             <Textarea
               id="edit-description"
               value={form.description ?? ""}
