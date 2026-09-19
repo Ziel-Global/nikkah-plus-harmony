@@ -113,6 +113,15 @@ function MosquesPage() {
       ? "Contact email (login username) is required."
       : validateOptionalEmail(form.contact_email)
     : null;
+  const emailExistsError =
+    form && !editing && !emailError && form.contact_email.trim()
+      ? (data ?? []).some(
+          (m: Mosque) =>
+            m.contact_email?.trim().toLowerCase() === form.contact_email.trim().toLowerCase()
+        )
+        ? "This email is already linked to another mosque."
+        : null
+      : null;
   const passwordError = form && !editing ? validatePassword(form.admin_password) : null;
   const phoneError =
     form && form.contact_phone.trim() !== "" ? validatePhone(form.contact_phone) : null;
@@ -528,13 +537,16 @@ function MosquesPage() {
                     id="mosque-contact_email"
                     type="email"
                     value={form.contact_email}
-                    aria-invalid={emailError ? true : undefined}
+                    aria-invalid={emailError || emailExistsError ? true : undefined}
                     onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
                     placeholder="admin@mosque.org"
                     className="mt-1"
                   />
                   {emailError ? (
                     <p className="mt-1 text-sm font-medium text-destructive">{emailError}</p>
+                  ) : null}
+                  {emailExistsError ? (
+                    <p className="mt-1 text-sm font-medium text-destructive">{emailExistsError}</p>
                   ) : null}
                 </div>
                 <div>
@@ -578,7 +590,7 @@ function MosquesPage() {
             </Button>
             <Button
               disabled={
-                Boolean(nameError || emailError || passwordError || phoneError || duplicateWarning) || isFormIncomplete || save.isPending
+                Boolean(nameError || emailError || emailExistsError || passwordError || phoneError || duplicateWarning) || isFormIncomplete || save.isPending
               }
               onClick={() => save.mutate()}
             >
