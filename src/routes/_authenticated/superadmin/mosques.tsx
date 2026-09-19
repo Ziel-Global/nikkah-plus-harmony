@@ -536,6 +536,7 @@ function MosquesPage() {
                   <Input
                     id="mosque-contact_email"
                     type="email"
+                    autoComplete="new-email"
                     value={form.contact_email}
                     aria-invalid={emailError || emailExistsError ? true : undefined}
                     onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
@@ -553,6 +554,7 @@ function MosquesPage() {
                   <Label htmlFor="mosque-admin_password">Admin Password *</Label>
                   <PasswordInput
                     id="mosque-admin_password"
+                    autoComplete="new-password"
                     value={form.admin_password}
                     aria-invalid={passwordError ? true : undefined}
                     onChange={(e) => setForm({ ...form, admin_password: e.target.value })}

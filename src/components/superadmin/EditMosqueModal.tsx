@@ -193,6 +193,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
               <Input
                 id="edit-email"
                 type="email"
+                autoComplete="new-email"
                 value={form.contact_email ?? ""}
                 onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))}
                 placeholder="someone@gmail.com"
@@ -231,7 +232,8 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
             <Label htmlFor="edit-password">Reset Admin Password (Optional)</Label>
             <Input
               id="edit-password"
-              type="text"
+              type="password"
+              autoComplete="new-password"
               value={form.admin_password ?? ""}
               onChange={(e) => setForm((f) => ({ ...f, admin_password: e.target.value }))}
               placeholder="Leave blank to keep current password"
