@@ -109,9 +109,9 @@ function MosquesPage() {
       : null
     : null;
   const emailError = form
-    ? !form.contact_email.trim()
-      ? "Contact email (login username) is required."
-      : validateOptionalEmail(form.contact_email)
+    ? form.contact_email.trim()
+      ? validateOptionalEmail(form.contact_email)
+      : null
     : null;
   const emailExistsError =
     form && !editing && !emailError && form.contact_email.trim()
@@ -122,7 +122,7 @@ function MosquesPage() {
         ? "This email is already linked to another mosque."
         : null
       : null;
-  const passwordError = form && !editing ? validatePassword(form.admin_password) : null;
+  const passwordError = form && !editing && form.admin_password.trim() ? validatePassword(form.admin_password) : null;
   const phoneError =
     form && form.contact_phone.trim() !== "" ? validatePhone(form.contact_phone) : null;
   const duplicateWarning =
