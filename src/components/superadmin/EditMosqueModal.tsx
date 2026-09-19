@@ -195,7 +195,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
                 type="email"
                 value={form.contact_email ?? ""}
                 onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))}
-                placeholder="info@elmosque.org"
+                placeholder="someone@gmail.com"
                 className="mt-1"
               />
               {emailError ? <p className="mt-1 text-xs text-destructive">{emailError}</p> : null}

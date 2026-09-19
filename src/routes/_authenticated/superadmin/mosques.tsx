@@ -539,7 +539,7 @@ function MosquesPage() {
                     value={form.contact_email}
                     aria-invalid={emailError || emailExistsError ? true : undefined}
                     onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
-                    placeholder="admin@mosque.org"
+                    placeholder="someone@gmail.com"
                     className="mt-1"
                   />
                   {emailError ? (
