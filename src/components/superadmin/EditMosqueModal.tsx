@@ -43,7 +43,7 @@ type Props = {
 
 export function EditMosqueModal({ mosque, onOpenChange }: Props) {
   const queryClient = useQueryClient();
-  const [form, setForm] = useState<Omit<Mosque, "id" | "created_at">>({
+  const [form, setForm] = useState({
     name: "",
     address: "",
     city: "",
@@ -51,6 +51,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
     contact_email: "",
     contact_phone: "",
     description: "",
+    admin_password: "",
   });
 
   useEffect(() => {
@@ -101,8 +102,15 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
       };
 
       const { error } = await supabase.from("mosques").update(payload).eq("id", mosque.id);
-
       if (error) throw error;
+
+      if (form.admin_password?.trim()) {
+        const { error: pwError } = await supabase.rpc("update_mosque_admin_password", {
+          p_mosque_id: mosque.id,
+          p_new_password: form.admin_password.trim(),
+        });
+        if (pwError) throw new Error("Mosque updated, but failed to reset admin password: " + pwError.message);
+      }
 
       await logActivity("update_mosque", "mosques", mosque.id, {
         changes: payload,
@@ -217,6 +225,19 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
               rows={3}
               className="mt-1"
             />
+          </div>
+
+          <div className="pt-2 border-t mt-4">
+            <Label htmlFor="edit-password">Reset Admin Password (Optional)</Label>
+            <Input
+              id="edit-password"
+              type="text"
+              value={form.admin_password ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, admin_password: e.target.value }))}
+              placeholder="Leave blank to keep current password"
+              className="mt-1"
+            />
+            <p className="text-xs text-muted-foreground mt-1">If provided, the current mosque admin's password will be changed to this.</p>
           </div>
 
           {isFormIncomplete ? (
