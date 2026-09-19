@@ -216,19 +216,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
 
 
 
-          <div>
-            <Label htmlFor="edit-description">Description / Notes *</Label>
-            <Textarea
-              id="edit-description"
-              value={form.description ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              placeholder="Internal notes or community description..."
-              rows={3}
-              className="mt-1"
-            />
-          </div>
-
-          <div className="pt-2 border-t mt-4">
+          <div className="pt-2 border-t mt-4 mb-4">
             <Label htmlFor="edit-password">Reset Admin Password (Optional)</Label>
             <Input
               id="edit-password"
@@ -240,6 +228,18 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
               className="mt-1"
             />
             <p className="text-xs text-muted-foreground mt-1">If provided, the current mosque admin's password will be changed to this.</p>
+          </div>
+
+          <div>
+            <Label htmlFor="edit-description">Description / Notes *</Label>
+            <Textarea
+              id="edit-description"
+              value={form.description ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              placeholder="Internal notes or community description..."
+              rows={3}
+              className="mt-1"
+            />
           </div>
 
           {isFormIncomplete ? (
