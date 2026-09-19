@@ -43,7 +43,7 @@ export const Route = createFileRoute("/_authenticated/superadmin/users")({
   component: UsersPage,
 });
 
-type Row = PlatformProfile & { mosques: { name: string } | null };
+type Row = PlatformProfile & { mosques: { name: string } | null, mosque_affiliation_requests: { status: string }[] | null };
 
 type UserTypeFilter = "all" | "brother" | "sister" | "mosque_admin" | "super_admin";
 
@@ -99,7 +99,7 @@ function UsersPage() {
       const { data, error } = await supabase
         .from("profiles")
         .select(
-          "id, email, phone, role, gender, mosque_id, account_status, verification_method, last_login_at, terms_accepted_at, created_at, mosques!profiles_mosque_id_fkey(name)",
+          "id, email, phone, role, gender, mosque_id, account_status, verification_method, last_login_at, terms_accepted_at, created_at, mosques!profiles_mosque_id_fkey(name), mosque_affiliation_requests!mosque_affiliation_requests_user_id_fkey(status)",
         )
         .in("role", ["male_user", "female_user"])
         .order("created_at", { ascending: false })
@@ -258,7 +258,7 @@ function UsersPage() {
               <div className="min-w-0">
                 <p className="truncate font-semibold text-foreground">{row.email}</p>
                 <p className="text-xs text-muted-foreground">
-                  {ROLE_LABEL[row.role] ?? row.role} · {row.mosques?.name ?? "No mosque"} · joined{" "}
+                  {ROLE_LABEL[row.role] ?? row.role} • {row.mosques?.name ?? (row.mosque_affiliation_requests?.some(r => r.status === "pending") ? "Pending Affiliation" : row.mosque_affiliation_requests?.some(r => r.status === "rejected") ? "Affiliation Rejected" : "Unaffiliated")} • joined{" "}
                   {formatDateTime(row.created_at)}
                 </p>
               </div>
