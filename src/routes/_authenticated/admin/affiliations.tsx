@@ -140,14 +140,6 @@ function AffiliationsPage() {
         })
         .eq("id", row.id);
       if (error) throw error;
-
-      if (approve) {
-        const { error: profileErr } = await supabase
-          .from("profiles")
-          .update({ mosque_id: row.mosque_id })
-          .eq("id", row.user_id);
-        if (profileErr) throw profileErr;
-      }
     },
     onSuccess: (_d, vars) => {
       toast.success(
