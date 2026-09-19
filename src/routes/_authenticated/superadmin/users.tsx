@@ -101,6 +101,7 @@ function UsersPage() {
         .select(
           "id, email, phone, role, gender, mosque_id, account_status, verification_method, last_login_at, terms_accepted_at, created_at, mosques!profiles_mosque_id_fkey(name)",
         )
+        .in("role", ["male_user", "female_user"])
         .order("created_at", { ascending: false })
         .limit(1000);
       if (error) throw error;
