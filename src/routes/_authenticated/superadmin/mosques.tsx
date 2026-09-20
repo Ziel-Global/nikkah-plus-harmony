@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Check, Copy, Eye, Pencil } from "lucide-react";
+import { createClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { getSiteOrigin } from "@/lib/config";
 import {
@@ -178,11 +179,22 @@ function MosquesPage() {
 
         const portalUrl = `${getSiteOrigin()}/admin`;
 
-        // Create or register Mosque Admin user account via secure RPC
-        const { error: signUpError } = await supabase.rpc("set_mosque_admin_credentials", {
-          p_mosque_id: inserted.id,
-          p_email: form.contact_email.trim(),
-          p_password: form.admin_password.trim(),
+        // Create the new admin user via standard GoTrue API so it's fully valid
+        const tempClient = createClient(
+          import.meta.env.VITE_SUPABASE_URL,
+          import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }
+        );
+        const { error: signUpError } = await tempClient.auth.signUp({
+          email: form.contact_email.trim(),
+          password: form.admin_password.trim(),
+          options: {
+            emailRedirectTo: portalUrl,
+            data: {
+              role: "mosque_admin",
+              mosque_id: inserted.id,
+            },
+          },
         });
 
         if (signUpError) {

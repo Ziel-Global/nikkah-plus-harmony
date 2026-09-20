@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Textarea } from "@/components/ui/textarea";
+import { createClient } from "@supabase/supabase-js";
 import {
   Select,
   SelectContent,
@@ -112,12 +113,26 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
            throw new Error("You must provide a password when changing the admin's email.");
         }
         
-        const { error: pwError } = await supabase.rpc("set_mosque_admin_credentials", {
-          p_mosque_id: mosque.id,
-          p_email: form.contact_email?.trim(),
-          p_password: form.admin_password?.trim() || null,
-        });
-        if (pwError) throw new Error("Mosque updated, but failed to set admin credentials: " + pwError.message);
+        if (isEmailChanged) {
+          // Create the new user via standard GoTrue API so it's fully valid
+          const tempClient = createClient(
+            import.meta.env.VITE_SUPABASE_URL,
+            import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }
+          );
+          const { error: signUpError } = await tempClient.auth.signUp({
+            email: form.contact_email!.trim(),
+            password: form.admin_password!.trim(),
+          });
+          if (signUpError) throw new Error("Failed to create new admin: " + signUpError.message);
+        } else {
+          // Just update password for existing user via RPC
+          const { error: pwError } = await supabase.rpc("update_mosque_admin_password", {
+            p_mosque_id: mosque.id,
+            p_new_password: form.admin_password!.trim(),
+          });
+          if (pwError) throw new Error("Failed to reset admin password: " + pwError.message);
+        }
       }
 
       await logActivity("update_mosque", "mosques", mosque.id, {
