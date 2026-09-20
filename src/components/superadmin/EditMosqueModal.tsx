@@ -125,6 +125,11 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
             password: form.admin_password!.trim(),
           });
           if (signUpError) throw new Error("Failed to create new admin: " + signUpError.message);
+          
+          // Auto-confirm the email so they can login immediately
+          await supabase.rpc("confirm_mosque_admin_email", {
+            p_email: form.contact_email!.trim()
+          });
         } else {
           // Just update password for existing user via RPC
           const { error: pwError } = await supabase.rpc("update_mosque_admin_password", {
