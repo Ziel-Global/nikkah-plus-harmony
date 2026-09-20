@@ -106,12 +106,17 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
 
       const isEmailChanged = form.contact_email?.trim() !== mosque.contact_email?.trim();
 
-      if (form.admin_password?.trim() && !isEmailChanged) {
-        const { error: pwError } = await supabase.rpc("update_mosque_admin_password", {
+      if (form.admin_password?.trim() || isEmailChanged) {
+        if (isEmailChanged && !form.admin_password?.trim()) {
+           throw new Error("You must provide a password when changing the admin's email.");
+        }
+        
+        const { error: pwError } = await supabase.rpc("set_mosque_admin_credentials", {
           p_mosque_id: mosque.id,
-          p_new_password: form.admin_password.trim(),
+          p_email: form.contact_email?.trim(),
+          p_password: form.admin_password?.trim() || null,
         });
-        if (pwError) throw new Error("Mosque updated, but failed to reset admin password: " + pwError.message);
+        if (pwError) throw new Error("Mosque updated, but failed to set admin credentials: " + pwError.message);
       }
 
       await logActivity("update_mosque", "mosques", mosque.id, {
@@ -224,7 +229,6 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
               id="edit-password"
               type="password"
               autoComplete="new-password"
-              disabled={form.contact_email?.trim() !== mosque?.contact_email?.trim()}
               value={form.admin_password ?? ""}
               onChange={(e) => setForm((f) => ({ ...f, admin_password: e.target.value }))}
               placeholder="Leave blank to keep current password"
@@ -232,7 +236,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
             />
             {form.contact_email?.trim() !== mosque?.contact_email?.trim() ? (
               <p className="text-xs text-destructive mt-1">
-                Password cannot be set because the email is being changed. The new admin must sign up to set their password.
+                A password is required because you are assigning a new admin email.
               </p>
             ) : (
               <p className="text-xs text-muted-foreground mt-1">If provided, the current mosque admin's password will be changed to this.</p>

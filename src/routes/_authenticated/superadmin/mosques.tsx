@@ -176,50 +176,35 @@ function MosquesPage() {
           .single();
         if (error || !inserted) throw error || new Error("Could not insert mosque record.");
 
-        let adminUserId: string | null = null;
         const portalUrl = `${getSiteOrigin()}/admin`;
 
-        // Create or register Mosque Admin user account in Supabase Auth
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: form.contact_email.trim(),
-          password: form.admin_password,
-          options: {
-            emailRedirectTo: portalUrl,
-            data: {
-              role: "mosque_admin",
-              mosque_id: inserted.id,
-            },
-          },
+        // Create or register Mosque Admin user account via secure RPC
+        const { error: signUpError } = await supabase.rpc("set_mosque_admin_credentials", {
+          p_mosque_id: inserted.id,
+          p_email: form.contact_email.trim(),
+          p_password: form.admin_password.trim(),
         });
 
-        if (signUpData?.user?.id) {
-          adminUserId = signUpData.user.id;
-        } else if (signUpError) {
-          // If account already exists, fetch existing user profile ID
-          const { data: existingUser } = await supabase
-            .from("profiles")
-            .select("id")
-            .eq("email", form.contact_email.trim())
-            .maybeSingle();
-          if (existingUser) adminUserId = existingUser.id;
+        if (signUpError) {
+          console.error("Failed to set credentials:", signUpError);
         }
 
-        if (adminUserId) {
-          // Use SECURITY DEFINER RPC to assign mosque_admin role and link mosque_id cleanly
-          const { error: rpcError } = await supabase.rpc("assign_mosque_admin_role", {
-            p_user_id: adminUserId,
-            p_mosque_id: inserted.id,
-          });
-          if (rpcError) {
-            console.error("Failed to assign mosque_admin role:", rpcError);
-          }
+        // Wait briefly for the auth trigger to create the profile
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-          if (form.admin_name.trim()) {
-            await supabase
-              .from("profiles")
-              .update({ full_name: form.admin_name.trim() })
-              .eq("id", adminUserId);
-          }
+        // Fetch the profile ID to update the admin_name if provided
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("mosque_id", inserted.id)
+          .eq("role", "mosque_admin")
+          .maybeSingle();
+
+        if (profile && form.admin_name.trim()) {
+          await supabase
+            .from("profiles")
+            .update({ full_name: form.admin_name.trim() })
+            .eq("id", profile.id);
         }
 
         // Dispatch branded welcome email with mosque details, credentials and direct /admin portal link
