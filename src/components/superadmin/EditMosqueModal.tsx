@@ -7,6 +7,7 @@ import { logActivity } from "@/lib/superadmin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -225,9 +226,8 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
 
           <div className="pt-2 border-t mt-4 mb-4">
             <Label htmlFor="edit-password">Reset Admin Password (Optional)</Label>
-            <Input
+            <PasswordInput
               id="edit-password"
-              type="password"
               autoComplete="new-password"
               value={form.admin_password ?? ""}
               onChange={(e) => setForm((f) => ({ ...f, admin_password: e.target.value }))}
