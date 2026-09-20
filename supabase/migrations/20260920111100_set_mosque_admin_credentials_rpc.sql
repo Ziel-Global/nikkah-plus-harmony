@@ -46,7 +46,7 @@ BEGIN
     INSERT INTO auth.identities (
       id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at
     ) VALUES (
-      gen_random_uuid()::text, v_new_user_id, format('{"sub":"%s","email":"%s","email_verified":false,"phone_verified":false}', v_new_user_id::text, p_email)::jsonb, 'email', p_email, now(), now(), now()
+      gen_random_uuid(), v_new_user_id, format('{"sub":"%s","email":"%s","email_verified":false,"phone_verified":false}', v_new_user_id::text, p_email)::jsonb, 'email', p_email, now(), now(), now()
     );
 
     -- The handle_new_auth_user trigger will automatically create their profile and link them to the mosque.
