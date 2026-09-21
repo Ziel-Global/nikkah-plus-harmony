@@ -54,6 +54,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
     contact_phone: "",
     description: "",
     admin_password: "",
+    admin_name: "",
   });
 
   useEffect(() => {
@@ -66,7 +67,22 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
         contact_email: mosque.contact_email ?? "",
         contact_phone: mosque.contact_phone ?? "",
         description: mosque.description ?? "",
+        admin_password: "",
+        admin_name: "",
       });
+
+      const fetchAdminName = async () => {
+        const { data } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("mosque_id", mosque.id)
+          .eq("role", "mosque_admin")
+          .maybeSingle();
+        if (data?.full_name) {
+          setForm((f) => ({ ...f, admin_name: data.full_name }));
+        }
+      };
+      void fetchAdminName();
     }
   }, [mosque]);
 
@@ -84,7 +100,8 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
     !(form.address || "").trim() ||
     !(form.contact_email || "").trim() ||
     !(form.contact_phone || "").trim() ||
-    !(form.description || "").trim()
+    !(form.description || "").trim() ||
+    !(form.admin_name || "").trim()
   );
 
   const isValid = !nameError && !emailError && !phoneError && !isFormIncomplete;
@@ -114,7 +131,6 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
         }
         
         if (isEmailChanged) {
-          // Create the new user via standard GoTrue API so it's fully valid
           const tempClient = createClient(
             import.meta.env.VITE_SUPABASE_URL,
             import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
@@ -123,20 +139,43 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
           const { error: signUpError } = await tempClient.auth.signUp({
             email: form.contact_email!.trim(),
             password: form.admin_password!.trim(),
+            options: {
+              data: {
+                role: "mosque_admin",
+                mosque_id: mosque.id,
+              },
+            },
           });
           if (signUpError) throw new Error("Failed to create new admin: " + signUpError.message);
           
-          // Auto-confirm the email so they can login immediately
           await supabase.rpc("confirm_mosque_admin_email", {
             p_email: form.contact_email!.trim()
           });
+
+          // Wait briefly for the auth trigger to create the profile
+          await new Promise((resolve) => setTimeout(resolve, 500));
         } else {
-          // Just update password for existing user via RPC
           const { error: pwError } = await supabase.rpc("update_mosque_admin_password", {
             p_mosque_id: mosque.id,
             p_new_password: form.admin_password!.trim(),
           });
           if (pwError) throw new Error("Failed to reset admin password: " + pwError.message);
+        }
+      }
+
+      if (form.admin_name?.trim()) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("mosque_id", mosque.id)
+          .eq("role", "mosque_admin")
+          .maybeSingle();
+
+        if (profile) {
+          await supabase
+            .from("profiles")
+            .update({ full_name: form.admin_name.trim() })
+            .eq("id", profile.id);
         }
       }
 
@@ -154,7 +193,7 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
 
   return (
     <Dialog open={Boolean(mosque)} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Mosque Details</DialogTitle>
           <DialogDescription>
@@ -234,6 +273,16 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
             <h3 className="border-t border-border/40 pt-4 text-sm font-semibold text-foreground">
               Mosque Admin Details
             </h3>
+            <div>
+              <Label htmlFor="edit-admin-name">Admin Name *</Label>
+              <Input
+                id="edit-admin-name"
+                value={form.admin_name}
+                onChange={(e) => setForm((f) => ({ ...f, admin_name: e.target.value }))}
+                placeholder="E.g., Brother Ahmed"
+                className="mt-1"
+              />
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="edit-email">Contact email *</Label>
