@@ -172,7 +172,7 @@ function MosquesPage() {
         const { data: auth } = await supabase.auth.getUser();
         const { data: inserted, error } = await supabase
           .from("mosques")
-          .insert({ ...payload, created_by: auth.user?.id ?? null })
+          .insert({ ...payload, status: "active", created_by: auth.user?.id ?? null })
           .select("id")
           .single();
         if (error || !inserted) throw error || new Error("Could not insert mosque record.");
