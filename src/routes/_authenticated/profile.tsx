@@ -225,7 +225,6 @@ function ProfilePage() {
     const { data: mosquesList } = await supabase
       .from("mosques")
       .select("id, name, city")
-      .eq("status", "active")
       .order("name");
     if (mosquesList) setMosques(mosquesList);
 
