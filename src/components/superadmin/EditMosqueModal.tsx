@@ -169,110 +169,116 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
           }}
           className="space-y-4"
         >
-          <div>
-            <Label htmlFor="edit-name">Mosque name *</Label>
-            <Input
-              id="edit-name"
-              value={form.name}
-              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              placeholder="e.g. East London Mosque"
-              className="mt-1"
-            />
-            {nameError ? <p className="mt-1 text-xs text-destructive">{nameError}</p> : null}
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground">Mosque Details</h3>
             <div>
-              <Label htmlFor="edit-city">City *</Label>
+              <Label htmlFor="edit-name">Mosque name *</Label>
               <Input
-                id="edit-city"
-                value={form.city ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
-                placeholder="London"
+                id="edit-name"
+                value={form.name}
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                placeholder="e.g. East London Mosque"
+                className="mt-1"
+              />
+              {nameError ? <p className="mt-1 text-xs text-destructive">{nameError}</p> : null}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="edit-city">City *</Label>
+                <Input
+                  id="edit-city"
+                  value={form.city ?? ""}
+                  onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+                  placeholder="London"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-country">Country *</Label>
+                <Input
+                  id="edit-country"
+                  value={form.country ?? ""}
+                  onChange={(e) => setForm((f) => ({ ...f, country: e.target.value }))}
+                  placeholder="United Kingdom"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="edit-address">Street address *</Label>
+              <Input
+                id="edit-address"
+                value={form.address ?? ""}
+                onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
+                placeholder="82-92 Whitechapel Rd"
                 className="mt-1"
               />
             </div>
+
             <div>
-              <Label htmlFor="edit-country">Country *</Label>
-              <Input
-                id="edit-country"
-                value={form.country ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, country: e.target.value }))}
-                placeholder="United Kingdom"
+              <Label htmlFor="edit-description">Description / Notes *</Label>
+              <Textarea
+                id="edit-description"
+                value={form.description ?? ""}
+                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                placeholder="Internal notes or community description..."
+                rows={3}
                 className="mt-1"
               />
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="edit-address">Street address *</Label>
-            <Input
-              id="edit-address"
-              value={form.address ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
-              placeholder="82-92 Whitechapel Rd"
-              className="mt-1"
-            />
-          </div>
+          <div className="space-y-3 pt-2">
+            <h3 className="border-t border-border/40 pt-4 text-sm font-semibold text-foreground">
+              Mosque Admin Details
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="edit-email">Contact email *</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  autoComplete="new-email"
+                  value={form.contact_email ?? ""}
+                  onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))}
+                  placeholder="someone@gmail.com"
+                  className="mt-1"
+                />
+                {emailError ? <p className="mt-1 text-xs text-destructive">{emailError}</p> : null}
+              </div>
+              <div>
+                <Label htmlFor="edit-phone">Contact phone *</Label>
+                <Input
+                  id="edit-phone"
+                  value={form.contact_phone ?? ""}
+                  onChange={(e) => setForm((f) => ({ ...f, contact_phone: e.target.value }))}
+                  placeholder="+44 20 7426 3720"
+                  className="mt-1"
+                />
+                {phoneError ? <p className="mt-1 text-xs text-destructive">{phoneError}</p> : null}
+              </div>
+            </div>
 
-          <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="edit-email">Contact email *</Label>
-              <Input
-                id="edit-email"
-                type="email"
-                autoComplete="new-email"
-                value={form.contact_email ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))}
-                placeholder="someone@gmail.com"
+              <Label htmlFor="edit-password">Reset Admin Password (Optional)</Label>
+              <PasswordInput
+                id="edit-password"
+                autoComplete="new-password"
+                value={form.admin_password ?? ""}
+                onChange={(e) => setForm((f) => ({ ...f, admin_password: e.target.value }))}
+                placeholder="Leave blank to keep current password"
                 className="mt-1"
               />
-              {emailError ? <p className="mt-1 text-xs text-destructive">{emailError}</p> : null}
+              {form.contact_email?.trim() !== mosque?.contact_email?.trim() ? (
+                <p className="text-xs text-destructive mt-1">
+                  A password is required because you are assigning a new admin email.
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground mt-1">If provided, the current mosque admin's password will be changed to this.</p>
+              )}
             </div>
-            <div>
-              <Label htmlFor="edit-phone">Contact phone *</Label>
-              <Input
-                id="edit-phone"
-                value={form.contact_phone ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, contact_phone: e.target.value }))}
-                placeholder="+44 20 7426 3720"
-                className="mt-1"
-              />
-              {phoneError ? <p className="mt-1 text-xs text-destructive">{phoneError}</p> : null}
-            </div>
-          </div>
-
-
-
-          <div className="pt-2 border-t mt-4 mb-4">
-            <Label htmlFor="edit-password">Reset Admin Password (Optional)</Label>
-            <PasswordInput
-              id="edit-password"
-              autoComplete="new-password"
-              value={form.admin_password ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, admin_password: e.target.value }))}
-              placeholder="Leave blank to keep current password"
-              className="mt-1"
-            />
-            {form.contact_email?.trim() !== mosque?.contact_email?.trim() ? (
-              <p className="text-xs text-destructive mt-1">
-                A password is required because you are assigning a new admin email.
-              </p>
-            ) : (
-              <p className="text-xs text-muted-foreground mt-1">If provided, the current mosque admin's password will be changed to this.</p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="edit-description">Description / Notes *</Label>
-            <Textarea
-              id="edit-description"
-              value={form.description ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              placeholder="Internal notes or community description..."
-              rows={3}
-              className="mt-1"
-            />
           </div>
 
           {isFormIncomplete ? (
