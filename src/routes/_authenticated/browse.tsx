@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { SlidersHorizontal } from "lucide-react";
@@ -103,6 +103,21 @@ function BrowsePage() {
     },
   });
 
+  const myProfileStatusQuery = useQuery({
+    queryKey: ["my-profile-status"],
+    queryFn: async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return null;
+      const { data, error } = await supabase
+        .from("marriage_profiles")
+        .select("status")
+        .eq("user_id", auth.user.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? data.status : "missing";
+    },
+  });
+
   const resultsQuery = useQuery({
     queryKey: ["browse", filters],
     queryFn: async () => {
@@ -110,6 +125,7 @@ function BrowsePage() {
       if (error) throw error;
       return data ?? [];
     },
+    enabled: myProfileStatusQuery.data === "approved",
   });
 
   const rows = useMemo(() => resultsQuery.data ?? [], [resultsQuery.data]);
@@ -146,6 +162,49 @@ function BrowsePage() {
   );
 
   const count = activeFilterCount(filters);
+
+  if (myProfileStatusQuery.isPending) {
+    return (
+      <MemberShell wide title="Members" description="Loading...">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-80 w-full rounded-xl" />
+          ))}
+        </div>
+      </MemberShell>
+    );
+  }
+
+  const myStatus = myProfileStatusQuery.data;
+  if (myStatus !== "approved") {
+    let title = "Profile unavailable";
+    let message = "Your profile is currently unavailable.";
+    
+    if (myStatus === "missing" || myStatus === "draft") {
+      title = "Profile not ready";
+      message = "Please make your profile first.";
+    } else if (myStatus === "submitted" || myStatus === "mosque_verified") {
+      title = "Profile under review";
+      message = "Wait for your profile to be approved.";
+    } else if (myStatus === "rejected") {
+      title = "Profile returned";
+      message = "Your profile was returned for review. Please update it.";
+    }
+
+    return (
+      <MemberShell wide title="Members" description="Mosque-verified members.">
+        <div className="surface-card mx-auto max-w-xl rounded-xl border border-border p-8 text-center mt-12">
+          <h2 className="text-h3 text-foreground">{title}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{message}</p>
+          <div className="mt-6 flex justify-center">
+            <Button asChild>
+              <Link to="/profile">Open my profile</Link>
+            </Button>
+          </div>
+        </div>
+      </MemberShell>
+    );
+  }
 
   return (
     <MemberShell
