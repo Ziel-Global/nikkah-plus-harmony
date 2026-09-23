@@ -148,9 +148,10 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
           });
           if (signUpError) throw new Error("Failed to create new admin: " + signUpError.message);
           
-          await supabase.rpc("confirm_mosque_admin_email", {
+          const { error: rpcError } = await supabase.rpc("confirm_mosque_admin_email", {
             p_email: form.contact_email!.trim()
           });
+          if (rpcError) throw new Error("Failed to confirm email: " + rpcError.message);
 
           // Wait briefly for the auth trigger to create the profile
           await new Promise((resolve) => setTimeout(resolve, 500));

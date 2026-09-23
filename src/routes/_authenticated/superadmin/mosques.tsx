@@ -197,12 +197,13 @@ function MosquesPage() {
         });
 
         if (signUpError) {
-          console.error("Failed to set credentials:", signUpError);
+          throw new Error("Failed to create admin credentials: " + signUpError.message);
         } else {
           // Auto-confirm the email so they can login immediately
-          await supabase.rpc("confirm_mosque_admin_email", {
+          const { error: rpcError } = await supabase.rpc("confirm_mosque_admin_email", {
             p_email: form.contact_email.trim()
           });
+          if (rpcError) throw new Error("Failed to confirm email: " + rpcError.message);
         }
 
         // Wait briefly for the auth trigger to create the profile

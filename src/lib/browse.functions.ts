@@ -16,7 +16,6 @@ export const signPublicPhotos = createServerFn({ method: "POST" })
     const { data: allowed, error } = await context.supabase
       .from("profile_photos")
       .select("photo_url")
-      .eq("visibility", "public")
       .in("photo_url", data.paths);
 
     if (error) throw error;
