@@ -31,8 +31,12 @@ export const signPublicPhotos = createServerFn({ method: "POST" })
     if (signErr) throw signErr;
 
     const urls: Record<string, string> = {};
-    for (const item of signed ?? []) {
-      if (item.path && item.signedUrl) urls[item.path] = item.signedUrl;
+    for (let i = 0; i < allowedPaths.length; i++) {
+      const p = allowedPaths[i];
+      const item = signed?.[i];
+      if (item?.signedUrl) {
+        urls[p] = item.signedUrl;
+      }
     }
     return { urls };
   });
