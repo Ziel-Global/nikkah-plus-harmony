@@ -912,6 +912,10 @@ export type Database = {
           willingness_to_relocate: boolean;
         }[];
       };
+      can_view_counterpart_photos: {
+        Args: { p_owner_user_id: string; p_viewer_id: string };
+        Returns: boolean;
+      };
       current_role: {
         Args: never;
         Returns: Database["public"]["Enums"]["user_role"];
@@ -919,6 +923,10 @@ export type Database = {
       escalation_in_my_mosque: {
         Args: { p_request_id: string };
         Returns: boolean;
+      };
+      get_accessible_photo_urls: {
+        Args: { p_paths: string[]; p_user_id: string };
+        Returns: { photo_url: string }[];
       };
       get_match_contact_state: {
         Args: { p_request_id: string };

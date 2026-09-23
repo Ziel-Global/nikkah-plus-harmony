@@ -146,7 +146,10 @@ function MemberDetailPage() {
         if (!cancelled) setPhotoUrl(res.urls[path] ?? null);
       })
       .catch(() => {
-        if (!cancelled) setPhotoUrl(null);
+        if (!cancelled) {
+          setPhotoUrl(null);
+          toast.error("We couldn't load this photograph just now.");
+        }
       });
     return () => {
       cancelled = true;

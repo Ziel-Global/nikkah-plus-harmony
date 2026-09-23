@@ -68,9 +68,11 @@ function ContactCard({
 export function ContactConsent({
   requestId,
   counterpartName,
+  counterpartProfileId,
 }: {
   requestId: string;
   counterpartName: string;
+  counterpartProfileId?: string | null | undefined;
 }) {
   const { user } = useSession();
   const queryClient = useQueryClient();
@@ -99,6 +101,13 @@ export function ContactConsent({
     onSuccess: () => {
       setConfirmOpen(false);
       void queryClient.invalidateQueries({ queryKey: ["contact-consent", requestId] });
+      void queryClient.invalidateQueries({ queryKey: ["browse"] });
+      void queryClient.invalidateQueries({ queryKey: ["browse-profile"] });
+      if (counterpartProfileId) {
+        void queryClient.invalidateQueries({
+          queryKey: ["browse-profile", counterpartProfileId],
+        });
+      }
       toast.success("Your consent has been recorded.");
     },
     onError: (error: Error) => toast.error(error.message),

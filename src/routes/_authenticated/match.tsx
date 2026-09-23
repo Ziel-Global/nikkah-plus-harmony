@@ -344,6 +344,7 @@ function MatchPage() {
           <ContactConsent
             requestId={match.id}
             counterpartName={match.counterpart_name ?? "this member"}
+            counterpartProfileId={match.counterpart_profile_id}
           />
         </Panel>
 
