@@ -3,9 +3,8 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 /**
- * Signs storage paths for photos that members have marked as publicly visible.
- * The caller's own (RLS-scoped) client verifies each path really belongs to a
- * public photo on an approved profile before the admin client signs it.
+ * Signs storage paths for photos that members are authorized to view (own photos,
+ * public photos on approved profiles, or mutual-consent matched photos).
  */
 export const signPublicPhotos = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -13,17 +12,18 @@ export const signPublicPhotos = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     if (data.paths.length === 0) return { urls: {} as Record<string, string> };
 
-    const { data: allowed, error } = await context.supabase
-      .from("profile_photos")
-      .select("photo_url")
-      .in("photo_url", data.paths);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: allowed, error } = await supabaseAdmin.rpc("get_accessible_photo_urls", {
+      p_user_id: context.userId,
+      p_paths: data.paths,
+    });
 
     if (error) throw error;
 
     const allowedPaths = [...new Set((allowed ?? []).map((r) => r.photo_url))];
     if (allowedPaths.length === 0) return { urls: {} as Record<string, string> };
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: signed, error: signErr } = await supabaseAdmin.storage
       .from("profile-photos")
       .createSignedUrls(allowedPaths, 3600);
