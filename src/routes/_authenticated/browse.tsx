@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, redirect, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { SlidersHorizontal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { signPublicPhotos } from "@/lib/browse.functions";
+import { signProfilePhotoPaths } from "@/lib/profile-photo-urls";
 import {
   DEFAULT_FILTERS,
   PAGE_SIZE,
@@ -86,7 +85,6 @@ export const Route = createFileRoute("/_authenticated/browse")({
 function BrowsePage() {
   const filters = Route.useSearch();
   const navigate = useNavigate({ from: "/browse" });
-  const signPhotos = useServerFn(signPublicPhotos);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const applyFilters = (next: BrowseFilters) => {
@@ -141,9 +139,9 @@ function BrowsePage() {
       return;
     }
     let cancelled = false;
-    signPhotos({ data: { paths } })
-      .then((res) => {
-        if (!cancelled) setPhotoUrls(res.urls);
+    signProfilePhotoPaths(paths)
+      .then((urls) => {
+        if (!cancelled) setPhotoUrls(urls);
       })
       .catch(() => {
         if (!cancelled) setPhotoUrls({});
@@ -151,7 +149,7 @@ function BrowsePage() {
     return () => {
       cancelled = true;
     };
-  }, [rows, signPhotos]);
+  }, [rows]);
 
   const filterPanel = (
     <FilterPanel

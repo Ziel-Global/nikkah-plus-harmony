@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { MemberShell } from "@/components/layout/MemberShell";
-import { signPublicPhotos } from "@/lib/browse.functions";
+import { signProfilePhotoPaths } from "@/lib/profile-photo-urls";
 import { ageBand, DEFAULT_FILTERS, type BrowseProfile } from "@/lib/browse";
 import { friendlyRequestError } from "@/lib/requests";
 import { sendInterestNotification } from "@/lib/notifications";
@@ -94,7 +93,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function MemberDetailPage() {
   const { profileId } = Route.useParams();
   const navigate = useNavigate();
-  const signPhotos = useServerFn(signPublicPhotos);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -141,9 +139,14 @@ function MemberDetailPage() {
       return;
     }
     let cancelled = false;
-    signPhotos({ data: { paths: [path] } })
-      .then((res) => {
-        if (!cancelled) setPhotoUrl(res.urls[path] ?? null);
+    signProfilePhotoPaths([path])
+      .then((urls) => {
+        if (cancelled) return;
+        const signed = urls[path] ?? null;
+        setPhotoUrl(signed);
+        if (!signed) {
+          toast.error("We couldn't load this photograph just now.");
+        }
       })
       .catch(() => {
         if (!cancelled) {
@@ -154,7 +157,7 @@ function MemberDetailPage() {
     return () => {
       cancelled = true;
     };
-  }, [profile?.photo_url, signPhotos]);
+  }, [profile?.photo_url]);
 
   const sendRequest = async () => {
     setSending(true);
