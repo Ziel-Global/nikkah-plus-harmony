@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X, ChevronDown, HeartHandshake, BookOpen, ExternalLink } from "lucide-react";
+import { Menu, X, ChevronDown, HeartHandshake, BookOpen } from "lucide-react";
 import { MasjidLogo } from "@/components/brand/MasjidLogo";
 import { cn } from "@/lib/utils";
 
@@ -129,10 +129,7 @@ export function MasjidHeader() {
                       <BookOpen className="size-5" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-1.5 font-bold text-[#0F172A]">
-                        <span>Masail Portal</span>
-                        <ExternalLink className="size-3.5 text-[#64748B]" />
-                      </div>
+                      <div className="font-bold text-[#0F172A]">Masail Portal</div>
                       <p className="mt-0.5 text-xs leading-normal text-[#64748B]">
                         Direct Islamic Q&A portal connecting congregants with verified scholars.
                       </p>
@@ -221,7 +218,6 @@ export function MasjidHeader() {
                     <BookOpen className="size-4 text-[#3B82F6]" />
                     Masail Portal
                   </span>
-                  <ExternalLink className="size-3.5 text-[#64748B]" />
                 </a>
               </div>
             </div>

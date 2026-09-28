@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ChevronDown, HeartHandshake, BookOpen, ExternalLink } from "lucide-react";
+import { ChevronDown, HeartHandshake, BookOpen } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,10 +60,7 @@ export function ProjectsDropdown() {
                 <BookOpen className="size-5" />
               </div>
               <div>
-                <div className="flex items-center gap-1.5 font-semibold text-[#0F172A]">
-                  Masail (Islamic Q&A)
-                  <ExternalLink className="size-3 text-[#64748B]" />
-                </div>
+                <div className="font-semibold text-[#0F172A]">Masail (Islamic Q&A)</div>
                 <p className="mt-0.5 text-xs text-[#64748B]">
                   Direct Q&A platform connecting congregants with trusted local imams and scholars.
                 </p>
