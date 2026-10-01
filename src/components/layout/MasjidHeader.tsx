@@ -4,7 +4,7 @@ import { Menu, X, ChevronDown, HeartHandshake, BookOpen } from "lucide-react";
 import { MasjidLogo } from "@/components/brand/MasjidLogo";
 import { cn } from "@/lib/utils";
 
-export const MASAIL_URL = "https://masail-steel.vercel.app";
+export const MASAIL_URL = "https://masail-eight.vercel.app";
 
 export function MasjidHeader() {
   const [scrolled, setScrolled] = useState(false);
