@@ -133,7 +133,6 @@ export function EditUserModal({ user, onOpenChange }: Props) {
                 <SelectItem value="male_user">Male Member</SelectItem>
                 <SelectItem value="female_user">Female Member</SelectItem>
                 <SelectItem value="mosque_admin">Mosque Admin</SelectItem>
-                <SelectItem value="super_admin">Super Admin</SelectItem>
               </SelectContent>
             </Select>
           </div>

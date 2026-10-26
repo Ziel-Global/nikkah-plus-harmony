@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { SUPER_META, logActivity } from "@/lib/superadmin";
-import { savePlatformSettings } from "@/lib/platform-settings";
 import {
   COLOR_FIELDS,
   DEFAULT_BRANDING,
@@ -21,13 +20,17 @@ import {
   resolveLogoUrl,
   type BrandingColors,
 } from "@/lib/branding";
-import { PLATFORM_SETTINGS_KEY, useBranding } from "@/components/branding/BrandingProvider";
+import {
+  MY_BRANDING_KEY,
+  PLATFORM_SETTINGS_KEY,
+  useBranding,
+} from "@/components/branding/BrandingProvider";
 
 import { validateHexColor } from "@/lib/validation";
 
 export const Route = createFileRoute("/_authenticated/superadmin/settings/branding")({
   head: () =>
-    SUPER_META("Branding & theme", "Logo, colour palette and dark mode for the whole platform."),
+    SUPER_META("Branding & theme", "Logo, colour palette and dark mode for your circle."),
   component: BrandingSettingsPage,
 });
 
@@ -85,7 +88,9 @@ function BrandingSettingsPage() {
     setUploading(true);
     try {
       const extension = file.name.split(".").pop()?.toLowerCase() ?? "png";
-      const path = `logo-${Date.now()}.${extension}`;
+      const { data: auth } = await supabase.auth.getUser();
+      const owner = auth.user?.id ?? "circle";
+      const path = `tenants/${owner}/logo-${Date.now()}.${extension}`;
       const { error } = await supabase.storage
         .from("branding")
         .upload(path, file, { upsert: true, contentType: file.type });
@@ -102,19 +107,37 @@ function BrandingSettingsPage() {
 
   const save = useMutation({
     mutationFn: async () => {
-      await savePlatformSettings({
-        ...colors,
-        dark_mode_default: dark,
-        logo_url: logoPath,
-      });
-      await logActivity("platform_branding_updated", "platform_settings", null, {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) throw new Error("You must be signed in.");
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("tenant_id")
+        .eq("id", auth.user.id)
+        .maybeSingle();
+      if (profileError) throw new Error(profileError.message);
+      if (!profile?.tenant_id) throw new Error("No tenant is linked to this account.");
+
+      const { error } = await supabase
+        .from("tenants")
+        .update({
+          ...colors,
+          dark_mode_default: dark,
+          logo_url: logoPath,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", profile.tenant_id);
+      if (error) throw new Error(error.message);
+
+      await logActivity("tenant_branding_updated", "tenants", profile.tenant_id, {
         ...colors,
         dark_mode_default: dark,
       });
     },
     onSuccess: () => {
-      toast.success("Branding saved — the platform theme is updated for everyone.");
+      toast.success("Tenant branding saved — your members will see the updated theme.");
       void queryClient.invalidateQueries({ queryKey: PLATFORM_SETTINGS_KEY });
+      void queryClient.invalidateQueries({ queryKey: MY_BRANDING_KEY });
       refresh();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -123,7 +146,7 @@ function BrandingSettingsPage() {
   return (
     <SuperAdminShell
       title="Settings"
-      description="Configuration that applies to the whole Marriage Database platform."
+      description="Branding for your tenant — members and mosque admins in your mosques."
     >
       <SettingsNav />
 
@@ -133,8 +156,8 @@ function BrandingSettingsPage() {
             <div>
               <h2 className="text-h3 text-foreground">Logo</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Shown in the header across member, mosque admin and public screens. PNG or SVG,
-                square works best, 2 MB maximum.
+                Shown to members and mosque admins in your circle. PNG or SVG, square works best,
+                2 MB maximum.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-4">

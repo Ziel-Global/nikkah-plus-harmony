@@ -3,7 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Check, Copy, Eye, Pencil } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { getSiteOrigin } from "@/lib/config";
 import {
@@ -169,62 +168,38 @@ function MosquesPage() {
         await logActivity("mosque_updated", "mosques", editing.id);
       } else {
         const { data: auth } = await supabase.auth.getUser();
+        const { data: saProfile } = await supabase
+          .from("profiles")
+          .select("tenant_id")
+          .eq("id", auth.user?.id ?? "")
+          .maybeSingle();
+        if (!saProfile?.tenant_id) {
+          throw new Error("Your account is not linked to a tenant.");
+        }
+
         const { data: inserted, error } = await supabase
           .from("mosques")
-          .insert({ ...payload, created_by: auth.user?.id ?? null })
+          .insert({
+            ...payload,
+            created_by: auth.user?.id ?? null,
+            tenant_id: saProfile.tenant_id,
+          })
           .select("id")
           .single();
         if (error || !inserted) throw error || new Error("Could not insert mosque record.");
 
         const portalUrl = `${getSiteOrigin()}/admin`;
 
-        // Create the new admin user via standard GoTrue API so it's fully valid
-        const tempClient = createClient(
-          import.meta.env.VITE_SUPABASE_URL,
-          import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-          { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }
-        );
-        const { error: signUpError } = await tempClient.auth.signUp({
-          email: form.contact_email.trim(),
-          password: form.admin_password.trim(),
-          options: {
-            emailRedirectTo: portalUrl,
-            data: {
-              role: "mosque_admin",
-              mosque_id: inserted.id,
-            },
+        const { createMosqueAdminAccount } = await import("@/lib/mosque-admin.functions");
+        await createMosqueAdminAccount({
+          data: {
+            mosque_id: inserted.id,
+            email: form.contact_email.trim(),
+            password: form.admin_password.trim(),
+            full_name: form.admin_name.trim() || undefined,
           },
         });
 
-        if (signUpError) {
-          throw new Error("Failed to create admin credentials: " + signUpError.message);
-        } else {
-          // Auto-confirm the email so they can login immediately
-          const { error: rpcError } = await supabase.rpc("confirm_mosque_admin_email", {
-            p_email: form.contact_email.trim()
-          });
-          if (rpcError) throw new Error("Failed to confirm email: " + rpcError.message);
-        }
-
-        // Wait briefly for the auth trigger to create the profile
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // Fetch the profile ID to update the admin_name if provided
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("id")
-          .eq("mosque_id", inserted.id)
-          .eq("role", "mosque_admin")
-          .maybeSingle();
-
-        if (profile && form.admin_name.trim()) {
-          await supabase
-            .from("profiles")
-            .update({ full_name: form.admin_name.trim() })
-            .eq("id", profile.id);
-        }
-
-        // Dispatch branded welcome email with mosque details, credentials and direct /admin portal link
         void sendMosqueAdminWelcomeEmail({
           toEmail: form.contact_email.trim(),
           mosqueName: form.name.trim(),

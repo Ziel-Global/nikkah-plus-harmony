@@ -62,6 +62,7 @@ export type Database = {
           metadata: Json | null;
           target_id: string | null;
           target_table: string | null;
+          tenant_id: string | null;
         };
         Insert: {
           action: string;
@@ -71,6 +72,7 @@ export type Database = {
           metadata?: Json | null;
           target_id?: string | null;
           target_table?: string | null;
+          tenant_id?: string | null;
         };
         Update: {
           action?: string;
@@ -80,6 +82,7 @@ export type Database = {
           metadata?: Json | null;
           target_id?: string | null;
           target_table?: string | null;
+          tenant_id?: string | null;
         };
         Relationships: [
           {
@@ -241,6 +244,7 @@ export type Database = {
           status: Database["public"]["Enums"]["request_status_enum"];
           target_id: string;
           target_mosque_id: string | null;
+          tenant_id: string | null;
           updated_at: string;
         };
         Insert: {
@@ -253,6 +257,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["request_status_enum"];
           target_id: string;
           target_mosque_id?: string | null;
+          tenant_id?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -265,6 +270,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["request_status_enum"];
           target_id?: string;
           target_mosque_id?: string | null;
+          tenant_id?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -329,6 +335,7 @@ export type Database = {
           reviewed_by: string | null;
           sect_or_school_of_thought: string | null;
           status: Database["public"]["Enums"]["profile_status_enum"];
+          tenant_id: string | null;
           updated_at: string;
           user_id: string;
           willingness_to_relocate: boolean | null;
@@ -363,6 +370,7 @@ export type Database = {
           reviewed_by?: string | null;
           sect_or_school_of_thought?: string | null;
           status?: Database["public"]["Enums"]["profile_status_enum"];
+          tenant_id?: string | null;
           updated_at?: string;
           user_id: string;
           willingness_to_relocate?: boolean | null;
@@ -397,6 +405,7 @@ export type Database = {
           reviewed_by?: string | null;
           sect_or_school_of_thought?: string | null;
           status?: Database["public"]["Enums"]["profile_status_enum"];
+          tenant_id?: string | null;
           updated_at?: string;
           user_id?: string;
           willingness_to_relocate?: boolean | null;
@@ -574,6 +583,7 @@ export type Database = {
           id: string;
           name: string;
           status: Database["public"]["Enums"]["mosque_status_enum"];
+          tenant_id: string;
           updated_at: string;
         };
         Insert: {
@@ -588,6 +598,7 @@ export type Database = {
           id?: string;
           name: string;
           status?: Database["public"]["Enums"]["mosque_status_enum"];
+          tenant_id: string;
           updated_at?: string;
         };
         Update: {
@@ -602,11 +613,93 @@ export type Database = {
           id?: string;
           name?: string;
           status?: Database["public"]["Enums"]["mosque_status_enum"];
+          tenant_id?: string;
           updated_at?: string;
         };
         Relationships: [
           {
             foreignKeyName: "mosques_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "mosques_tenant_id_fkey";
+            columns: ["tenant_id"];
+            isOneToOne: false;
+            referencedRelation: "tenants";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      tenants: {
+        Row: {
+          id: string;
+          name: string;
+          logo_url: string | null;
+          primary_color: string;
+          secondary_color: string;
+          button_bg_color: string;
+          button_text_color: string;
+          button_hover_bg_color: string;
+          button_active_bg_color: string;
+          success_color: string;
+          warning_color: string;
+          error_color: string;
+          dark_mode_default: boolean;
+          is_active: boolean;
+          deactivated_at: string | null;
+          deactivated_by: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          logo_url?: string | null;
+          primary_color?: string;
+          secondary_color?: string;
+          button_bg_color?: string;
+          button_text_color?: string;
+          button_hover_bg_color?: string;
+          button_active_bg_color?: string;
+          success_color?: string;
+          warning_color?: string;
+          error_color?: string;
+          dark_mode_default?: boolean;
+          is_active?: boolean;
+          deactivated_at?: string | null;
+          deactivated_by?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          logo_url?: string | null;
+          primary_color?: string;
+          secondary_color?: string;
+          button_bg_color?: string;
+          button_text_color?: string;
+          button_hover_bg_color?: string;
+          button_active_bg_color?: string;
+          success_color?: string;
+          warning_color?: string;
+          error_color?: string;
+          dark_mode_default?: boolean;
+          is_active?: boolean;
+          deactivated_at?: string | null;
+          deactivated_by?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tenants_created_by_fkey";
             columns: ["created_by"];
             isOneToOne: false;
             referencedRelation: "profiles";
@@ -767,13 +860,17 @@ export type Database = {
           account_status: Database["public"]["Enums"]["account_status_enum"];
           created_at: string;
           email: string;
+          first_name: string | null;
+          full_name: string | null;
           gender: string | null;
           id: string;
           last_login_at: string | null;
+          last_name: string | null;
           mosque_id: string | null;
           phone: string | null;
           phone_verified_at: string | null;
           role: Database["public"]["Enums"]["user_role"] | null;
+          tenant_id: string | null;
           terms_accepted_at: string | null;
           updated_at: string;
           verification_method: string | null;
@@ -782,13 +879,17 @@ export type Database = {
           account_status?: Database["public"]["Enums"]["account_status_enum"];
           created_at?: string;
           email: string;
+          first_name?: string | null;
+          full_name?: string | null;
           gender?: string | null;
           id: string;
           last_login_at?: string | null;
+          last_name?: string | null;
           mosque_id?: string | null;
           phone?: string | null;
           phone_verified_at?: string | null;
           role?: Database["public"]["Enums"]["user_role"] | null;
+          tenant_id?: string | null;
           terms_accepted_at?: string | null;
           updated_at?: string;
           verification_method?: string | null;
@@ -797,13 +898,17 @@ export type Database = {
           account_status?: Database["public"]["Enums"]["account_status_enum"];
           created_at?: string;
           email?: string;
+          first_name?: string | null;
+          full_name?: string | null;
           gender?: string | null;
           id?: string;
           last_login_at?: string | null;
+          last_name?: string | null;
           mosque_id?: string | null;
           phone?: string | null;
           phone_verified_at?: string | null;
           role?: Database["public"]["Enums"]["user_role"] | null;
+          tenant_id?: string | null;
           terms_accepted_at?: string | null;
           updated_at?: string;
           verification_method?: string | null;
@@ -814,6 +919,13 @@ export type Database = {
             columns: ["mosque_id"];
             isOneToOne: false;
             referencedRelation: "mosques";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "profiles_tenant_id_fkey";
+            columns: ["tenant_id"];
+            isOneToOne: false;
+            referencedRelation: "tenants";
             referencedColumns: ["id"];
           },
         ];
@@ -954,7 +1066,36 @@ export type Database = {
         }[];
       };
       has_active_match: { Args: never; Returns: boolean };
+      is_ssa: { Args: never; Returns: boolean };
       is_super_admin: { Args: never; Returns: boolean };
+      my_tenant_id: { Args: never; Returns: string };
+      my_tenant_is_active: { Args: never; Returns: boolean };
+      tenant_is_active: { Args: { p_tenant_id: string }; Returns: boolean };
+      mosque_in_my_tenant: { Args: { p_mosque_id: string }; Returns: boolean };
+      profile_in_my_tenant: { Args: { p_profile_id: string }; Returns: boolean };
+      my_circle_id: { Args: never; Returns: string };
+      my_circle_is_active: { Args: never; Returns: boolean };
+      circle_is_active: { Args: { p_sa_id: string }; Returns: boolean };
+      mosque_in_my_circle: { Args: { p_mosque_id: string }; Returns: boolean };
+      profile_in_my_circle: { Args: { p_profile_id: string }; Returns: boolean };
+      get_my_branding: {
+        Args: never;
+        Returns: {
+          platform_name: string;
+          logo_url: string | null;
+          primary_color: string;
+          secondary_color: string;
+          button_bg_color: string;
+          button_text_color: string;
+          button_hover_bg_color: string;
+          button_active_bg_color: string;
+          success_color: string;
+          warning_color: string;
+          error_color: string;
+          dark_mode_default: boolean;
+          source: string;
+        }[];
+      };
       list_my_interest_requests: {
         Args: never;
         Returns: {
@@ -1009,7 +1150,12 @@ export type Database = {
         | "closed_mutual"
         | "closed_declined"
         | "cancelled";
-      user_role: "male_user" | "female_user" | "mosque_admin" | "super_admin";
+      user_role:
+        | "male_user"
+        | "female_user"
+        | "mosque_admin"
+        | "super_admin"
+        | "super_super_admin";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -1155,7 +1301,13 @@ export const Constants = {
         "closed_declined",
         "cancelled",
       ],
-      user_role: ["male_user", "female_user", "mosque_admin", "super_admin"],
+      user_role: [
+        "male_user",
+        "female_user",
+        "mosque_admin",
+        "super_admin",
+        "super_super_admin",
+      ],
     },
   },
 } as const;

@@ -55,17 +55,31 @@ const ROLES: { name: string; key: string; can: string[]; cannot: string[] }[] = 
     ],
   },
   {
-    name: "Platform admin",
+    name: "Super admin",
     key: "super_admin",
     can: [
-      "See and manage every account, profile, mosque and mosque admin",
-      "Review and override profile approvals, moderate conduct reports",
-      "Change platform branding, workflow settings and account standing",
-      "Read the platform-wide audit log",
+      "See and manage accounts, profiles, mosques and mosque admins in their circle",
+      "Review profile approvals and moderate conduct reports in their circle",
+      "Edit their circle branding and account standing within the circle",
+      "Read the audit log for activity in their circle",
     ],
     cannot: [
+      "See data from other circles",
+      "Create other super admins",
+      "Match or pair members",
       "See contact details exchanged between matched members",
-      "Read a member's private closing feedback notes attributed to them",
+    ],
+  },
+  {
+    name: "Platform owner",
+    key: "super_super_admin",
+    can: [
+      "Create, edit, deactivate and reactivate super admins (circles)",
+      "Set each circle's branding and the platform default branding",
+      "View mosque and member details per circle (oversight)",
+    ],
+    cannot: [
+      "Run day-to-day mosque operations",
       "Match or pair members",
     ],
   },

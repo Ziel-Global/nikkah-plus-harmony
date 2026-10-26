@@ -42,9 +42,9 @@ export function SuperAdminShell({
   return (
     <PortalShell
       items={NAV}
-      badge="Platform admin"
+      badge="Super admin"
       homeTo="/superadmin"
-      roleLabel="Platform administrator"
+      roleLabel="Super administrator"
       title={title}
       description={description}
       actions={actions}
