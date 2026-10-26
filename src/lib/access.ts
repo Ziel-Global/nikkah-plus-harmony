@@ -8,7 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
  * Row Level Security remains the real data-access boundary.
  */
 
-export type AppRole = "male_user" | "female_user" | "mosque_admin" | "super_admin";
+export type AppRole =
+  | "male_user"
+  | "female_user"
+  | "mosque_admin"
+  | "super_admin"
+  | "super_super_admin";
 export type AffiliationStatus = "pending" | "approved" | "rejected" | null;
 
 export type AccessState = {
@@ -20,6 +25,8 @@ export type AccessState = {
   /** mosque admins only: linked to at least one mosque */
   hasMosqueAssignment: boolean;
   accountStatus: "active" | "suspended" | "deactivated" | null;
+  /** false when the user's SA circle is deactivated */
+  circleActive?: boolean;
 };
 
 export const SIGNED_OUT: AccessState = {
@@ -29,7 +36,18 @@ export const SIGNED_OUT: AccessState = {
   affiliationStatus: null,
   hasMosqueAssignment: false,
   accountStatus: null,
+  circleActive: true,
 };
+
+async function fetchCircleActive(): Promise<boolean> {
+  try {
+    const { data, error } = await supabase.rpc("my_tenant_is_active");
+    if (error) return true;
+    return data !== false;
+  } catch {
+    return true;
+  }
+}
 
 /** Reads everything the guard needs in as few round-trips as possible. */
 export async function fetchAccessState(): Promise<AccessState> {
@@ -71,8 +89,14 @@ export async function fetchAccessState(): Promise<AccessState> {
     }
   }
 
+  if (role === "super_super_admin") {
+    return { ...SIGNED_OUT, userId: user.id, role, accountStatus, circleActive: true };
+  }
+
+  const circleActive = await fetchCircleActive();
+
   if (role === "super_admin") {
-    return { ...SIGNED_OUT, userId: user.id, role, accountStatus };
+    return { ...SIGNED_OUT, userId: user.id, role, accountStatus, circleActive };
   }
 
   if (role === "mosque_admin") {
@@ -88,6 +112,7 @@ export async function fetchAccessState(): Promise<AccessState> {
       affiliationStatus: null,
       hasMosqueAssignment: Boolean(link || metaMosqueId),
       accountStatus,
+      circleActive,
     };
   }
 
@@ -107,18 +132,31 @@ export async function fetchAccessState(): Promise<AccessState> {
     affiliationStatus,
     hasMosqueAssignment: false,
     accountStatus,
+    circleActive,
   };
 }
 
 const MEMBER_PREFIXES = ["/dashboard", "/browse", "/profile", "/requests", "/match", "/member"];
 
-type Area = "onboarding" | "pending" | "member" | "admin" | "superadmin" | "suspended" | "deactivated" | "other";
+type Area =
+  | "onboarding"
+  | "pending"
+  | "member"
+  | "admin"
+  | "superadmin"
+  | "ssa"
+  | "suspended"
+  | "deactivated"
+  | "circle-unavailable"
+  | "other";
 
 export function areaFor(pathname: string): Area {
   if (pathname.startsWith("/suspended")) return "suspended";
   if (pathname.startsWith("/deactivated")) return "deactivated";
+  if (pathname.startsWith("/circle-unavailable")) return "circle-unavailable";
   if (pathname.startsWith("/onboarding")) return "onboarding";
   if (pathname.startsWith("/pending")) return "pending";
+  if (pathname.startsWith("/ssa")) return "ssa";
   if (pathname.startsWith("/superadmin")) return "superadmin";
   if (pathname.startsWith("/admin")) return "admin";
   if (MEMBER_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return "member";
@@ -129,6 +167,8 @@ export function areaFor(pathname: string): Area {
 export function landingPath(state: AccessState): string {
   if (state.accountStatus === "suspended") return "/suspended";
   if (state.accountStatus === "deactivated") return "/deactivated";
+  if (state.role === "super_super_admin") return "/ssa";
+  if (state.circleActive === false) return "/circle-unavailable";
   if (state.role === "super_admin") return "/superadmin";
   if (state.role === "mosque_admin") return "/admin";
   if (!state.onboardingComplete) return "/onboarding";
@@ -144,16 +184,26 @@ export function resolveRedirect(state: AccessState, pathname: string): string | 
   if (!state.userId) return "/auth";
 
   const area = areaFor(pathname);
-  
+
   if (state.accountStatus === "suspended") {
     return area === "suspended" ? null : "/suspended";
   }
-  
+
   if (state.accountStatus === "deactivated") {
     return area === "deactivated" ? null : "/deactivated";
   }
 
+  if (state.role === "super_super_admin") {
+    return area === "ssa" ? null : "/ssa";
+  }
+
+  if (state.circleActive === false) {
+    return area === "circle-unavailable" ? null : "/circle-unavailable";
+  }
+
   const home = landingPath(state);
+
+  if (area === "circle-unavailable" || area === "ssa") return home;
 
   if (state.role === "super_admin") {
     return area === "superadmin" ? null : "/superadmin";
@@ -164,7 +214,8 @@ export function resolveRedirect(state: AccessState, pathname: string): string | 
   }
 
   // Members (male_user / female_user) and any unknown role.
-  if (area === "admin" || area === "superadmin" || area === "suspended" || area === "deactivated") return home;
+  if (area === "admin" || area === "superadmin" || area === "suspended" || area === "deactivated")
+    return home;
 
   if (!state.onboardingComplete) {
     return area === "onboarding" ? null : "/onboarding";

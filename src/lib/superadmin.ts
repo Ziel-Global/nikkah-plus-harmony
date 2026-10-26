@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export const PLATFORM_NOTE =
-  "Platform oversight. Members and mosques are never matched or paired by administrators.";
+  "Circle oversight. Members and mosques are never matched or paired by administrators.";
 
 export type PlatformProfile = {
   id: string;
@@ -48,7 +48,8 @@ export const ROLE_LABEL: Record<string, string> = {
   male_user: "Member (brother)",
   female_user: "Member (sister)",
   mosque_admin: "Mosque admin",
-  super_admin: "Platform admin",
+  super_admin: "Super admin",
+  super_super_admin: "Platform owner",
 };
 
 export const ACCOUNT_STATUS_LABEL: Record<string, string> = {

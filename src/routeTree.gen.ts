@@ -21,6 +21,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedBrowseRouteImport } from './routes/_authenticated/browse'
+import { Route as AuthenticatedCircleUnavailableRouteImport } from './routes/_authenticated/circle-unavailable'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDeactivatedRouteImport } from './routes/_authenticated/deactivated'
 import { Route as AuthenticatedMatchRouteImport } from './routes/_authenticated/match'
@@ -28,6 +29,7 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPendingRouteImport } from './routes/_authenticated/pending'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
+import { Route as AuthenticatedSsaRouteRouteImport } from './routes/_authenticated/ssa/route'
 import { Route as AuthenticatedSuperadminRouteRouteImport } from './routes/_authenticated/superadmin/route'
 import { Route as AuthenticatedSuspendedRouteImport } from './routes/_authenticated/suspended'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -39,6 +41,10 @@ import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminMosqueRouteImport } from './routes/_authenticated/admin/mosque'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedMemberProfileIdRouteImport } from './routes/_authenticated/member.$profileId'
+import { Route as AuthenticatedSsaIndexRouteImport } from './routes/_authenticated/ssa/index'
+import { Route as AuthenticatedSsaAuditRouteImport } from './routes/_authenticated/ssa/audit'
+import { Route as AuthenticatedSsaSettingsRouteImport } from './routes/_authenticated/ssa/settings'
+import { Route as AuthenticatedSsaSuperAdminsRouteImport } from './routes/_authenticated/ssa/super-admins'
 import { Route as AuthenticatedSuperadminIndexRouteImport } from './routes/_authenticated/superadmin/index'
 import { Route as AuthenticatedSuperadminAnalyticsRouteImport } from './routes/_authenticated/superadmin/analytics'
 import { Route as AuthenticatedSuperadminAuditRouteImport } from './routes/_authenticated/superadmin/audit'
@@ -50,6 +56,9 @@ import { Route as AuthenticatedSuperadminProfilesRouteImport } from './routes/_a
 import { Route as AuthenticatedSuperadminRequestsRouteImport } from './routes/_authenticated/superadmin/requests'
 import { Route as AuthenticatedSuperadminSettingsRouteRouteImport } from './routes/_authenticated/superadmin/settings/route'
 import { Route as AuthenticatedSuperadminUsersRouteImport } from './routes/_authenticated/superadmin/users'
+import { Route as AuthenticatedSsaSuperAdminsIndexRouteImport } from './routes/_authenticated/ssa/super-admins.index'
+import { Route as AuthenticatedSsaSuperAdminsSaIdRouteImport } from './routes/_authenticated/ssa/super-admins.$saId'
+import { Route as AuthenticatedSsaSuperAdminsNewRouteImport } from './routes/_authenticated/ssa/super-admins.new'
 import { Route as AuthenticatedSuperadminSettingsIndexRouteImport } from './routes/_authenticated/superadmin/settings/index'
 import { Route as AuthenticatedSuperadminSettingsBrandingRouteImport } from './routes/_authenticated/superadmin/settings/branding'
 import { Route as AuthenticatedSuperadminSettingsRolesRouteImport } from './routes/_authenticated/superadmin/settings/roles'
@@ -114,6 +123,12 @@ const AuthenticatedBrowseRoute = AuthenticatedBrowseRouteImport.update({
   path: '/browse',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCircleUnavailableRoute =
+  AuthenticatedCircleUnavailableRouteImport.update({
+    id: '/circle-unavailable',
+    path: '/circle-unavailable',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -148,6 +163,11 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
 const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
   id: '/requests',
   path: '/requests',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSsaRouteRoute = AuthenticatedSsaRouteRouteImport.update({
+  id: '/ssa',
+  path: '/ssa',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSuperadminRouteRoute =
@@ -213,6 +233,28 @@ const AuthenticatedMemberProfileIdRoute =
     id: '/member/$profileId',
     path: '/member/$profileId',
     getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSsaIndexRoute = AuthenticatedSsaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedSsaRouteRoute,
+} as any)
+const AuthenticatedSsaAuditRoute = AuthenticatedSsaAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedSsaRouteRoute,
+} as any)
+const AuthenticatedSsaSettingsRoute =
+  AuthenticatedSsaSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedSsaRouteRoute,
+  } as any)
+const AuthenticatedSsaSuperAdminsRoute =
+  AuthenticatedSsaSuperAdminsRouteImport.update({
+    id: '/super-admins',
+    path: '/super-admins',
+    getParentRoute: () => AuthenticatedSsaRouteRoute,
   } as any)
 const AuthenticatedSuperadminIndexRoute =
   AuthenticatedSuperadminIndexRouteImport.update({
@@ -280,6 +322,24 @@ const AuthenticatedSuperadminUsersRoute =
     path: '/users',
     getParentRoute: () => AuthenticatedSuperadminRouteRoute,
   } as any)
+const AuthenticatedSsaSuperAdminsIndexRoute =
+  AuthenticatedSsaSuperAdminsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedSsaSuperAdminsRoute,
+  } as any)
+const AuthenticatedSsaSuperAdminsSaIdRoute =
+  AuthenticatedSsaSuperAdminsSaIdRouteImport.update({
+    id: '/$saId',
+    path: '/$saId',
+    getParentRoute: () => AuthenticatedSsaSuperAdminsRoute,
+  } as any)
+const AuthenticatedSsaSuperAdminsNewRoute =
+  AuthenticatedSsaSuperAdminsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedSsaSuperAdminsRoute,
+  } as any)
 const AuthenticatedSuperadminSettingsIndexRoute =
   AuthenticatedSuperadminSettingsIndexRouteImport.update({
     id: '/',
@@ -316,8 +376,10 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/ssa': typeof AuthenticatedSsaRouteRouteWithChildren
   '/superadmin': typeof AuthenticatedSuperadminRouteRouteWithChildren
   '/browse': typeof AuthenticatedBrowseRoute
+  '/circle-unavailable': typeof AuthenticatedCircleUnavailableRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/deactivated': typeof AuthenticatedDeactivatedRoute
   '/match': typeof AuthenticatedMatchRoute
@@ -335,6 +397,9 @@ export interface FileRoutesByFullPath {
   '/admin/mosque': typeof AuthenticatedAdminMosqueRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
+  '/ssa/audit': typeof AuthenticatedSsaAuditRoute
+  '/ssa/settings': typeof AuthenticatedSsaSettingsRoute
+  '/ssa/super-admins': typeof AuthenticatedSsaSuperAdminsRouteWithChildren
   '/superadmin/analytics': typeof AuthenticatedSuperadminAnalyticsRoute
   '/superadmin/audit': typeof AuthenticatedSuperadminAuditRoute
   '/superadmin/flags': typeof AuthenticatedSuperadminFlagsRoute
@@ -345,10 +410,14 @@ export interface FileRoutesByFullPath {
   '/superadmin/requests': typeof AuthenticatedSuperadminRequestsRoute
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/ssa/': typeof AuthenticatedSsaIndexRoute
   '/superadmin/': typeof AuthenticatedSuperadminIndexRoute
+  '/ssa/super-admins/$saId': typeof AuthenticatedSsaSuperAdminsSaIdRoute
+  '/ssa/super-admins/new': typeof AuthenticatedSsaSuperAdminsNewRoute
   '/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
   '/superadmin/settings/roles': typeof AuthenticatedSuperadminSettingsRolesRoute
   '/superadmin/settings/workflow': typeof AuthenticatedSuperadminSettingsWorkflowRoute
+  '/ssa/super-admins/': typeof AuthenticatedSsaSuperAdminsIndexRoute
   '/superadmin/settings/': typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -362,6 +431,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/browse': typeof AuthenticatedBrowseRoute
+  '/circle-unavailable': typeof AuthenticatedCircleUnavailableRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/deactivated': typeof AuthenticatedDeactivatedRoute
   '/match': typeof AuthenticatedMatchRoute
@@ -378,6 +448,8 @@ export interface FileRoutesByTo {
   '/admin/mosque': typeof AuthenticatedAdminMosqueRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
+  '/ssa/audit': typeof AuthenticatedSsaAuditRoute
+  '/ssa/settings': typeof AuthenticatedSsaSettingsRoute
   '/superadmin/analytics': typeof AuthenticatedSuperadminAnalyticsRoute
   '/superadmin/audit': typeof AuthenticatedSuperadminAuditRoute
   '/superadmin/flags': typeof AuthenticatedSuperadminFlagsRoute
@@ -388,10 +460,14 @@ export interface FileRoutesByTo {
   '/superadmin/requests': typeof AuthenticatedSuperadminRequestsRoute
   '/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/ssa': typeof AuthenticatedSsaIndexRoute
   '/superadmin': typeof AuthenticatedSuperadminIndexRoute
+  '/ssa/super-admins/$saId': typeof AuthenticatedSsaSuperAdminsSaIdRoute
+  '/ssa/super-admins/new': typeof AuthenticatedSsaSuperAdminsNewRoute
   '/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
   '/superadmin/settings/roles': typeof AuthenticatedSuperadminSettingsRolesRoute
   '/superadmin/settings/workflow': typeof AuthenticatedSuperadminSettingsWorkflowRoute
+  '/ssa/super-admins': typeof AuthenticatedSsaSuperAdminsIndexRoute
   '/superadmin/settings': typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 export interface FileRoutesById {
@@ -407,8 +483,10 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/_authenticated/ssa': typeof AuthenticatedSsaRouteRouteWithChildren
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRouteRouteWithChildren
   '/_authenticated/browse': typeof AuthenticatedBrowseRoute
+  '/_authenticated/circle-unavailable': typeof AuthenticatedCircleUnavailableRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/deactivated': typeof AuthenticatedDeactivatedRoute
   '/_authenticated/match': typeof AuthenticatedMatchRoute
@@ -426,6 +504,9 @@ export interface FileRoutesById {
   '/_authenticated/admin/mosque': typeof AuthenticatedAdminMosqueRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/member/$profileId': typeof AuthenticatedMemberProfileIdRoute
+  '/_authenticated/ssa/audit': typeof AuthenticatedSsaAuditRoute
+  '/_authenticated/ssa/settings': typeof AuthenticatedSsaSettingsRoute
+  '/_authenticated/ssa/super-admins': typeof AuthenticatedSsaSuperAdminsRouteWithChildren
   '/_authenticated/superadmin/analytics': typeof AuthenticatedSuperadminAnalyticsRoute
   '/_authenticated/superadmin/audit': typeof AuthenticatedSuperadminAuditRoute
   '/_authenticated/superadmin/flags': typeof AuthenticatedSuperadminFlagsRoute
@@ -436,10 +517,14 @@ export interface FileRoutesById {
   '/_authenticated/superadmin/requests': typeof AuthenticatedSuperadminRequestsRoute
   '/_authenticated/superadmin/users': typeof AuthenticatedSuperadminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/ssa/': typeof AuthenticatedSsaIndexRoute
   '/_authenticated/superadmin/': typeof AuthenticatedSuperadminIndexRoute
+  '/_authenticated/ssa/super-admins/$saId': typeof AuthenticatedSsaSuperAdminsSaIdRoute
+  '/_authenticated/ssa/super-admins/new': typeof AuthenticatedSsaSuperAdminsNewRoute
   '/_authenticated/superadmin/settings/branding': typeof AuthenticatedSuperadminSettingsBrandingRoute
   '/_authenticated/superadmin/settings/roles': typeof AuthenticatedSuperadminSettingsRolesRoute
   '/_authenticated/superadmin/settings/workflow': typeof AuthenticatedSuperadminSettingsWorkflowRoute
+  '/_authenticated/ssa/super-admins/': typeof AuthenticatedSsaSuperAdminsIndexRoute
   '/_authenticated/superadmin/settings/': typeof AuthenticatedSuperadminSettingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -455,8 +540,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/admin'
+    | '/ssa'
     | '/superadmin'
     | '/browse'
+    | '/circle-unavailable'
     | '/dashboard'
     | '/deactivated'
     | '/match'
@@ -474,6 +561,9 @@ export interface FileRouteTypes {
     | '/admin/mosque'
     | '/admin/settings'
     | '/member/$profileId'
+    | '/ssa/audit'
+    | '/ssa/settings'
+    | '/ssa/super-admins'
     | '/superadmin/analytics'
     | '/superadmin/audit'
     | '/superadmin/flags'
@@ -484,10 +574,14 @@ export interface FileRouteTypes {
     | '/superadmin/requests'
     | '/superadmin/users'
     | '/admin/'
+    | '/ssa/'
     | '/superadmin/'
+    | '/ssa/super-admins/$saId'
+    | '/ssa/super-admins/new'
     | '/superadmin/settings/branding'
     | '/superadmin/settings/roles'
     | '/superadmin/settings/workflow'
+    | '/ssa/super-admins/'
     | '/superadmin/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -501,6 +595,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/browse'
+    | '/circle-unavailable'
     | '/dashboard'
     | '/deactivated'
     | '/match'
@@ -517,6 +612,8 @@ export interface FileRouteTypes {
     | '/admin/mosque'
     | '/admin/settings'
     | '/member/$profileId'
+    | '/ssa/audit'
+    | '/ssa/settings'
     | '/superadmin/analytics'
     | '/superadmin/audit'
     | '/superadmin/flags'
@@ -527,10 +624,14 @@ export interface FileRouteTypes {
     | '/superadmin/requests'
     | '/superadmin/users'
     | '/admin'
+    | '/ssa'
     | '/superadmin'
+    | '/ssa/super-admins/$saId'
+    | '/ssa/super-admins/new'
     | '/superadmin/settings/branding'
     | '/superadmin/settings/roles'
     | '/superadmin/settings/workflow'
+    | '/ssa/super-admins'
     | '/superadmin/settings'
   id:
     | '__root__'
@@ -545,8 +646,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/_authenticated/admin'
+    | '/_authenticated/ssa'
     | '/_authenticated/superadmin'
     | '/_authenticated/browse'
+    | '/_authenticated/circle-unavailable'
     | '/_authenticated/dashboard'
     | '/_authenticated/deactivated'
     | '/_authenticated/match'
@@ -564,6 +667,9 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/mosque'
     | '/_authenticated/admin/settings'
     | '/_authenticated/member/$profileId'
+    | '/_authenticated/ssa/audit'
+    | '/_authenticated/ssa/settings'
+    | '/_authenticated/ssa/super-admins'
     | '/_authenticated/superadmin/analytics'
     | '/_authenticated/superadmin/audit'
     | '/_authenticated/superadmin/flags'
@@ -574,10 +680,14 @@ export interface FileRouteTypes {
     | '/_authenticated/superadmin/requests'
     | '/_authenticated/superadmin/users'
     | '/_authenticated/admin/'
+    | '/_authenticated/ssa/'
     | '/_authenticated/superadmin/'
+    | '/_authenticated/ssa/super-admins/$saId'
+    | '/_authenticated/ssa/super-admins/new'
     | '/_authenticated/superadmin/settings/branding'
     | '/_authenticated/superadmin/settings/roles'
     | '/_authenticated/superadmin/settings/workflow'
+    | '/_authenticated/ssa/super-admins/'
     | '/_authenticated/superadmin/settings/'
   fileRoutesById: FileRoutesById
 }
@@ -680,6 +790,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBrowseRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/circle-unavailable': {
+      id: '/_authenticated/circle-unavailable'
+      path: '/circle-unavailable'
+      fullPath: '/circle-unavailable'
+      preLoaderRoute: typeof AuthenticatedCircleUnavailableRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -727,6 +844,13 @@ declare module '@tanstack/react-router' {
       path: '/requests'
       fullPath: '/requests'
       preLoaderRoute: typeof AuthenticatedRequestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ssa': {
+      id: '/_authenticated/ssa'
+      path: '/ssa'
+      fullPath: '/ssa'
+      preLoaderRoute: typeof AuthenticatedSsaRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/superadmin': {
@@ -806,6 +930,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMemberProfileIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/ssa/': {
+      id: '/_authenticated/ssa/'
+      path: '/'
+      fullPath: '/ssa/'
+      preLoaderRoute: typeof AuthenticatedSsaIndexRouteImport
+      parentRoute: typeof AuthenticatedSsaRouteRoute
+    }
+    '/_authenticated/ssa/audit': {
+      id: '/_authenticated/ssa/audit'
+      path: '/audit'
+      fullPath: '/ssa/audit'
+      preLoaderRoute: typeof AuthenticatedSsaAuditRouteImport
+      parentRoute: typeof AuthenticatedSsaRouteRoute
+    }
+    '/_authenticated/ssa/settings': {
+      id: '/_authenticated/ssa/settings'
+      path: '/settings'
+      fullPath: '/ssa/settings'
+      preLoaderRoute: typeof AuthenticatedSsaSettingsRouteImport
+      parentRoute: typeof AuthenticatedSsaRouteRoute
+    }
+    '/_authenticated/ssa/super-admins': {
+      id: '/_authenticated/ssa/super-admins'
+      path: '/super-admins'
+      fullPath: '/ssa/super-admins'
+      preLoaderRoute: typeof AuthenticatedSsaSuperAdminsRouteImport
+      parentRoute: typeof AuthenticatedSsaRouteRoute
+    }
     '/_authenticated/superadmin/': {
       id: '/_authenticated/superadmin/'
       path: '/'
@@ -883,6 +1035,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperadminUsersRouteImport
       parentRoute: typeof AuthenticatedSuperadminRouteRoute
     }
+    '/_authenticated/ssa/super-admins/': {
+      id: '/_authenticated/ssa/super-admins/'
+      path: '/'
+      fullPath: '/ssa/super-admins/'
+      preLoaderRoute: typeof AuthenticatedSsaSuperAdminsIndexRouteImport
+      parentRoute: typeof AuthenticatedSsaSuperAdminsRoute
+    }
+    '/_authenticated/ssa/super-admins/$saId': {
+      id: '/_authenticated/ssa/super-admins/$saId'
+      path: '/$saId'
+      fullPath: '/ssa/super-admins/$saId'
+      preLoaderRoute: typeof AuthenticatedSsaSuperAdminsSaIdRouteImport
+      parentRoute: typeof AuthenticatedSsaSuperAdminsRoute
+    }
+    '/_authenticated/ssa/super-admins/new': {
+      id: '/_authenticated/ssa/super-admins/new'
+      path: '/new'
+      fullPath: '/ssa/super-admins/new'
+      preLoaderRoute: typeof AuthenticatedSsaSuperAdminsNewRouteImport
+      parentRoute: typeof AuthenticatedSsaSuperAdminsRoute
+    }
     '/_authenticated/superadmin/settings/': {
       id: '/_authenticated/superadmin/settings/'
       path: '/'
@@ -940,6 +1113,45 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
 const AuthenticatedAdminRouteRouteWithChildren =
   AuthenticatedAdminRouteRoute._addFileChildren(
     AuthenticatedAdminRouteRouteChildren,
+  )
+
+interface AuthenticatedSsaSuperAdminsRouteChildren {
+  AuthenticatedSsaSuperAdminsSaIdRoute: typeof AuthenticatedSsaSuperAdminsSaIdRoute
+  AuthenticatedSsaSuperAdminsNewRoute: typeof AuthenticatedSsaSuperAdminsNewRoute
+  AuthenticatedSsaSuperAdminsIndexRoute: typeof AuthenticatedSsaSuperAdminsIndexRoute
+}
+
+const AuthenticatedSsaSuperAdminsRouteChildren: AuthenticatedSsaSuperAdminsRouteChildren =
+  {
+    AuthenticatedSsaSuperAdminsSaIdRoute: AuthenticatedSsaSuperAdminsSaIdRoute,
+    AuthenticatedSsaSuperAdminsNewRoute: AuthenticatedSsaSuperAdminsNewRoute,
+    AuthenticatedSsaSuperAdminsIndexRoute:
+      AuthenticatedSsaSuperAdminsIndexRoute,
+  }
+
+const AuthenticatedSsaSuperAdminsRouteWithChildren =
+  AuthenticatedSsaSuperAdminsRoute._addFileChildren(
+    AuthenticatedSsaSuperAdminsRouteChildren,
+  )
+
+interface AuthenticatedSsaRouteRouteChildren {
+  AuthenticatedSsaAuditRoute: typeof AuthenticatedSsaAuditRoute
+  AuthenticatedSsaSettingsRoute: typeof AuthenticatedSsaSettingsRoute
+  AuthenticatedSsaSuperAdminsRoute: typeof AuthenticatedSsaSuperAdminsRouteWithChildren
+  AuthenticatedSsaIndexRoute: typeof AuthenticatedSsaIndexRoute
+}
+
+const AuthenticatedSsaRouteRouteChildren: AuthenticatedSsaRouteRouteChildren = {
+  AuthenticatedSsaAuditRoute: AuthenticatedSsaAuditRoute,
+  AuthenticatedSsaSettingsRoute: AuthenticatedSsaSettingsRoute,
+  AuthenticatedSsaSuperAdminsRoute:
+    AuthenticatedSsaSuperAdminsRouteWithChildren,
+  AuthenticatedSsaIndexRoute: AuthenticatedSsaIndexRoute,
+}
+
+const AuthenticatedSsaRouteRouteWithChildren =
+  AuthenticatedSsaRouteRoute._addFileChildren(
+    AuthenticatedSsaRouteRouteChildren,
   )
 
 interface AuthenticatedSuperadminSettingsRouteRouteChildren {
@@ -1006,8 +1218,10 @@ const AuthenticatedSuperadminRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
+  AuthenticatedSsaRouteRoute: typeof AuthenticatedSsaRouteRouteWithChildren
   AuthenticatedSuperadminRouteRoute: typeof AuthenticatedSuperadminRouteRouteWithChildren
   AuthenticatedBrowseRoute: typeof AuthenticatedBrowseRoute
+  AuthenticatedCircleUnavailableRoute: typeof AuthenticatedCircleUnavailableRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDeactivatedRoute: typeof AuthenticatedDeactivatedRoute
   AuthenticatedMatchRoute: typeof AuthenticatedMatchRoute
@@ -1021,9 +1235,11 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
+  AuthenticatedSsaRouteRoute: AuthenticatedSsaRouteRouteWithChildren,
   AuthenticatedSuperadminRouteRoute:
     AuthenticatedSuperadminRouteRouteWithChildren,
   AuthenticatedBrowseRoute: AuthenticatedBrowseRoute,
+  AuthenticatedCircleUnavailableRoute: AuthenticatedCircleUnavailableRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDeactivatedRoute: AuthenticatedDeactivatedRoute,
   AuthenticatedMatchRoute: AuthenticatedMatchRoute,

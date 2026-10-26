@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Textarea } from "@/components/ui/textarea";
-import { createClient } from "@supabase/supabase-js";
 import {
   Select,
   SelectContent,
@@ -131,30 +130,15 @@ export function EditMosqueModal({ mosque, onOpenChange }: Props) {
         }
         
         if (isEmailChanged) {
-          const tempClient = createClient(
-            import.meta.env.VITE_SUPABASE_URL,
-            import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }
-          );
-          const { error: signUpError } = await tempClient.auth.signUp({
-            email: form.contact_email!.trim(),
-            password: form.admin_password!.trim(),
-            options: {
-              data: {
-                role: "mosque_admin",
-                mosque_id: mosque.id,
-              },
+          const { createMosqueAdminAccount } = await import("@/lib/mosque-admin.functions");
+          await createMosqueAdminAccount({
+            data: {
+              mosque_id: mosque.id,
+              email: form.contact_email!.trim(),
+              password: form.admin_password!.trim(),
+              full_name: form.admin_name?.trim() || undefined,
             },
           });
-          if (signUpError) throw new Error("Failed to create new admin: " + signUpError.message);
-          
-          const { error: rpcError } = await supabase.rpc("confirm_mosque_admin_email", {
-            p_email: form.contact_email!.trim()
-          });
-          if (rpcError) throw new Error("Failed to confirm email: " + rpcError.message);
-
-          // Wait briefly for the auth trigger to create the profile
-          await new Promise((resolve) => setTimeout(resolve, 500));
         } else {
           const { error: pwError } = await supabase.rpc("update_mosque_admin_password", {
             p_mosque_id: mosque.id,
